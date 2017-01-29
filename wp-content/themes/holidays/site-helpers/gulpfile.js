@@ -15,9 +15,9 @@ var gulp = require('gulp'),
 
 /********************************** Front **********************************/
 /**
- * Front CSS
+ * Build front css
  */
-gulp.task('css-front', function () {
+gulp.task('css-front', function() {
     gulp.src([
         '../assets/css/reset.css',
         '../assets/css/helper.css',
@@ -30,9 +30,16 @@ gulp.task('css-front', function () {
 });
 
 /**
- * Front JS
+ * Watch for front css changes
  */
-gulp.task('js-front', function () {
+gulp.task('css-front-watch', function() {
+    gulp.watch(['../assets/css/*'], ['css-front']);
+});
+
+/**
+ * Build front js
+ */
+gulp.task('js-front', function() {
     gulp.src([
         '../assets/js/plugins/easing.js',
         '../assets/js/plugins/animate-enhanced.min.js',
@@ -44,23 +51,30 @@ gulp.task('js-front', function () {
         .pipe(gulp.dest('../js/'))
 });
 
-gulp.task('css-front-watch', function() {
-    gulp.watch(['../assets/css/*'], ['css-front']);
-});
-
+/**
+ * Watch for front js changes
+ */
 gulp.task('js-front-watch', function() {
     gulp.watch(['../assets/js/*'], ['js-front']);
 });
 
+/**
+ * Watch for front assets ( css & js ) changes
+ */
 gulp.task('front-watch', ['css-front-watch','js-front-watch']);
-gulp.task('front-build', ['css-front','js-front']);
 
+/**
+ * Build front assets ( css & js )
+ */
+gulp.task('front-build', ['css-front','js-front']);
 
 /********************************** /end Front **********************************/
 
+
+
 /********************************** Portal **********************************/
 /**
- * Front CSS
+ * Build portal css
  */
 gulp.task('css-portal', function () {
     gulp.src([
@@ -75,6 +89,16 @@ gulp.task('css-portal', function () {
         .pipe(gulp.dest('../css/'))
 });
 
+/**
+ * Watch for portal css changes
+ */
+gulp.task('css-portal-watch', function() {
+    gulp.watch(['../assets/css/*'], ['css-portal']);
+});
+
+/**
+ * Build portal js
+ */
 gulp.task('js-portal', function () {
     gulp.src([
         '../assets/js/portal.js'
@@ -84,52 +108,20 @@ gulp.task('js-portal', function () {
         .pipe(gulp.dest('../js/'))
 });
 
-gulp.task('css-portal-watch', function() {
-    gulp.watch(['../assets/css/*'], ['css-portal']);
-});
-
+/**
+ * Watch for portal js changes
+ */
 gulp.task('js-portal-watch', function() {
     gulp.watch(['../assets/js/*'], ['js-portal']);
 });
 
+/**
+ * Watch for portal assets ( css & js ) changes
+ */
 gulp.task('portal-watch', ['css-portal-watch', 'js-portal-watch']);
+
+/**
+ * Build portal assets ( css & js )
+ */
 gulp.task('portal-build', ['css-portal','js-portal']);
-
 /********************************** /end Portal **********************************/
-
-
-
-
-
-
-
-///**
-// * Portal CSS
-// */
-//gulp.task('portal-css-build', function() {
-//    return sass('../scss/portal/style.scss', { style: 'compressed' })
-//        .pipe(rename({basename:'portal',suffix: '.min'}))
-//        .pipe(gulp.dest('../css'))
-//});
-//gulp.task('portal-css-watch', function(){
-//    gulp.watch('../scss/**/*', ['portal-css-build']);
-//})
-//
-///**
-// * Front JS
-// */
-//gulp.task('js-portal', function () {
-//    gulp.src([
-//        '../js/portal/clock.js',
-//        '../js/portal/portal.js',
-//    ])
-//        .pipe(concat('portal.min.js'))
-//        .pipe(uglify())
-//        .pipe(gulp.dest('../js/portal/'))
-//});
-//
-//gulp.task('js-watch', function() {
-//    gulp.watch(['../js/*.js','!../js/zombify-scripts.min.js'], ['js-scripts']);
-//});
-//
-//gulp.task('default', ['css-watch','js-watch']);
