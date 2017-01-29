@@ -1,0 +1,9 @@
+/.idea
+/.htaccess
+/wp-config.php
+/wp-content/themes/twentyfifteen
+/wp-content/themes/twentyseventeen
+/wp-content/themes/twentysixteen
+/wp-content/themes/holidays/temp
+/wp-content/themes/holidays/site-helpers/.sass-cache
+/wp-content/themes/holidays/site-helpers/node_modules

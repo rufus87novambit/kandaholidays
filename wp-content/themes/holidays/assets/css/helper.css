@@ -1,0 +1,170 @@
+.clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+.clear {clear: both}
+.hidden {
+    display: none !important;
+}
+.show {
+    display: block !important;
+}
+.invisible {
+    visibility: hidden !important;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.text-center {
+    text-align: center;
+}
+.text-justify {
+    text-align: justify;
+}
+.text-nowrap {
+    text-wrap: none;
+}
+.text-lowercase {
+    text-transform: lowercase;
+}
+.text-uppercase {
+    text-transform: uppercase;
+}
+.text-capitalize {
+    text-transform: capitalize;
+}
+.vertical-align {
+    vertical-align: middle;
+}
+.valign-outer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: table;
+    position: static;
+}
+.valign-middle {
+    top: 50%;
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    position: static;
+}
+.valign-inner {
+    position: relative;
+    top: -50%;
+}
+.list-unstyle {
+    padding-left: 0;
+    list-style: none;
+}
+.list-inline {
+    padding-left: 0;
+    margin-left: -5px;
+    list-style: none;
+}
+.pull-left {
+    float: left;
+}
+.pull-right {
+    float: right;
+}
+
+
+.visible-xs,
+.visible-sm,
+.visible-md,
+.visible-lg {
+   display: none !important;
+}
+
+.visible-xs-block,
+.visible-xs-inline,
+.visible-xs-inline-block,
+.visible-sm-block,
+.visible-sm-inline,
+.visible-sm-inline-block,
+.visible-md-block,
+.visible-md-inline,
+.visible-md-inline-block,
+.visible-lg-block,
+.visible-lg-inline,
+.visible-lg-inline-block {
+    display: none !important;
+}
+@media (max-width: 480px) {
+    .hidden-xss {
+        display: none !important;
+    }
+}
+@media (max-width: 767px) {
+    .visible-xs,
+    .visible-xs-block {
+        display: block !important;
+    }
+    .visible-xs-inline {
+        display: inline !important;
+    }
+    .visible-xs-inline-block {
+        display: inline-block !important;
+    }
+    .hidden-xs {
+        display: none !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .visible-sm,
+    .visible-sm-block {
+        display: block !important;
+    }
+    .visible-sm-inline {
+        display: inline !important;
+    }
+    .visible-sm-inline-block {
+        display: inline-block !important;
+    }
+    .hidden-sm {
+        display:  none !important;
+    }
+    .hidden-md {
+        display: none !important;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .visible-md,
+    .visible-md-block {
+        display: block !important;
+    }
+    .visible-md-inline{
+        display: inline !important;
+    }
+    .visible-md-inline-block {
+        display: inline-block !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .visible-lg,
+    .visible-lg-block {
+        display: block !important;
+    }
+    .visible-lg-inline{
+        display: inline !important;
+    }
+    .visible-lg-inline-block{
+        display: inline-block !important;
+    }
+    .hidden-lg {
+        display: none !important;
+    }
+
+}

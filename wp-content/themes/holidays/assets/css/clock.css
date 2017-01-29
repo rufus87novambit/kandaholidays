@@ -1,0 +1,30 @@
+#clock {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    float: right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url(../images/portal/clock/clockface.png);
+    list-style: none;
+}
+#clock #sec, #clock #min, #clock #hour {
+    position: absolute;
+    width: 5px;
+    height: 100px;
+    top: 0px;
+    left: 47px;
+    background-size: cover;
+}
+#clock #sec {
+    background-image: url(../images/portal/clock/sechand.png);
+    z-index: 3;
+}
+#clock #min {
+    background-image: url(../images/portal/clock/minhand.png);
+    z-index: 2;
+}
+#clock #hour {
+    background-image: url(../images/portal/clock/hourhand.png);
+    z-index: 1;
+}

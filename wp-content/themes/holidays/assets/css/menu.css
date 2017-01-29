@@ -1,0 +1,106 @@
+.main-menu {
+    float: left;
+    margin-top: 26px;
+    margin-left: 20px;
+}
+.main-menu ul,
+.sub-menu li {
+    list-style: none;
+}
+.main-menu > ul > li {
+    float: left;
+    padding: 0 15px;
+    position: relative;
+}
+.main-menu > ul > li.menu-item-has-children::before {
+    content: ' ';
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #ececec;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -3px;
+}
+.main-menu > ul > li > a {
+    color: #ececec;
+    text-decoration: none;
+}
+
+.sub-menu {
+    position: absolute;
+    z-index: 3;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    padding: 12px 0;
+    min-width: 150px;
+    background-color: #ececec;
+    border: 1px solid #ececec;
+    -webkit-box-shadow: 0 0 7px #1b1b1b;
+    -moz-box-shadow: 0 0 7px #1b1b1b;
+    box-shadow: 0 0 7px #1b1b1b;
+    border-radius: 5px;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    font-size: 14px;
+
+    -webkit-transform: translate(0, 20px);
+    -moz-transform: translate(0, 20px);
+    transform: translate(0, 20px);
+
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+.agency-logo .sub-menu {
+    left: auto;
+    right: 0;
+}
+.agency-logo .sub-menu::before {
+    width: 0;
+    height: 0;
+    content: " ";
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ececec;
+    position: absolute;
+    top: -6px;
+    right: 42px;
+    margin-right: -8px;
+}
+.agency-logo:hover .sub-menu,
+.main-menu > ul > li:hover > .sub-menu,
+.currency.opened .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transform: translate(0, 0);
+    -moz-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+.sub-menu li {
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+    padding: 3px 0;
+}
+.sub-menu li a {
+    padding: 0 10px;
+    text-decoration: none;
+    color: #3d4795;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+.sub-menu li a i {
+    margin-right: 10px;
+}
+.sub-menu li:hover {
+    background-color: #3d4795;
+}
+.sub-menu li:hover a {
+    color: #ececec;
+}
