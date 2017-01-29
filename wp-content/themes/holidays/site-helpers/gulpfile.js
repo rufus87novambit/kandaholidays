@@ -53,6 +53,7 @@ gulp.task('js-front-watch', function() {
 });
 
 gulp.task('front-watch', ['css-front-watch','js-front-watch']);
+gulp.task('front-build', ['css-front','js-front']);
 
 
 /********************************** /end Front **********************************/
@@ -92,6 +93,7 @@ gulp.task('js-portal-watch', function() {
 });
 
 gulp.task('portal-watch', ['css-portal-watch', 'js-portal-watch']);
+gulp.task('portal-build', ['css-portal','js-portal']);
 
 /********************************** /end Portal **********************************/
 
