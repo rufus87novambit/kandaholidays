@@ -2,6 +2,7 @@
 
 class KH_Config {
 
+    // todo -> make this configurable from admin panel
     private static $developer_email = 'israelyan.rafik@gmail.com';
 
     /**
@@ -33,17 +34,27 @@ class KH_Config {
     );
 
     /**
+     * Transient expiration time in seconds
+     *
+     * @var array
+     */
+    private static $transient_expiration = array(
+        'exchange_update' => 12 * HOUR_IN_SECONDS
+    );
+
+    /**
      * Get configuration value
      *
      * @param string $property
+     * @param string $delimiter
      * @return null
      */
-    static function get( $property = '' ) {
+    static function get( $property = '', $delimiter = '->' ) {
         if( ! $property ) {
             return null;
         }
 
-        $property = explode( '->', $property );
+        $property = explode( $delimiter, $property );
         $key = array_shift( $property );
 
         $value = self::${$key};

@@ -68,10 +68,9 @@ get_header();
                 <a href="#"><i class="icon icon-currency-usd"></i></a>
                 <nav class="sub-menu">
                     <ul>
-                        <li><span><i class="icon icon-currency-usd"></i> 484.00</span></li>
-                        <li><span><i class="icon icon-currency-euro"></i> 515.10</span></li>
-                        <li><span><i class="icon icon-currency-rur"></i> 8.24</span></li>
-                        <li><span><i class="icon icon-currency-gbp"></i> 603.10</span></li>
+                        <?php foreach( kanda_get_exchange() as $iso => $rate ) { ?>
+                        <li><span><?php echo $iso; ?> <?php echo number_format( $rate['Rate'], 2 ); ?></span></li>
+                        <?php } ?>
                     </ul>
                 </nav>
             </div>

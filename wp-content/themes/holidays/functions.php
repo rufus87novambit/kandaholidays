@@ -1,30 +1,5 @@
 <?php
 
-//$success = false;
-//try {
-//    $client = new SoapClient( 'http://api.cba.am/exchangerates.asmx?wsdl' , array(
-//        'version' => SOAP_1_1
-//    ));
-//    $result = $client->__soapCall("ExchangeRatesLatest", array());
-//    if ( is_soap_fault( $result ) ) {
-//        $error = $result->faultstring;
-//    } else {
-//        $success = true;
-//        $data = $result->ExchangeRatesLatestResult;
-//    }
-//} catch ( Exception $e ) {
-//    $error = $e->getMessage();
-//}
-//if ( $success ) {
-//
-//    $rates = $data->Rates->ExchangeRate;
-//    echo '<pre>'; var_dump( $rates ); die;
-//
-//} else {
-//    wp_mail( KH_Config::get( 'developer_email' ), get_bloginfo( 'sitename' ), 'message' );
-//}
-//die;
-
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );

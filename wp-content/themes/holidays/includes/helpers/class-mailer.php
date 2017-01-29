@@ -23,7 +23,7 @@ class Kanda_Mailer {
      * @param array $headers
      * @return array
      */
-    private function kanda_get_html_email_headers( $headers = array() ) {
+    private function get_html_email_headers( $headers = array() ) {
 
         $headers = array_merge( array(
             'Content-Type' => 'Content-Type: text/html; charset=UTF-8'
@@ -42,11 +42,21 @@ class Kanda_Mailer {
     /**
      * Replace line breaks with paragraph tags
      *
-     * @param $string
+     * @param $content
      * @return string
      */
-    private function kanda_normalize_email_content( $string ) {
-        return '<p>' . implode( '</p><p>', array_filter( explode( "\n", $string ) ) ) . '</p>';
+    private function normalize_email_content( $content ) {
+        return '<p>' . implode( '</p><p>', array_filter( explode( "\n", $content ) ) ) . '</p>';
+    }
+
+    /**
+     * Prepend website name to email subject
+     *
+     * @param $subject
+     * @return string
+     */
+    private function normalize_email_subject( $subject ) {
+        return sprintf( '%1$s - %2$s', get_bloginfo( 'sitename' ), $subject );
     }
 
     /**
@@ -54,15 +64,49 @@ class Kanda_Mailer {
      *
      * @param $subject
      * @param $message
+     * @param array $headers
+     * @return bool
      */
-    public function kanda_send_developer_email( $subject, $message, $headers = array() ) {
+    public function send_developer_email( $subject, $message, $headers = array() ) {
 
         $to = KH_Config::get( 'developer_email' );
-        $subject = sprintf( '%1$s - %2$s', get_bloginfo( 'sitename' ), $subject );
-        $message = kanda_normalize_email_content( $message );
-        $headers = kanda_get_html_email_headers();
+        $subject = $this->normalize_email_subject( $subject );
+        $message = $this->normalize_email_content( $message );
+        $headers = $this->get_html_email_headers();
 
-        wp_mail( $to, $subject, $message, $headers );
+        return wp_mail( $to, $subject, $message, $headers );
+    }
+
+    /**
+     * Send email to user
+     *
+     * @param $user_id_email
+     * @param $subject
+     * @param $message
+     * @param array $headers
+     * @return bool|null|void
+     */
+    public function send_user_email( $user_id_email, $subject, $message, $headers = array() ) {
+
+        if( ! $user_id_email ) return;
+
+        if( is_numeric( $user_id_email ) ) {
+            $user_data = get_userdata( $user_id_email );
+            $user_id_email = $user_data->user_email;
+        } elseif( filter_var( $user_id_email, FILTER_VALIDATE_EMAIL ) === false ) {
+            $user_id_email = false;
+        }
+
+        if( $user_id_email ) {
+
+            $subject = $this->normalize_email_subject( $subject );
+            $message = $this->normalize_email_content( $message );
+            $headers = $this->get_html_email_headers();
+
+            return wp_mail( $user_id_email, $subject, $message, $headers );
+        }
+
+        return null;
     }
 
 }
