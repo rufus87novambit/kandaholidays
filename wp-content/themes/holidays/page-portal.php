@@ -9,7 +9,7 @@ get_header();
         <div class="clearfix">
             <h1 class="portal-logo">
                 <a href="<?php echo site_url( '/portal' ); ?>">
-                    <img src="<?php echo HOLIDAYS_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
+                    <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                 </a>
             </h1>
             <nav class="main-menu">
@@ -54,7 +54,7 @@ get_header();
 
             <div class="agency-logo">
     <!--            <a href="#" class="avatar avatar-default"><i class="icon icon-plane"></i></a>-->
-                <a href="#" class="avatar"><img src="<?php echo HOLIDAYS_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" /></a>
+                <a href="#" class="avatar"><img src="<?php echo KH_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" /></a>
                 <div class="sub-menu">
                     <ul>
                         <li><a href="#"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a></li>

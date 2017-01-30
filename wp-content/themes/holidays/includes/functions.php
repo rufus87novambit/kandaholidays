@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if( isset( $_GET['server_test'] ) && $_GET['server_test'] ) {
-    require_once( HOLIDAYS_INCLUDES_PATH . 'server-requirements.php' );
+    require_once( KH_INCLUDES_PATH . 'server-requirements.php' );
 }
-require_once( HOLIDAYS_INCLUDES_PATH . 'config.php' );
-require_once( HOLIDAYS_INCLUDES_PATH . 'log.php' );
-require_once( HOLIDAYS_INCLUDES_PATH . 'cron.php' );
-require_once( HOLIDAYS_INCLUDES_PATH . 'helpers/class-mailer.php' );
+require_once( KH_INCLUDES_PATH . 'config.php' );
+require_once( KH_INCLUDES_PATH . 'log.php' );
+require_once( KH_INCLUDES_PATH . 'cron.php' );
+require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
 
 /**
  * Get exchange data

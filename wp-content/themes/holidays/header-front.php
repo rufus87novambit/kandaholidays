@@ -15,7 +15,7 @@
             <header class="clearfix">
                 <h1 class="logo">
                     <a href="<?php echo esc_url( '/' ); ?>">
-                        <img src="<?php echo HOLIDAYS_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
+                        <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
                     </a>
                 </h1>
             </header>

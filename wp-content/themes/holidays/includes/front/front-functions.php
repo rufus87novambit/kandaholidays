@@ -44,9 +44,9 @@ add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
     if( is_page_template( 'page-front.php' ) ) {
         wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null );
-        wp_enqueue_script('front', HOLIDAYS_THEME_URL . 'js/front.min.js', array( 'jquery' ), null);
+        wp_enqueue_script('front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null);
     } elseif( is_page_template( 'page-portal.php' ) ) {
-        wp_enqueue_script( 'portal', HOLIDAYS_THEME_URL . 'js/portal.min.js', array( 'jquery' ), null, true );
+        wp_enqueue_script( 'portal', KH_THEME_URL . 'js/portal.min.js', array( 'jquery' ), null, true );
     }
 
 }
@@ -57,9 +57,9 @@ function kanda_enqueue_scripts() {
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
 function kanda_enqueue_styles() {
     if( is_page_template( 'page-front.php' ) ) {
-        wp_enqueue_style( 'front', HOLIDAYS_THEME_URL . 'css/front.min.css', array(), null);
+        wp_enqueue_style( 'front', KH_THEME_URL . 'css/front.min.css', array(), null);
     } elseif( is_page_template( 'page-portal.php' ) ) {
-        wp_enqueue_style( 'portal', HOLIDAYS_THEME_URL . 'css/portal.min.css', array(), null );
+        wp_enqueue_style( 'portal', KH_THEME_URL . 'css/portal.min.css', array(), null );
     }
 }
 
@@ -185,7 +185,7 @@ function kanda_check_login() {
     }
 
     ob_start();
-    include ( HOLIDAYS_THEME_PATH . 'template-parts/home/login.php' );
+    include ( KH_THEME_PATH . 'template-parts/home/login.php' );
     echo ob_get_clean();
 
 }
