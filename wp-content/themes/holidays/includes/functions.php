@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Add theme rewrite rules
  */
-add_action( 'init', 'kanda_rewrite_basic' );
+add_action( 'init', 'kanda_rewrite_basic', 10 );
 function kanda_rewrite_basic() {
-    add_rewrite_rule('portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top');
+    add_rewrite_rule( 'portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top' );
 }
 
 /**
@@ -31,10 +31,28 @@ function kanda_query_vars( $public_query_vars ) {
  * @param $query_vars
  */
 function kanda_parse_request( $query_vars ) {
+
+    do_action( 'kanda/common/init' );
+
     $pagename = isset( $query_vars->query_vars['pagename'] ) ? $query_vars->query_vars['pagename'] : '';
     if( $pagename === 'portal' ) {
         do_action( 'kanda/portal/init', $query_vars->query_vars['pa'] );
+    } else {
+        do_action( 'kanda/front/init' );
     }
+}
+
+add_action( 'kanda/common/init', 'kanda_common_init' );
+function kanda_common_init() {
+    require_once( KH_INCLUDES_PATH . 'config.php' );
+    require_once( KH_INCLUDES_PATH . 'log.php' );
+    require_once( KH_INCLUDES_PATH . 'cron.php' );
+    require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
+}
+
+add_action( 'kanda/front/init', 'kanda_front_init', 10 );
+function kanda_front_init() {
+    require_once( KH_INCLUDES_PATH . 'front/front-functions.php' );
 }
 
 /**
@@ -42,10 +60,5 @@ function kanda_parse_request( $query_vars ) {
  */
 add_action( 'kanda/portal/init', 'kanda_portal_init', 10, 1 );
 function kanda_portal_init( $action ) {
-    require_once( KH_INCLUDES_PATH . 'config.php' );
-    require_once( KH_INCLUDES_PATH . 'log.php' );
-    require_once( KH_INCLUDES_PATH . 'cron.php' );
-    require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
-
     require_once( KH_INCLUDES_PATH . 'portal/portal-functions.php' );
 }
