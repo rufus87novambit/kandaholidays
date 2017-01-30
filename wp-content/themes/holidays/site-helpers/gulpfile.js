@@ -125,3 +125,60 @@ gulp.task('portal-watch', ['css-portal-watch', 'js-portal-watch']);
  */
 gulp.task('portal-build', ['css-portal','js-portal']);
 /********************************** /end Portal **********************************/
+
+/********************************** Admin **********************************/
+
+/**
+ * Build admin css
+ */
+gulp.task('css-admin', function () {
+    gulp.src([
+        '../assets/css/icon-fonts.css',
+        '../assets/css/admin/admin.css'
+    ])
+        .pipe(cleancss({ specialComments : 0 } ))
+        .pipe(concat('admin.min.css'))
+        .pipe(gulp.dest('../css/'))
+});
+
+/**
+ * Watch for admin css changes
+ */
+gulp.task('css-admin-watch', function() {
+    gulp.watch(['../assets/css/*', '../assets/css/admin/*'], ['css-admin']);
+});
+
+/**
+ * Build admin js
+ */
+gulp.task('js-admin', function () {
+    gulp.src([
+        '../assets/js/admin/admin.js'
+    ])
+        .pipe(concat('admin.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('../js/'))
+});
+
+/**
+ * Watch for admin js changes
+ */
+gulp.task('js-admin-watch', function() {
+    gulp.watch(['../assets/js/*', '../assets/js/admin/*'], ['js-admin']);
+});
+
+/**
+ * Watch for admin assets ( css & js ) changes
+ */
+gulp.task('admin-watch', ['css-admin-watch', 'js-admin-watch']);
+
+/**
+ * Build portal assets ( css & js )
+ */
+gulp.task('admin-build', ['css-admin','js-admin']);
+/********************************** Admin **********************************/
+
+/**
+ * Build everything
+ */
+gulp.task('build', ['front-build', 'portal-build', 'admin-build']);

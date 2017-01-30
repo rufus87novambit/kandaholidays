@@ -5,6 +5,8 @@ class KH_Config {
     // todo -> make this configurable from admin panel
     private static $developer_email = 'israelyan.rafik@gmail.com';
 
+    private static $agency_role = 'agency';
+
     /**
      * Cookie lifetimes
      *

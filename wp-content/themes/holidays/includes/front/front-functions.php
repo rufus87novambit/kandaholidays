@@ -6,38 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Generate a random string
- *
- * @param int $length
- * @return string
- */
-function generate_random_string( $length = 10 ) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
-/**
- * Add custom role
- */
-add_action( 'after_switch_theme', 'kanda_add_user_roles', 10 );
-function kanda_add_user_roles() {
-    add_role(
-        'agency',
-        esc_html__( 'Travel Agency', 'kanda' ),
-        array(
-            'read' => true,  // true allows this capability
-            'edit_posts' => true,
-            'delete_posts' => false, // Use false to explicitly deny
-        )
-    );
-}
-
-/**
  * Add frontend css files
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
@@ -52,6 +20,14 @@ add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
     wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null );
     wp_enqueue_script('front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null);
+}
+
+add_action( 'kanda/new_user_registration', 'kanda_new_user_registration', 10, 1 );
+function kanda_new_user_registration( $user_id ) {
+    $user = get_user_by( 'id', (int)$user_id );
+    if( $user ) {
+        // todo send notification email
+    }
 }
 
 /**
@@ -69,21 +45,12 @@ function kanda_auth_cookie_expiration( $length, $user_id, $remember ) {
 }
 
 /**
- * Deny travel agency access to page
- */
-function kanda_deny_agency_access() {
-    if( is_user_logged_in() && current_user_can( 'agency' ) ) {
-        wp_redirect( site_url( '/portal' ) ); die;
-    }
-}
-
-/**
  * Process login request
  */
 add_action( 'kanda/login', 'kanda_check_login', 10 );
 function kanda_check_login() {
 
-    kanda_deny_agency_access();
+    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter( 'nonce_life', function () { return KH_Config::get( 'cookie_lifetime->login' ); } );
 
@@ -178,7 +145,7 @@ function kanda_check_login() {
     }
 
     ob_start();
-    include ( KH_THEME_PATH . 'template-parts/home/login.php' );
+    include ( KH_THEME_PATH . 'template-parts/front/login.php' );
     echo ob_get_clean();
 
 }
@@ -189,7 +156,7 @@ function kanda_check_login() {
 add_action( 'kanda/register', 'kanda_check_register', 10 );
 function kanda_check_register() {
 
-    kanda_deny_agency_access();
+    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter( 'nonce_life', function () { return KH_Config::get( 'cookie_lifetime->register' ); } );
 
@@ -431,6 +398,15 @@ function kanda_check_register() {
                 );
             }
 
+            $kanda_request['fields']['company']['phone']['value'] = $company_phone;
+            if( $company_phone && !( preg_match( '/^[^:]*\d{9,}$/', $company_phone ) ) ) {
+                $has_error = true;
+                $kanda_request['fields']['company']['phone'] = array_merge(
+                    $kanda_request['fields']['company']['phone'],
+                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid phone number', 'kanda' ) )
+                );
+            }
+
             if( ! $has_error ) {
                 $user_id = wp_insert_user( array(
                     'user_login' => $username,
@@ -445,15 +421,15 @@ function kanda_check_register() {
                 if( is_wp_error( $user_id ) ) {
                     $kanda_request['message'] = $user_id->get_error_message();
                 } else {
-                    update_user_meta( $user_id, 'is_active', 0 );
+                    update_user_meta( $user_id, 'profile_status', 0 );
                     update_user_meta( $user_id, 'mobile', $mobile );
                     update_user_meta( $user_id, 'position', $position );
                     update_user_meta( $user_id, 'company_name', $company_name );
                     update_user_meta( $user_id, 'company_license', $company_license );
                     update_user_meta( $user_id, 'company_address', $company_address );
-                    update_user_meta( $user_id, 'company_city', $company_address );
+                    update_user_meta( $user_id, 'company_city', $company_city );
                     update_user_meta( $user_id, 'company_country', $company_country );
-                    update_user_meta( $user_id, 'company_phone', $company_country );
+                    update_user_meta( $user_id, 'company_phone', $company_phone );
 
                     $kanda_request['fields']['personal']['username']['value'] = '';
                     $kanda_request['fields']['personal']['email']['value'] = '';
@@ -486,7 +462,7 @@ function kanda_check_register() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/home/register.php';
+    include get_template_directory() . '/template-parts/front/register.php';
     echo ob_get_clean();
 
 }
@@ -497,7 +473,7 @@ function kanda_check_register() {
 add_action( 'kanda/forgotpassword', 'kanda_check_forgot_password', 10 );
 function kanda_check_forgot_password() {
 
-    kanda_deny_agency_access();
+    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->forgot_password' ); });
 
@@ -583,7 +559,7 @@ function kanda_check_forgot_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/home/forgot.php';
+    include get_template_directory() . '/template-parts/front/forgot.php';
     echo ob_get_clean();
 
 }
@@ -594,7 +570,7 @@ function kanda_check_forgot_password() {
 add_action( 'kanda/resetpassword', 'kanda_check_reset_password', 10 );
 function kanda_check_reset_password() {
 
-    kanda_deny_agency_access();
+    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->forgot_password' ); });
 
@@ -719,7 +695,7 @@ function kanda_check_reset_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/home/reset.php';
+    include get_template_directory() . '/template-parts/front/reset.php';
     echo ob_get_clean();
 
 }

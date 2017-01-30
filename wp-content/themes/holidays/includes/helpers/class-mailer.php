@@ -33,7 +33,7 @@ class Kanda_Mailer {
             'From: %1$s <%2$s@%3$s>',
             'My Name',
             'noreply',
-            strtr( get_bloginfo( 'siteurl' ), array ('http://' => '', 'https://' => '' ) )
+            strtr( get_bloginfo( 'url' ), array ('http://' => '', 'https://' => '' ) )
         );
 
         return array_values( $headers );

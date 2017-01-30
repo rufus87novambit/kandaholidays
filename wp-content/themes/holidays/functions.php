@@ -40,6 +40,9 @@ if ( ! defined( 'KH_FRONT_URL' ) ) {
     define( 'KH_FRONT_URL', KH_INCLUDES_URL . 'front/' );
 }
 
+/**
+ * Call for ?server_test=1 to check theme requirements compatibility
+ */
 if( isset( $_GET['server_test'] ) && $_GET['server_test'] ) {
     require_once( KH_INCLUDES_PATH . 'server-requirements.php' );
 }

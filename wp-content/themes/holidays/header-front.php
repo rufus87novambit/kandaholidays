@@ -8,7 +8,7 @@
 
     <body <?php body_class(); ?>>
 
-        <?php get_template_part( 'template-parts/home/slides' ); ?>
+        <?php get_template_part( 'template-parts/front/slides' ); ?>
 
         <div class="wrapper">
 
