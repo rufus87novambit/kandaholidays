@@ -1,5 +1,6 @@
 <?php
 
+
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
@@ -9,6 +10,7 @@ if( isset( $_GET['server_test'] ) && $_GET['server_test'] ) {
     require_once( HOLIDAYS_INCLUDES_PATH . 'server-requirements.php' );
 }
 require_once( HOLIDAYS_INCLUDES_PATH . 'config.php' );
+require_once( HOLIDAYS_INCLUDES_PATH . 'log.php' );
 require_once( HOLIDAYS_INCLUDES_PATH . 'cron.php' );
 require_once( HOLIDAYS_INCLUDES_PATH . 'helpers/class-mailer.php' );
 
