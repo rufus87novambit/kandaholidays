@@ -40,17 +40,9 @@ if ( ! defined( 'KH_FRONT_URL' ) ) {
     define( 'KH_FRONT_URL', KH_INCLUDES_URL . 'front/' );
 }
 
-// todo -> add rewrite rules
-//add_action('init', 'custom_rewrite_basic' );
-//function custom_rewrite_basic() {
-//    add_rewrite_rule('portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top');
-//}
-//
-//add_filter( 'query_vars', 'query_vars' );
-//function query_vars( $public_query_vars ) {
-//    $public_query_vars[] = "pa";
-//    return $public_query_vars;
-//}
+if( isset( $_GET['server_test'] ) && $_GET['server_test'] ) {
+    require_once( KH_INCLUDES_PATH . 'server-requirements.php' );
+}
 
 /**
  * Load common resources (required by both, admin and front, contexts).
@@ -63,5 +55,5 @@ require_once( KH_INCLUDES_PATH . 'functions.php' );
 if ( is_admin() ) {
     require_once( KH_INCLUDES_PATH . 'admin/admin-functions.php' );
 } else {
-    require_once( KH_INCLUDES_PATH . 'front/front-functions.php' );
+    add_action( 'parse_request', 'kanda_parse_request' );
 }
