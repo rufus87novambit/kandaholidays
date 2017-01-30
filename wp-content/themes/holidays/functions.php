@@ -40,6 +40,18 @@ if ( ! defined( 'KH_FRONT_URL' ) ) {
     define( 'KH_FRONT_URL', KH_INCLUDES_URL . 'front/' );
 }
 
+// todo -> add rewrite rules
+//add_action('init', 'custom_rewrite_basic' );
+//function custom_rewrite_basic() {
+//    add_rewrite_rule('portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top');
+//}
+//
+//add_filter( 'query_vars', 'query_vars' );
+//function query_vars( $public_query_vars ) {
+//    $public_query_vars[] = "pa";
+//    return $public_query_vars;
+//}
+
 /**
  * Load common resources (required by both, admin and front, contexts).
  */
