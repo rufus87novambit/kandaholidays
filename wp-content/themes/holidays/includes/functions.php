@@ -1,6 +1,5 @@
 <?php
 
-
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
@@ -42,6 +41,9 @@ function kanda_parse_request( $query_vars ) {
     }
 }
 
+/**
+ * Add listener to common( front & portal ) initialization
+ */
 add_action( 'kanda/common/init', 'kanda_common_init' );
 function kanda_common_init() {
     require_once( KH_INCLUDES_PATH . 'config.php' );
@@ -50,15 +52,29 @@ function kanda_common_init() {
     require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
 }
 
+/**
+ * Add listener to front initialization
+ */
 add_action( 'kanda/front/init', 'kanda_front_init', 10 );
 function kanda_front_init() {
     require_once( KH_INCLUDES_PATH . 'front/front-functions.php' );
 }
 
 /**
- * Init portal functionality
+ * Add listener for portal initialization
  */
 add_action( 'kanda/portal/init', 'kanda_portal_init', 10, 1 );
 function kanda_portal_init( $action ) {
     require_once( KH_INCLUDES_PATH . 'portal/portal-functions.php' );
+}
+
+/**
+ * Get required exchange rates
+ *
+ * @return array
+ */
+function kanda_get_exchange() {
+    // todo -> Set preferred_exchanges configurable from admin panel
+    $preferred_exchanges = array( 'USD', 'RUB', 'EUR', 'GBP' );
+    return array_intersect_key( kanda_get_exchange_rates(), array_flip( $preferred_exchanges ) );
 }

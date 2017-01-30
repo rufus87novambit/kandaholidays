@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Add custom cron intervals
+ */
 add_filter( 'cron_schedules', 'kanda_cron_schedules' );
 function kanda_cron_schedules( $schedules ) {
 //    $schedules['weekly'] = array(
@@ -9,6 +11,9 @@ function kanda_cron_schedules( $schedules ) {
     return $schedules;
 }
 
+/**
+ * Get exchange rates from cache / cba
+ */
 add_action( 'kanda_exchange_rates', 'kanda_get_exchange_rates' );
 function kanda_get_exchange_rates ( $force = false ) {
 
@@ -61,4 +66,6 @@ function kanda_get_exchange_rates ( $force = false ) {
 /**
  * Hourly call for exchange update
  */
-wp_schedule_event( time(), 'hourly', 'kanda_exchange_rates' );
+if ( ! wp_next_scheduled( 'kanda_exchange_rates' ) ) {
+    wp_schedule_event( time(), 'hourly', 'kanda_exchange_rates');
+}
