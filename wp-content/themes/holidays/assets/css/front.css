@@ -4,6 +4,7 @@ body {
     color: #fff;
     font-size: 16px;
     line-height: 1.5;
+    overflow-x: hidden;
 }
 h1 {
     font-size: 45px;
@@ -78,7 +79,9 @@ header.page-header .logo img {
     float: right;
     z-index: 11;
 }
-
+.home-form-wrapper h1 {
+    font-size: 26px;
+}
 .home-form-wrapper h1,
 .entry-title,
 .page-title {

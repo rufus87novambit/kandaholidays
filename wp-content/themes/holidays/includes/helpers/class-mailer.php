@@ -147,6 +147,27 @@ class Kanda_Mailer {
     }
 
     /**
+     * Send email to admin
+     *
+     * @param $user_id_email
+     * @param $subject
+     * @param $message
+     * @param array $variables
+     * @param array $headers
+     * @return bool|null|void
+     */
+    public function send_admin_email( $subject, $message, $variables = array(), $headers = array() ) {
+
+        $to = get_option( 'admin_email' );
+        $subject = $this->normalize_email_subject( $subject );
+        $message = $this->normalize_email_content( $message, $variables );
+        $headers = $this->get_html_email_headers();
+
+        return wp_mail( $to, $subject, $message, $headers );
+
+    }
+
+    /**
      * Send email to user
      *
      * @param $user_id_email
