@@ -5,6 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
+require_once( KH_FRONT_PATH . 'shortcodes.php' );
+
 /**
  * Add frontend css files
  */
@@ -44,13 +46,26 @@ function kanda_auth_cookie_expiration( $length, $user_id, $remember ) {
     return $length;
 }
 
+add_action( 'kanda/authorization', 'kanda_authorization_page' );
+function kanda_authorization_page() {
+
+    // deny authenticated user assess
+    do_action( 'kanda/deny_user_access', KH_Config::get( 'agency_role' ) );
+
+    global $wp_query;
+    $action = sprintf( 'kanda/%s', $wp_query->post->post_name );
+    if( has_action( $action ) ) {
+        do_action( $action );
+    } else {
+        $wp_query->set_404();
+    }
+}
+
 /**
  * Process login request
  */
 add_action( 'kanda/login', 'kanda_check_login', 10 );
 function kanda_check_login() {
-
-    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter( 'nonce_life', function () { return KH_Config::get( 'cookie_lifetime->login' ); } );
 
@@ -110,7 +125,7 @@ function kanda_check_login() {
 
                     $is_activated = true;
                     if( user_can( $user, 'travel_agency' ) ) {
-                        $is_activated = get_user_meta( $user->ID, 'is_active', true );
+                        $is_activated = get_user_meta( $user->ID, 'profile_status', true );
                     }
 
                     if( $is_activated ) {
@@ -155,8 +170,6 @@ function kanda_check_login() {
  */
 add_action( 'kanda/register', 'kanda_check_register', 10 );
 function kanda_check_register() {
-
-    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter( 'nonce_life', function () { return KH_Config::get( 'cookie_lifetime->register' ); } );
 
@@ -470,10 +483,8 @@ function kanda_check_register() {
 /**
  * Process forgot password request
  */
-add_action( 'kanda/forgotpassword', 'kanda_check_forgot_password', 10 );
+add_action( 'kanda/forgot-password', 'kanda_check_forgot_password', 10 );
 function kanda_check_forgot_password() {
-
-    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->forgot_password' ); });
 
@@ -525,8 +536,10 @@ function kanda_check_forgot_password() {
 
                     $reset_password_token = generate_random_string( 20 );
                     $password_reset_url = wp_nonce_url( add_query_arg( array( 'rpt' => $reset_password_token ), site_url( '/reset-password' ) ), 'kanda_reset_password', 'rps' );
+
                     update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
 
+                    echo $password_reset_url; die;
                     $site_name = get_bloginfo( 'name' );
                     $subject = sprintf( '%1%s: %2$s', $site_name, esc_html__( 'Reset Password', 'kanda' ) );
                     $headers = array(
@@ -567,10 +580,8 @@ function kanda_check_forgot_password() {
 /**
  * Process reset password request
  */
-add_action( 'kanda/resetpassword', 'kanda_check_reset_password', 10 );
+add_action( 'kanda/reset-password', 'kanda_check_reset_password', 10 );
 function kanda_check_reset_password() {
-
-    kanda_deny_user_access( KH_Config::get( 'agency_role' ) );
 
     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->forgot_password' ); });
 
@@ -677,7 +688,7 @@ function kanda_check_reset_password() {
         $rpt = isset( $_GET['rpt'] ) ? $_GET['rpt'] : '';
         $key = isset( $_GET['rps'] ) ? $_GET['rps'] : '';
 
-        if( wp_verify_nonce( $key, 'kanda_reset_password' ) && $key ) {
+        if( wp_verify_nonce( $key, 'kanda_reset_password' ) ) {
 
             $users = get_users( array( 'meta_key' => 'forgot_password_token', 'meta_value' => $rpt ) );
 

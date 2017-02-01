@@ -22,13 +22,6 @@ function kanda_enqueue_styles() {
     wp_enqueue_style( 'portal', KH_THEME_URL . 'css/portal.min.css', array(), null );
 }
 
-/**
- * Remove admin bar for non admins
- */
-if ( ! current_user_can( 'administrator' ) ) {
-    add_filter('show_admin_bar', '__return_false');
-}
-
 // search request example
 //add_action('init', 'search_request', 11);
 function search_request() {

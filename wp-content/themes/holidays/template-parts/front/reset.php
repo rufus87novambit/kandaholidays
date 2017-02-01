@@ -1,16 +1,24 @@
+<?php get_header( 'guest' ); ?>
+
 <?php
+$form_links = array();
+if( $forgot_password_page_id = kanda_fields()->get_option( 'kanda_auth_page_forgot' ) ) {
+    $forgot_password_page = get_post( $forgot_password_page_id );
 
-get_header( 'front' );
+    $form_links['forgot_password'] = sprintf(
+        '<a href="%1$s">%2$s</a>',
+        get_permalink( (int)$forgot_password_page_id ),
+        apply_filters( 'the_title', $forgot_password_page->post_title, $forgot_password_page_id )
+    );
+}
+?>
 
-if( ! is_user_logged_in() ) {
-    ?>
+<div class="container-large">
     <section class="main clearfix">
-
-        <div class="home-form-wrapper clearfix">
-
+        <div class="home-form-wrapper bordered-box clearfix">
             <div class="form form-reset-password">
 
-                <h3 class="form-title"><?php esc_html_e( 'Reset Password', 'kanda' ); ?></h3>
+                <h1 class="page-title"><?php esc_html_e( 'Reset Password', 'kanda' ); ?></h1>
 
                 <?php if( $kanda_request['has_error'] ) { ?>
                     <p class="instructions"><?php esc_html_e( 'Invalid Request', 'kanda' ); ?></p>
@@ -47,19 +55,20 @@ if( ! is_user_logged_in() ) {
                             <div class="input-holder">
                                 <?php wp_nonce_field( 'kanda_reset', 'kanda_nonce' ); ?>
                                 <input type="hidden" name="user_id" value="<?php echo $kanda_request['fields']['user_id']['value']; ?>" />
-                                <input type="submit" name="kanda_reset" value="<?php esc_html_e( 'Reset', 'kanda' ); ?>" />
+                                <input type="submit" class="btn" name="kanda_reset" value="<?php esc_html_e( 'Reset', 'kanda' ); ?>" />
                             </div>
                         </div>
                     </form>
                 <?php } ?>
             </div>
-            <div class="form-links text-center">
-                <a href="<?php echo site_url( '/forgot-password' ); ?>"><?php esc_html_e( 'Forgot Password', 'kanda' ); ?></a>
-            </div>
+
+            <?php
+            if( (bool)$form_links ) {
+                printf( '<div class="form-links text-center">%s</div>', implode( '<span class="devider">|</span>', $form_links ) );
+            }
+            ?>
         </div>
     </section>
-    <?php
-}
+</div>
 
-get_footer( 'front' );
-?>
+<?php get_footer( 'guest' ); ?>

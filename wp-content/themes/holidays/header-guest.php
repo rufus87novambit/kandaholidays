@@ -12,11 +12,10 @@
 
         <div class="wrapper">
 
-            <header class="clearfix">
-                <h1 class="logo">
+            <header class="page-header clearfix">
+                <h1 class="logo site-title">
                     <a href="<?php echo esc_url( '/' ); ?>">
                         <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
                     </a>
                 </h1>
             </header>
-            <div class="container">

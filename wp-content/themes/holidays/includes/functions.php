@@ -11,6 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'init', 'kanda_rewrite_basic', 10 );
 function kanda_rewrite_basic() {
     add_rewrite_rule( 'portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top' );
+
+//    add_rewrite_rule(
+//        'portal\/([a-zA-Z]*)?(\/([a-zA-Z]*))?(\/([a-zA-Z0-9]*))?(\/([a-zA-Z0-9]*))?',
+//        'index.php?pagename=portal&controller=$matches[1]&action=$matches[3]&fp=$matches[5]&sp=$matches[7]',
+//        'top'
+//    );
 }
 
 /**
@@ -46,10 +52,10 @@ function kanda_parse_request( $query_vars ) {
  */
 add_action( 'kanda/common/init', 'kanda_common_init' );
 function kanda_common_init() {
+    require_once( KH_INCLUDES_PATH . 'fields.php' );
     require_once( KH_INCLUDES_PATH . 'config.php' );
     require_once( KH_INCLUDES_PATH . 'log.php' );
     require_once( KH_INCLUDES_PATH . 'cron.php' );
-    require_once( KH_INCLUDES_PATH . 'fields.php' );
     require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
 }
 
@@ -58,7 +64,7 @@ function kanda_common_init() {
  */
 add_action( 'kanda/front/init', 'kanda_front_init', 10 );
 function kanda_front_init() {
-    require_once( KH_INCLUDES_PATH . 'front/front-functions.php' );
+    require_once( KH_FRONT_PATH . 'front-functions.php' );
 }
 
 /**
@@ -88,10 +94,22 @@ function kanda_add_user_roles() {
 /**
  * Deny travel agency access to page
  */
+add_action( 'kanda/deny_user_access', 'kanda_deny_user_access', 10, 1 );
 function kanda_deny_user_access( $role ) {
     if( is_user_logged_in() && current_user_can( $role ) ) {
-        wp_redirect( site_url( '/portal' ) ); die;
+        global $wp_query;
+        $wp_query->set_404();
+        status_header( 404 );
+        get_template_part( 404 );
+        exit();
     }
+}
+
+/**
+ * Remove admin bar for non admins
+ */
+if ( ! current_user_can( 'administrator' ) ) {
+    add_filter('show_admin_bar', '__return_false');
 }
 
 /**
@@ -109,6 +127,7 @@ function generate_random_string( $length = 10 ) {
     }
     return $randomString;
 }
+
 
 /**
  * Get required exchange rates

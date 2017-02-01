@@ -1,16 +1,33 @@
+<?php get_header( 'guest' ); ?>
+
 <?php
+$form_links = array();
+if( $login_page_id = kanda_fields()->get_option( 'kanda_auth_page_login' ) ) {
+    $login_page = get_post( (int)$login_page_id );
 
-get_header( 'front' );
+    $form_links['login'] = sprintf(
+        '<a href="%1$s">%2$s</a>',
+        get_permalink( (int)$login_page_id ),
+        apply_filters( 'the_title', $login_page->post_title, $login_page_id )
+    );
+}
+if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' ) ) {
+    $register_page = get_post( (int)$register_page_id );
 
-if( ! is_user_logged_in() ) {
-    ?>
+    $form_links['register'] = sprintf(
+        '<a href="%1$s">%2$s</a>',
+        get_permalink( (int)$register_page_id ),
+        apply_filters( 'the_title', $register_page->post_title, $register_page_id )
+    );
+}
+?>
+
+<div class="container-large">
     <section class="main clearfix">
-
-        <div class="home-form-wrapper clearfix">
-
+        <div class="home-form-wrapper bordered-box clearfix">
             <div class="form form-forgot-password">
 
-                <h3 class="form-title"><?php esc_html_e( 'Forgot Password', 'kanda' ); ?></h3>
+                <h1 class="page-title"><?php esc_html_e( 'Forgot Password', 'kanda' ); ?></h1>
 
                 <?php if( $kanda_request['message'] ) { ?>
                     <div class="message message-<?php echo $kanda_request['success'] ? 'success' : 'error'; ?>"><?php echo $kanda_request['message']; ?></div>
@@ -34,21 +51,19 @@ if( ! is_user_logged_in() ) {
                         <label class="hidden-xss">&nbsp;</label>
                         <div class="input-holder">
                             <?php wp_nonce_field( 'kanda_forgot', 'kanda_nonce' ); ?>
-                            <input type="submit" name="kanda_forgot" value="<?php esc_html_e( 'Submit', 'kanda' ); ?>" />
+                            <input type="submit" class="btn" name="kanda_forgot" value="<?php esc_html_e( 'Submit', 'kanda' ); ?>" />
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="form-links text-center">
-                <a href="<?php echo site_url( '/' ); ?>"><?php esc_html_e( 'Login', 'kanda' ); ?></a>
-                <span class="devider">|</span>
-                <a href="<?php echo site_url( '/register' ); ?>"><?php esc_html_e( 'Register', 'kanda' ); ?></a>
-            </div>
+
+            <?php
+            if( (bool)$form_links ) {
+                printf( '<div class="form-links text-center">%s</div>', implode( '<span class="devider">|</span>', $form_links ) );
+            }
+            ?>
         </div>
-
     </section>
-    <?php
-}
+</div>
 
-get_footer( 'front' );
-?>
+<?php get_footer( 'guest' ); ?>

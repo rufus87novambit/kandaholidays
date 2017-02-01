@@ -24,22 +24,19 @@ h6 {
     font-size: 18px;
 }
 
-.container {
+.container-large {
     width: 1500px;
     margin: 0 auto;
     max-width: 100%;
 }
-
-header {
-    width: 100%;
-    position: relative;
-    z-index: 11;
-    background: rgba(0,0,0,.5);
-    margin-bottom: 20px;
+.container {
+    width: 1160px;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 100%;
 }
-
-body.admin-bar header {
-    top: 32px;
+.error-404 {
+    width: 600px;
 }
 
 .wrapper {
@@ -47,12 +44,20 @@ body.admin-bar header {
     z-index: 11;
 }
 
-header .logo {
+header.page-header {
+    width: 100%;
+    position: relative;
+    z-index: 11;
+    background: rgba(0,0,0,.75);
+    margin-bottom: 20px;
+}
+
+header.page-header .logo {
     float: left;
     margin: .2em .5em;
 }
 
-header .logo img {
+header.page-header .logo img {
     max-height: 80px;
 }
 
@@ -61,17 +66,22 @@ header .logo img {
     margin-bottom: 20px;
 }
 
-.home-form-wrapper {
-    float: right;
-    padding: 20px;
+.bordered-box {
     background: rgba(0,0,0,.5);
     border-top: 4px solid #8b36d1;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    padding: 20px;
+}
+
+.home-form-wrapper {
+    float: right;
     z-index: 11;
 }
 
-.home-form-wrapper h3 {
+.home-form-wrapper h1,
+.entry-title,
+.page-title {
     line-height: 1.35;
     margin-bottom: 20px;
     border-bottom: 2px solid #fff;
@@ -124,7 +134,7 @@ header .logo img {
 .form .g-recaptcha {
     display: inline-block;
 }
-.form input[type="submit"] {
+.btn {
     border: 0;
     border-radius: 4px;
     display: inline-block;
@@ -138,8 +148,10 @@ header .logo img {
     background: -moz-linear-gradient( center top, #bf88eb 5%, #8b36d1 100% );
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bf88eb', endColorstr='#8b36d1');
     background-color: #bf88eb;
+    text-decoration: none;
+    text-align: center;
 }
-.form input[type="submit"]:hover {
+.btn:hover {
     background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8b36d1), color-stop(1, #bf88eb) );
     background: -moz-linear-gradient( center top, #8b36d1 5%, #bf88eb 100% );
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8b36d1', endColorstr='#bf88eb');
@@ -197,6 +209,12 @@ header .logo img {
 }
 .form.form-reset-password label {
     min-width: 150px;
+}
+
+.editor-content .btn {
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 @media (max-width: 480px) {

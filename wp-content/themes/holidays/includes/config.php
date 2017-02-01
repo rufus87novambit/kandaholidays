@@ -2,8 +2,12 @@
 
 class KH_Config {
 
-    // todo -> make this configurable from admin panel
-    private static $developer_email = 'israelyan.rafik@gmail.com';
+    /**
+     * Developer email address
+     *
+     * @var string
+     */
+    private static $developer_email = '';
 
     private static $agency_role = 'agency';
 
@@ -24,18 +28,6 @@ class KH_Config {
     );
 
     /**
-     * Allowed actions for the front page
-     *
-     * @var array
-     */
-    private static $front_allowed_actions = array(
-        'login',
-        'register',
-        'forgotpassword',
-        'resetpassword'
-    );
-
-    /**
      * Transient expiration time in seconds
      *
      * @var array
@@ -51,7 +43,7 @@ class KH_Config {
      * @param string $delimiter
      * @return null
      */
-    static function get( $property = '', $delimiter = '->' ) {
+    static public function get( $property = '', $delimiter = '->' ) {
         if( ! $property ) {
             return null;
         }
@@ -67,4 +59,25 @@ class KH_Config {
         return $value;
     }
 
+    /**
+     * Set dynamic properties
+     *
+     * @param array $data
+     */
+    static public function set( $data = array() ) {
+        foreach( $data as $property => $value ) {
+            if( property_exists( 'KH_Config', $property ) ) {
+                self::${$property} = $value;
+            }
+        }
+    }
+
 }
+
+/**
+ * Set dynamic properties to constant configuration
+ */
+KH_Config::set( array(
+    'developer_email' => explode( ', ', kanda_fields()->get_option( 'developer_email' ) ),
+    'hello' => 'asdasd'
+) );
