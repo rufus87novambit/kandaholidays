@@ -134,9 +134,11 @@ class Kanda_Fields {
             $user_id = preg_replace('/[^0-9]/', '', $post_id);
             $user = get_user_by('id', (int)$user_id);
 
-            $status = false;
-            if ($user) {
-                $status = kanda_mailer()->send_user_email($user->user_email, 'Profile Activated', 'Your profile is activated');
+            if ( $user ) {
+                $sent = kanda_mailer()->send_user_email($user->user_email, 'Profile Activated', 'Your profile is activated');
+                if( ! $sent ) {
+                    Kanda_Log::log( sprintf( 'Error sending email to user for account activation notification. Details: user_id=%d', $user->ID ) );
+                }
             }
 
             // Set back to 0 to give resend functionality
@@ -168,6 +170,11 @@ class Kanda_Fields {
 
 }
 
+/**
+ * Get fields instance
+ *
+ * @return Kanda_Fields
+ */
 function kanda_fields() {
     return Kanda_Fields::get_instance();
 }
