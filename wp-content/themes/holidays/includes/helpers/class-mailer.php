@@ -18,6 +18,58 @@ class Kanda_Mailer {
     }
 
     /**
+     * Get html email header
+     *
+     * @return string
+     */
+    // todo --> replace img src
+    private function get_html_email_header() {
+        return
+            '<html>
+                <body style="background:#fff;">
+                    <table>
+                        <tr>
+                            <td>
+                                <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/header.jpg" alt="header" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left:50px;padding-right:50px;font-size:14px">';
+
+
+    }
+
+    /**
+     * Get html email footer
+     * @return string
+     */
+    // todo --> replace img src
+    private function get_html_email_footer() {
+        return
+            '</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/footer.jpg" alt="header" />
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>';
+    }
+
+    /**
+     * Get always present variables actual values for email
+     *
+     * @return array
+     */
+    private function get_email_constant_variables() {
+        return array(
+            '%SITE_NAME%' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( home_url( '/' ) ), get_option( 'blogname' ) )
+        );
+    }
+
+    /**
      * Get html email headers
      *
      * @param array $headers
@@ -25,28 +77,20 @@ class Kanda_Mailer {
      */
     private function get_html_email_headers( $headers = array() ) {
 
-        $headers = array_merge( array(
-            'Content-Type' => 'Content-Type: text/html; charset=UTF-8'
-        ), $headers );
+        $site_name = strtolower( $_SERVER['SERVER_NAME'] );
+        if ( substr( $site_name, 0, 4 ) == 'www.' ) {
+            $site_name = substr( $site_name, 4 );
+        }
+        $from = 'noreply@' . $site_name;
 
-        $headers['From'] = sprintf(
-            'From: %1$s <%2$s@%3$s>',
-            'My Name',
-            'noreply',
-            strtr( get_bloginfo( 'url' ), array ('http://' => '', 'https://' => '' ) )
+        return array_merge(
+            array(
+                'Content-Type: text/html; charset=UTF-8' . "\r\n",
+                'From: ' . get_option( 'blogname' ) . ' <' . $from . '>' . "\r\n"
+            ),
+            $headers
         );
 
-        return array_values( $headers );
-    }
-
-    /**
-     * Replace line breaks with paragraph tags
-     *
-     * @param $content
-     * @return string
-     */
-    private function normalize_email_content( $content ) {
-        return '<p>' . implode( '</p><p>', array_filter( explode( "\n", $content ) ) ) . '</p>';
     }
 
     /**
@@ -56,7 +100,30 @@ class Kanda_Mailer {
      * @return string
      */
     private function normalize_email_subject( $subject ) {
-        return sprintf( '%1$s - %2$s', get_bloginfo( 'sitename' ), $subject );
+        return sprintf(
+            '%1$s : %2$s',
+            wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ),
+            wp_specialchars_decode( $subject )
+        );
+    }
+
+    /**
+     * Replace variables in message content with their actual values
+     *
+     * @param $message
+     * @param array $variables
+     * @return string
+     */
+    private function normalize_email_content ( $message, $variables = array() ) {
+
+        $header = $this->get_html_email_header();
+        $message = strtr( apply_filters( 'the_content', $message ), array_merge(
+            $this->get_email_constant_variables(),
+            $variables
+        ) );
+        $footer = $this->get_html_email_footer();
+
+        return $header . $message . $footer;
     }
 
     /**
@@ -64,17 +131,19 @@ class Kanda_Mailer {
      *
      * @param $subject
      * @param $message
+     * @param array $variables
      * @param array $headers
      * @return bool
      */
-    public function send_developer_email( $subject, $message, $headers = array() ) {
+    public function send_developer_email( $subject, $message, $variables = array(), $headers = array() ) {
 
         $to = KH_Config::get( 'developer_email' );
         $subject = $this->normalize_email_subject( $subject );
-        $message = $this->normalize_email_content( $message );
+        $message = $this->normalize_email_content( $message, $variables );
         $headers = $this->get_html_email_headers();
 
-        return wp_mail( $to, $subject, $message, $headers );
+
+        return $to ? wp_mail( $to, $subject, $message, $headers ) : null;
     }
 
     /**
@@ -83,10 +152,11 @@ class Kanda_Mailer {
      * @param $user_id_email
      * @param $subject
      * @param $message
+     * @param array $variables
      * @param array $headers
      * @return bool|null|void
      */
-    public function send_user_email( $user_id_email, $subject, $message, $headers = array() ) {
+    public function send_user_email( $user_id_email, $subject, $message, $variables = array(), $headers = array() ) {
 
         if( ! $user_id_email ) return;
 
@@ -100,7 +170,7 @@ class Kanda_Mailer {
         if( $user_id_email ) {
 
             $subject = $this->normalize_email_subject( $subject );
-            $message = $this->normalize_email_content( $message );
+            $message = $this->normalize_email_content( $message, $variables );
             $headers = $this->get_html_email_headers();
 
             return wp_mail( $user_id_email, $subject, $message, $headers );
@@ -111,6 +181,11 @@ class Kanda_Mailer {
 
 }
 
-function Kanda_Mailer() {
+/**
+ * Get mailer instance
+ *
+ * @return Kanda_Mailer
+ */
+function kanda_mailer() {
     return Kanda_Mailer::get_instance();
 }

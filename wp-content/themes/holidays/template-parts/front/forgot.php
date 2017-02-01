@@ -33,6 +33,7 @@ if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' )
                     <div class="message message-<?php echo $kanda_request['success'] ? 'success' : 'error'; ?>"><?php echo $kanda_request['message']; ?></div>
                 <?php } ?>
 
+                <?php if( ! $kanda_request['success'] ) { ?>
                 <p class="instructions"><?php esc_html_e( 'To reset your password please enter your username or email and click \'Submit\' button.', 'kanda' ); ?></p>
 
                 <form method="post">
@@ -55,6 +56,7 @@ if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' )
                         </div>
                     </div>
                 </form>
+                <?php } ?>
             </div>
 
             <?php

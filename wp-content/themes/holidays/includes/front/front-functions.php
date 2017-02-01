@@ -535,34 +535,26 @@ function kanda_check_forgot_password() {
                     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->reset_password' ); });
 
                     $reset_password_token = generate_random_string( 20 );
-                    $password_reset_url = wp_nonce_url( add_query_arg( array( 'rpt' => $reset_password_token ), site_url( '/reset-password' ) ), 'kanda_reset_password', 'rps' );
+                    $password_reset_url = wp_nonce_url(
+                        add_query_arg( array( 'rpt' => $reset_password_token ), site_url( '/reset-password' ) ),
+                        'kanda_reset_password',
+                        'rps'
+                    );
+                    $password_reset_url = sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url );
 
                     update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
 
-                    echo $password_reset_url; die;
-                    $site_name = get_bloginfo( 'name' );
-                    $subject = sprintf( '%1%s: %2$s', $site_name, esc_html__( 'Reset Password', 'kanda' ) );
-                    $headers = array(
-                        'Content-Type: text/html; charset=UTF-8',
-                        'From: My Name <noreply@kandaholidays.com>'
-                    );
+                    $to = $user->user_email;
+                    $subject = kanda_fields()->get_option( 'kanda_email_forgot_password_subject' );
+                    $message = kanda_fields()->get_option( 'kanda_email_forgot_password_body' );
+                    $variables = array( '%RESET_LINK%' => $password_reset_url );
 
-                    $message = sprintf( '<p>%s</p>', esc_html__( 'Hello', 'kanda' ) );
-                    $message .= sprintf( '<p>%1$s %2$s</p>', esc_html__( 'We have received a password reset request at', 'kanda' ), sprintf( '<a href="%1$s">%2$s</a>', site_url( '/' ), $site_name ) );
-                    $message .= sprintf( '<p>%1$s %2$s</p>', esc_html__( 'Please use this link to reset your password', 'kanda' ), sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ) );
-
-                    $message .= sprintf( '<p>%s</p>', esc_html__( 'If you did not reqest a password reset, just ignore this email.', 'kanda' ) );
-
-                    $message .= sprintf( '<p style="margin-top:30px;">%1$s</p><p>%2$s</p>', esc_html__( 'Best Regards.', 'kanda' ), $site_name );
-
-                    $sent = wp_mail( $user->user_email, $subject, $message, $headers );
-
-                    if( $sent ) {
+                    if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
                         $kanda_request['success'] = true;
-                        $kanda_request['message'] = esc_html__( 'We have sent and email. Please follow instrcutions in it to reset your password', 'kanda' );
+                        $kanda_request['message'] = esc_html__( 'An email with instructions is sent to your email address.', 'kanda' );
                         $kanda_request['fields']['username_email']['value'] = '';
                     } else {
-                        $kanda_request['message'] = esc_html__( 'There was an error sending email. Please try again', 'kanda' );
+                        $kanda_request['message'] = esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' );
                     }
 
                 }
