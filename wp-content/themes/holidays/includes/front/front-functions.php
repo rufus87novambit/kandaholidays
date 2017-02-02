@@ -33,7 +33,10 @@ function kanda_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
     wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null );
-    wp_enqueue_script('front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null);
+    wp_enqueue_script( 'front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null );
+    wp_localize_script( 'front', 'kanda', array(
+        'validation' => KH_Config::get( 'validation->front' )
+    ) );
 }
 /***************************************************** /end Assets ***************************************************/
 
@@ -271,13 +274,20 @@ function kanda_check_login() {
             $remember = isset( $_POST['remember'] ) ? (bool)$_POST['password'] : false;
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_login' );
 
             $kanda_request['fields']['username']['value'] = $username;
             if( ! $username ) {
                 $has_error = true;
                 $kanda_request['fields']['username'] = array_merge(
                     $kanda_request['fields']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
+                );
+            } elseif( ! ctype_alnum( $username ) ) {
+                $has_error = true;
+                $kanda_request['fields']['username'] = array_merge(
+                    $kanda_request['fields']['username'],
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
                 );
             }
 
@@ -286,7 +296,7 @@ function kanda_check_login() {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                 );
             }
 
@@ -459,27 +469,27 @@ function kanda_check_register() {
             $company_website = isset( $_POST['company']['website'] ) ? $_POST['company']['website'] : '';
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_register' );
 
-            $username_min_length = 6;
-            $username_max_length = 25;
+            $validation_data = KH_Config::get( 'validation->front->data' );
             $kanda_request['fields']['personal']['username']['value'] = $username;
             if( ! $username ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                 );
             } elseif( ! ctype_alnum( $username ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
                 );
-            } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $username_min_length, 'max_range' => $username_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['username_min_length'], 'max_range' => $validation_data['username_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Username must be between %1$d and %2$d characters in length', 'kanda' ), $username_min_length, $username_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['rangelength'] )
                 );
             }
 
@@ -488,30 +498,28 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['email'] = array_merge(
                     $kanda_request['fields']['personal']['email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['email']['required'] )
                 );
             } elseif( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['email'] = array_merge(
                     $kanda_request['fields']['personal']['email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid email', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['email']['email'] )
                 );
             }
 
-            $password_min_length = 8;
-            $password_max_length = 50;
             $kanda_request['fields']['personal']['password']['value'] = $password;
             if( ! $password ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['password'] = array_merge(
                     $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                 );
-            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $password_min_length, 'max_range' => $password_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['password'] = array_merge(
                     $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Password must be between %1$d and %2$d characters in length', 'kanda' ), $password_min_length, $password_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['rangelength'] )
                 );
             }
 
@@ -520,17 +528,13 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['confirm_password'] = array_merge(
                     $kanda_request['fields']['personal']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['required'] )
                 );
             } elseif( $password && ( $confirm_password != $password ) ) {
                 $has_error = true;
-                $kanda_request['fields']['personal']['password'] = array_merge(
-                    $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
-                );
                 $kanda_request['fields']['personal']['confirm_password'] = array_merge(
                     $kanda_request['fields']['personal']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['equalTo'] )
                 );
             }
 
@@ -539,7 +543,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['first_name'] = array_merge(
                     $kanda_request['fields']['personal']['first_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['first_name']['required'] )
                 );
             }
 
@@ -548,25 +552,16 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['last_name'] = array_merge(
                     $kanda_request['fields']['personal']['last_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
-                );
-            }
-
-            $kanda_request['fields']['personal']['last_name']['value'] = $last_name;
-            if( ! $last_name ) {
-                $has_error = true;
-                $kanda_request['fields']['personal']['last_name'] = array_merge(
-                    $kanda_request['fields']['personal']['last_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['last_name']['required'] )
                 );
             }
 
             $kanda_request['fields']['personal']['mobile']['value'] = $mobile;
-            if( $mobile && !( preg_match( '/^[^:]*\d{9,}$/', $mobile ) ) ) {
+            if( $mobile && !( preg_match( '/^[\+:]*\d{9,}$/', $mobile ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['mobile'] = array_merge(
                     $kanda_request['fields']['personal']['mobile'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid mobile number', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['mobile']['phone_number'] )
                 );
             }
 
@@ -575,7 +570,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['name'] = array_merge(
                     $kanda_request['fields']['company']['name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_name']['required'] )
                 );
             }
 
@@ -584,7 +579,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['license'] = array_merge(
                     $kanda_request['fields']['company']['license'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_license']['required'] )
                 );
             }
 
@@ -593,7 +588,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['phone'] = array_merge(
                     $kanda_request['fields']['company']['phone'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid phone number', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_phone']['phone_number'] )
                 );
             }
 
@@ -683,13 +678,14 @@ function kanda_check_forgot_password() {
             $username_email = (isset($_POST['username_email']) && $_POST['username_email']) ? $_POST['username_email'] : '';
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_forgot_password' );
 
             $kanda_request['fields']['username_email']['value'] = $username_email;
             if( ! $username_email ) {
                 $has_error = true;
                 $kanda_request['fields']['username_email'] = array_merge(
                     $kanda_request['fields']['username_email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username_email']['required'] )
                 );
             }
 
@@ -790,21 +786,20 @@ function kanda_check_reset_password() {
             $user_id = (isset($_POST['user_id']) && $_POST['user_id']) ? $_POST['user_id'] : '';
 
             $has_error = false;
+            $validation_data = KH_Config::get( 'validation->front->form_reset_password' );
 
-            $password_min_length = 8;
-            $password_max_length = 50;
             $kanda_request['fields']['password']['value'] = $password;
             if( ! $password ) {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['password']['required'] )
                 );
-            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $password_min_length, 'max_range' => $password_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Password must be between %1$d and %2$d characters in length', 'kanda' ), $password_min_length, $password_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_data['password']['rangelength'] )
                 );
             }
 
@@ -813,17 +808,13 @@ function kanda_check_reset_password() {
                 $has_error = true;
                 $kanda_request['fields']['confirm_password'] = array_merge(
                     $kanda_request['fields']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['confirm_password']['required'] )
                 );
             } elseif( $password && ( $confirm_password != $password ) ) {
                 $has_error = true;
-                $kanda_request['fields']['password'] = array_merge(
-                    $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
-                );
                 $kanda_request['fields']['confirm_password'] = array_merge(
                     $kanda_request['fields']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['confirm_password']['equalTo'] )
                 );
             }
 

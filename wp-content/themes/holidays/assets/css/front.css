@@ -130,8 +130,8 @@ header.page-header .logo img {
     margin-bottom: 3px;
     box-sizing: content-box;
 }
-.form .row.has-error .input-holder input[type="text"],
-.form .row.has-error .input-holder input[type="password"] {
+.form .row .input-holder.has-error input[type="text"],
+.form .row .input-holder.has-error input[type="password"] {
     border-color: #d9534f;
 }
 .form .g-recaptcha {
@@ -168,7 +168,7 @@ header.page-header .logo img {
 .form .help-block {
     display: none;
 }
-.form .row.has-error .help-block{
+.form .row .has-error .help-block{
     display: block;
     color: #d9534f;
     font-size: 90%;
