@@ -32,7 +32,7 @@ if( $forgot_password_page_id = kanda_fields()->get_option( 'kanda_auth_page_forg
                     <div class="message message-<?php echo $kanda_request['success'] ? 'success' : 'error'; ?>"><?php echo $kanda_request['message']; ?></div>
                 <?php } ?>
 
-                <form method="post">
+                <form id="form-login" method="post">
                     <?php $has_error = ! $kanda_request['fields']['username']['valid']; ?>
                     <div class="row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                         <label for="username"><?php esc_html_e( 'Username', 'kanda' ); ?>:</label>

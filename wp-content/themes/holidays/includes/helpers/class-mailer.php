@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Kanda_Mailer {
 
+    private $layout_path = '';
+
     /**
      * Singleton.
      */
@@ -18,44 +20,10 @@ class Kanda_Mailer {
     }
 
     /**
-     * Get html email header
-     *
-     * @return string
+     * Constructor
      */
-    // todo --> replace img src
-    private function get_html_email_header() {
-        return
-            '<html>
-                <body style="background:#fff;">
-                    <table>
-                        <tr>
-                            <td>
-                                <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/header.jpg" alt="header" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:50px;padding-right:50px;font-size:14px">';
-
-
-    }
-
-    /**
-     * Get html email footer
-     * @return string
-     */
-    // todo --> replace img src
-    private function get_html_email_footer() {
-        return
-            '</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/footer.jpg" alt="header" />
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-            </html>';
+    public function __construct() {
+        $this->layout_path = trailingslashit( KH_THEME_PATH . 'views/email' );
     }
 
     /**
@@ -116,14 +84,15 @@ class Kanda_Mailer {
      */
     private function normalize_email_content ( $message, $variables = array() ) {
 
-        $header = $this->get_html_email_header();
         $message = strtr( apply_filters( 'the_content', $message ), array_merge(
             $this->get_email_constant_variables(),
             $variables
         ) );
-        $footer = $this->get_html_email_footer();
 
-        return $header . $message . $footer;
+        ob_start();
+        include $this->layout_path . 'user.php';
+
+        return ob_get_clean();
     }
 
     /**
@@ -149,7 +118,6 @@ class Kanda_Mailer {
     /**
      * Send email to admin
      *
-     * @param $user_id_email
      * @param $subject
      * @param $message
      * @param array $variables

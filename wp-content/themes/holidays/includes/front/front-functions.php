@@ -337,7 +337,7 @@ function kanda_check_login() {
     }
 
     ob_start();
-    include ( KH_THEME_PATH . 'template-parts/front/login.php' );
+    include ( KH_THEME_PATH . 'views/front/login.php' );
     echo ob_get_clean();
 
 }
@@ -652,7 +652,7 @@ function kanda_check_register() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/register.php';
+    include get_template_directory() . '/views/front/register.php';
     echo ob_get_clean();
 
 }
@@ -745,7 +745,7 @@ function kanda_check_forgot_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/forgot.php';
+    include get_template_directory() . '/views/front/forgot.php';
     echo ob_get_clean();
 
 }
@@ -881,7 +881,7 @@ function kanda_check_reset_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/reset.php';
+    include get_template_directory() . '/views/front/reset.php';
     echo ob_get_clean();
 
 }
