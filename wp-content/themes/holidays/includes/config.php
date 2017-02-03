@@ -78,7 +78,7 @@ class KH_Config {
                     // key => input_id
                     'username' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'alphanumeric' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' )
+                        'loginRegex' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' )
                     ),
                     'password' => array(
                         'required' => esc_html__( 'Required', 'kanda' )
@@ -88,8 +88,8 @@ class KH_Config {
                     // key => input_id
                     'username' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'alphanumeric' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' ),
-                        'rangelength' => esc_html__( 'Username must be between {0} and {1} characters in length', 'kanda' )
+                        'loginRegex' => esc_html__( 'Numbers, letters, dashes, underlines only', 'kanda' ),
+                        'rangelength' => sprintf( esc_html__( 'Username must be between %1$s and %2$s characters in length', 'kanda' ), '{0}', '{1}' ),
                     ),
                     'email' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
@@ -132,7 +132,7 @@ class KH_Config {
                     // key => input_id
                     'password'          => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'rangelength' => esc_html__( 'Password must be between {0} and {1} characters in length', 'kanda' )
+                        'rangelength' => sprintf( esc_html__( 'Password must be between %1$s and %2$s characters in length', 'kanda' ), '{0}', '{1}' )
                     ),
                     'confirm_password'  => array(
                         'required' => esc_html__( 'Required', 'kanda' ),

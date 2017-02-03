@@ -40,7 +40,7 @@ if( $forgot_password_page_id = kanda_fields()->get_option( 'kanda_auth_page_forg
                         <?php $has_error = ! $kanda_request['fields']['username']['valid']; ?>
                         <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
                             <input id="username" name="username" type="text" value="<?php echo $kanda_request['fields']['username']['value']; ?>" />
-                            <p class="help-block"><?php echo $kanda_request['fields']['username']['msg']; ?></p>
+                            <div class="help-block"><?php echo $kanda_request['fields']['username']['msg']; ?></div>
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@ if( $forgot_password_page_id = kanda_fields()->get_option( 'kanda_auth_page_forg
                         <?php $has_error = ! $kanda_request['fields']['password']['valid']; ?>
                         <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
                             <input id="password" name="password" type="password" value="<?php echo $kanda_request['fields']['password']['value']; ?>" />
-                            <p class="help-block"><?php echo $kanda_request['fields']['password']['msg']; ?></p>
+                            <div class="help-block"><?php echo $kanda_request['fields']['password']['msg']; ?></div>
                         </div>
                     </div>
 

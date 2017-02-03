@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 add_action( 'init', 'kanda_rewrite_basic', 10 );
 function kanda_rewrite_basic() {
-    add_rewrite_rule( 'portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top' );
+    add_rewrite_rule( 'back\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=back&pa=$matches[1]', 'top' );
 
 //    add_rewrite_rule(
-//        'portal\/([a-zA-Z]*)?(\/([a-zA-Z]*))?(\/([a-zA-Z0-9]*))?(\/([a-zA-Z0-9]*))?',
-//        'index.php?pagename=portal&controller=$matches[1]&action=$matches[3]&fp=$matches[5]&sp=$matches[7]',
+//        'back\/([a-zA-Z]*)?(\/([a-zA-Z]*))?(\/([a-zA-Z0-9]*))?(\/([a-zA-Z0-9]*))?',
+//        'index.php?pagename=back&controller=$matches[1]&action=$matches[3]&fp=$matches[5]&sp=$matches[7]',
 //        'top'
 //    );
 }
@@ -37,21 +37,21 @@ function kanda_query_vars( $public_query_vars ) {
  */
 function kanda_parse_request( $query_vars ) {
 
-    do_action( 'kanda/common/init' );
+    do_action( 'kanda/init' );
 
     $pagename = isset( $query_vars->query_vars['pagename'] ) ? $query_vars->query_vars['pagename'] : '';
-    if( $pagename === 'portal' ) {
-        do_action( 'kanda/portal/init', $query_vars->query_vars['pa'] );
+    if( $pagename === 'back' ) {
+        do_action( 'kanda/back/init', $query_vars->query_vars['pa'] );
     } else {
         do_action( 'kanda/front/init' );
     }
 }
 
 /**
- * Add listener to common( front & portal ) initialization
+ * Add listener to common( front & back ) initialization
  */
-add_action( 'kanda/common/init', 'kanda_common_init' );
-function kanda_common_init() {
+add_action( 'kanda/init', 'kanda_init' );
+function kanda_init() {
     require_once( KH_INCLUDES_PATH . 'fields.php' );
     require_once( KH_INCLUDES_PATH . 'config.php' );
     require_once( KH_INCLUDES_PATH . 'log.php' );
@@ -68,11 +68,11 @@ function kanda_front_init() {
 }
 
 /**
- * Add listener for portal initialization
+ * Add listener for back initialization
  */
-add_action( 'kanda/portal/init', 'kanda_portal_init', 10, 1 );
-function kanda_portal_init( $action ) {
-    require_once( KH_INCLUDES_PATH . 'portal/portal-functions.php' );
+add_action( 'kanda/back/init', 'kanda_back_init', 10, 1 );
+function kanda_back_init( $action ) {
+    require_once( KH_INCLUDES_PATH . 'back/back-functions.php' );
 }
 
 /**

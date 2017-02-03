@@ -6,4 +6,4 @@
         <?php wp_head(); ?>
     </head>
 
-    <body <?php body_class( array( 'portal' ) ); ?>>
+    <body <?php body_class( array( 'back' ) ); ?>>

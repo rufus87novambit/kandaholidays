@@ -4,11 +4,11 @@
  */
 get_header();
 ?>
-<div class="portal clearfix">
+<div class="back clearfix">
     <header>
         <div class="clearfix">
-            <h1 class="portal-logo">
-                <a href="<?php echo site_url( '/portal' ); ?>">
+            <h1 class="back-logo">
+                <a href="<?php echo site_url( '/back' ); ?>">
                     <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                 </a>
             </h1>

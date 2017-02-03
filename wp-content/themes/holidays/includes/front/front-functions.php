@@ -269,8 +269,8 @@ function kanda_check_login() {
 
         $nonce = ( isset( $_POST['kanda_nonce'] ) && $_POST['kanda_nonce'] ) ? $_POST['kanda_nonce'] : '';
         if( wp_verify_nonce( $nonce, 'kanda_login' ) ) {
-            $username = ( isset( $_POST['username'] ) && $_POST['username'] ) ? $_POST['username'] : '';
-            $password = ( isset( $_POST['password'] ) && $_POST['password'] ) ? $_POST['password'] : '';
+            $username = isset( $_POST['username'] ) ? sanitize_text_field( $_POST['username'] ) : '';
+            $password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
             $remember = isset( $_POST['remember'] ) ? (bool)$_POST['password'] : false;
 
             $has_error = false;
@@ -283,7 +283,7 @@ function kanda_check_login() {
                     $kanda_request['fields']['username'],
                     array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                 );
-            } elseif( ! ctype_alnum( $username ) ) {
+            } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $username ) ) {
                 $has_error = true;
                 $kanda_request['fields']['username'] = array_merge(
                     $kanda_request['fields']['username'],
@@ -328,7 +328,7 @@ function kanda_check_login() {
 
                             do_action( 'kanda/after_user_login', $user );
 
-                            wp_redirect( site_url('/portal') ); die;
+                            wp_redirect( site_url('/back') ); die;
                         }
 
                     } else {
@@ -451,22 +451,22 @@ function kanda_check_register() {
         $nonce = ( isset( $_POST['kanda_nonce'] ) && $_POST['kanda_nonce'] ) ? $_POST['kanda_nonce'] : '';
         if( wp_verify_nonce( $nonce, 'kanda_register' ) ) {
 
-            $username = isset( $_POST['personal']['username'] ) ? $_POST['personal']['username'] : '';
-            $email = isset( $_POST['personal']['email'] ) ? $_POST['personal']['email'] : '';
-            $password = isset( $_POST['personal']['password'] ) ? $_POST['personal']['password'] : '';
-            $confirm_password = isset( $_POST['personal']['confirm_password'] ) ? $_POST['personal']['confirm_password'] : '';
-            $first_name = isset( $_POST['personal']['first_name'] ) ? $_POST['personal']['first_name'] : '';
-            $last_name = isset( $_POST['personal']['last_name'] ) ? $_POST['personal']['last_name'] : '';
-            $mobile = isset( $_POST['personal']['mobile'] ) ? $_POST['personal']['mobile'] : '';
-            $position = isset( $_POST['personal']['position'] ) ? $_POST['personal']['position'] : '';
+            $username = isset( $_POST['personal']['username'] ) ? sanitize_text_field( $_POST['personal']['username'] ) : '';
+            $email = isset( $_POST['personal']['email'] ) ? sanitize_email( $_POST['personal']['email'] ) : '';
+            $password = isset( $_POST['personal']['password'] ) ? sanitize_text_field( $_POST['personal']['password'] ) : '';
+            $confirm_password = isset( $_POST['personal']['confirm_password'] ) ? sanitize_text_field( $_POST['personal']['confirm_password'] ) : '';
+            $first_name = isset( $_POST['personal']['first_name'] ) ? sanitize_text_field( $_POST['personal']['first_name'] ) : '';
+            $last_name = isset( $_POST['personal']['last_name'] ) ? sanitize_text_field( $_POST['personal']['last_name'] ) : '';
+            $mobile = isset( $_POST['personal']['mobile'] ) ? sanitize_text_field( $_POST['personal']['mobile'] ) : '';
+            $position = isset( $_POST['personal']['position'] ) ? sanitize_text_field( $_POST['personal']['position'] ) : '';
 
-            $company_name = isset( $_POST['company']['name'] ) ? $_POST['company']['name'] : '';
-            $company_license = isset( $_POST['company']['license'] ) ? $_POST['company']['license'] : '';
-            $company_address = isset( $_POST['company']['address'] ) ? $_POST['company']['address'] : '';
-            $company_city = isset( $_POST['company']['city'] ) ? $_POST['company']['city'] : '';
-            $company_country = isset( $_POST['company']['country'] ) ? $_POST['company']['country'] : '';
-            $company_phone = isset( $_POST['company']['phone'] ) ? $_POST['company']['phone'] : '';
-            $company_website = isset( $_POST['company']['website'] ) ? $_POST['company']['website'] : '';
+            $company_name = isset( $_POST['company']['name'] ) ? sanitize_text_field( $_POST['company']['name'] ) : '';
+            $company_license = isset( $_POST['company']['license'] ) ? sanitize_text_field( $_POST['company']['license'] ) : '';
+            $company_address = isset( $_POST['company']['address'] ) ? sanitize_text_field( $_POST['company']['address'] ) : '';
+            $company_city = isset( $_POST['company']['city'] ) ? sanitize_text_field( $_POST['company']['city'] ) : '';
+            $company_country = isset( $_POST['company']['country'] ) ? sanitize_text_field( $_POST['company']['country'] ) : '';
+            $company_phone = isset( $_POST['company']['phone'] ) ? sanitize_text_field( $_POST['company']['phone'] ) : '';
+            $company_website = isset( $_POST['company']['website'] ) ? sanitize_text_field( $_POST['company']['website'] ) : '';
 
             $has_error = false;
             $validation_rules = KH_Config::get( 'validation->front->form_register' );
@@ -479,7 +479,7 @@ function kanda_check_register() {
                     $kanda_request['fields']['personal']['username'],
                     array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                 );
-            } elseif( ! ctype_alnum( $username ) ) {
+            } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $username ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
@@ -675,7 +675,7 @@ function kanda_check_forgot_password() {
 
         $nonce = (isset($_POST['kanda_nonce']) && $_POST['kanda_nonce']) ? $_POST['kanda_nonce'] : '';
         if (wp_verify_nonce($nonce, 'kanda_forgot')) {
-            $username_email = (isset($_POST['username_email']) && $_POST['username_email']) ? $_POST['username_email'] : '';
+            $username_email = isset($_POST['username_email'] ) ? sanitize_text_field( $_POST['username_email'] ) : '';
 
             $has_error = false;
             $validation_rules = KH_Config::get( 'validation->front->form_forgot_password' );
@@ -761,7 +761,7 @@ function kanda_check_reset_password() {
         'fields' => array(
             'user_id' => array(
                 'value' => '',
-                'value' => true,
+                'valid' => true,
                 'msg'   => ''
             ),
             'password' => array(
@@ -781,9 +781,9 @@ function kanda_check_reset_password() {
         $nonce = (isset($_POST['kanda_nonce']) && $_POST['kanda_nonce']) ? $_POST['kanda_nonce'] : '';
 
         if ( wp_verify_nonce($nonce, 'kanda_reset') ) {
-            $password = (isset($_POST['password']) && $_POST['password']) ? $_POST['password'] : '';
-            $confirm_password = (isset($_POST['confirm_password']) && $_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-            $user_id = (isset($_POST['user_id']) && $_POST['user_id']) ? $_POST['user_id'] : '';
+            $password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
+            $confirm_password = isset( $_POST['confirm_password'] ) ? sanitize_text_field( $_POST['confirm_password'] ) : '';
+            $user_id = isset( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
 
             $has_error = false;
             $validation_data = KH_Config::get( 'validation->front->form_reset_password' );

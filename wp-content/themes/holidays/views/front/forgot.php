@@ -44,7 +44,7 @@ if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' )
                         <?php $has_error = ! $kanda_request['fields']['username_email']['valid']; ?>
                         <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
                             <input id="username_email" name="username_email" type="text" value="<?php echo $kanda_request['fields']['username_email']['value']; ?>" />
-                            <p class="help-block"><?php echo $kanda_request['fields']['username_email']['msg']; ?></p>
+                            <div class="help-block"><?php echo $kanda_request['fields']['username_email']['msg']; ?></div>
                         </div>
                     </div>
 

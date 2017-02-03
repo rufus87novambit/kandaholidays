@@ -52,10 +52,10 @@
         /**************************************** 3. Custom validation rules ****************************************/
 
         /**
-         * Alphanumeric validation
+         * loginRegex validation
          */
-        $.validator.addMethod( 'alphanumeric' , function( value, element ) {
-            return /^[a-z0-9]+$/i.test( value );
+        $.validator.addMethod( 'loginRegex' , function( value, element ) {
+            return /^[a-z0-9\_\-]+$/i.test( value );
         } );
 
         /**
@@ -79,7 +79,7 @@
                 rules : {
                     username : {
                         required : true,
-                        alphanumeric : true
+                        loginRegex : true
                     },
                     password : {
                         required : true
@@ -88,7 +88,7 @@
                 messages : {
                     username : {
                         required : kanda.validation.form_login.username.required,
-                        alphanumeric : kanda.validation.form_login.username.alphanumeric
+                        loginRegex : kanda.validation.form_login.username.loginRegex
                     },
                     password : {
                         required : kanda.validation.form_login.password.required
@@ -119,7 +119,7 @@
                 rules : {
                     'personal[username]' : {
                         required : true,
-                        alphanumeric : true,
+                        loginRegex : true,
                         rangelength : [ kanda.validation.data.username_min_length, kanda.validation.data.username_max_length ]
                     },
                     'personal[email]' : {
@@ -156,7 +156,7 @@
                 messages : {
                     'personal[username]' : {
                         required : kanda.validation.form_register.username.required,
-                        alphanumeric : kanda.validation.form_register.username.alphanumeric,
+                        loginRegex : kanda.validation.form_register.username.loginRegex,
                         rangelength : kanda.validation.form_register.username.rangelength
                     },
                     'personal[email]' : {
