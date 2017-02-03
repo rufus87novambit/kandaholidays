@@ -81,6 +81,7 @@ gulp.task('css-portal', function () {
         '../assets/css/reset.css',
         '../assets/css/helper.css',
         '../assets/css/icon-fonts.css',
+        '../assets/css/grid.css',
         '../assets/css/menu.css',
         '../assets/css/portal.css'
     ])
