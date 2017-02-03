@@ -33,17 +33,18 @@ if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' )
                     <div class="message message-<?php echo $kanda_request['success'] ? 'success' : 'error'; ?>"><?php echo $kanda_request['message']; ?></div>
                 <?php } ?>
 
+                <?php if( ! $kanda_request['success'] ) { ?>
                 <p class="instructions"><?php esc_html_e( 'To reset your password please enter your username or email and click \'Submit\' button.', 'kanda' ); ?></p>
 
-                <form method="post">
-                    <?php $has_error = ! $kanda_request['fields']['username_email']['valid']; ?>
-                    <div class="row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
+                <form id="form_forgot_password" method="post">
+
+                    <div class="row clearfix">
                         <label for="username_email"><?php esc_html_e( 'Username / Email', 'kanda' ); ?>:</label>
-                        <div class="input-holder">
+
+                        <?php $has_error = ! $kanda_request['fields']['username_email']['valid']; ?>
+                        <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
                             <input id="username_email" name="username_email" type="text" value="<?php echo $kanda_request['fields']['username_email']['value']; ?>" />
-                            <?php if( $has_error ) { ?>
-                                <p class="help-block"><?php echo $kanda_request['fields']['username_email']['msg']; ?></p>
-                            <?php } ?>
+                            <p class="help-block"><?php echo $kanda_request['fields']['username_email']['msg']; ?></p>
                         </div>
                     </div>
 
@@ -55,6 +56,7 @@ if( $register_page_id = kanda_fields()->get_option( 'kanda_auth_page_register' )
                         </div>
                     </div>
                 </form>
+                <?php } ?>
             </div>
 
             <?php

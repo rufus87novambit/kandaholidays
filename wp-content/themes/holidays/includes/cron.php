@@ -52,7 +52,7 @@ function kanda_get_exchange_rates ( $force = false ) {
             $message .= sprintf("There was an error geting rates from %s.\n with following details.", $endpoint);
             $message .= sprintf("Error: %s", $error);
 
-            Kanda_Mailer()->send_developer_email( 'CBA problem', $message );
+            kanda_mailer()->send_developer_email( 'CBA problem', $message );
             Kanda_Log::log( $message );
         }
 

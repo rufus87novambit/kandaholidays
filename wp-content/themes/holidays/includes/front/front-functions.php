@@ -5,8 +5,20 @@ if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
-require_once( KH_FRONT_PATH . 'shortcodes.php' );
+/*
+ * Map
+ *
+ * 1. Dependencies
+ * 2. Assets
+ * 3. Action callbacks
+ * 4. Authorization template
+ */
 
+/************************************************** 1. Dependencies **************************************************/
+require_once( KH_FRONT_PATH . 'shortcodes.php' );
+/************************************************** /end Dependencies ************************************************/
+
+/***************************************************** 2. Assets *****************************************************/
 /**
  * Add frontend css files
  */
@@ -21,31 +33,183 @@ function kanda_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
     wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null );
-    wp_enqueue_script('front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null);
+    wp_enqueue_script( 'front', KH_THEME_URL . 'js/front.min.js', array( 'jquery' ), null );
+    wp_localize_script( 'front', 'kanda', array(
+        'validation' => KH_Config::get( 'validation->front' )
+    ) );
 }
+/***************************************************** /end Assets ***************************************************/
 
-add_action( 'kanda/new_user_registration', 'kanda_new_user_registration', 10, 1 );
-function kanda_new_user_registration( $user_id ) {
-    $user = get_user_by( 'id', (int)$user_id );
-    if( $user ) {
-        // todo send notification email
+/************************************************* 3. Action callbacks ***********************************************/
+/**
+ * Send notification to admin after user login
+ * @param $user
+ */
+add_action( 'kanda/after_user_login', 'kanda_after_user_login', 10, 1 );
+function kanda_after_user_login( $user ) {
+
+    /* Do not send if admin does not want */
+    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_login' );
+    if( ! $sent || user_can( $user, 'administrator' ) ) {
+        return;
+    }
+
+    $user_meta = get_user_meta( $user->ID );
+
+    $subject = esc_html__( 'User Login', 'kanda' );
+
+    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'A user logged in at %SITE_NAME% with following details.', 'kanda' ) );
+    $message .= '<table style="width:100%;">';
+    $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Username', 'kanda' ), $user->user_login );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Email', 'kanda' ), $user->user_email );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'First Name', 'kanda' ), $user->first_name );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Last Name', 'kanda' ), $user->last_name );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Company Name', 'kanda' ), $user_meta['company_name'][0] );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'License ID', 'kanda' ), $user_meta['company_license'][0] );
+    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Profile Status', 'kanda' ), $user_meta['profile_status'][0] ? esc_html__( 'Active', 'kanda' ) : esc_html__( 'Inactive', 'kanda' ) );
+    $message .= '</table>';
+
+    $message .= '<p></p>';
+    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see more detailed information about user by visiting following link', 'kanda' ) );
+    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
+
+    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
     }
 }
 
 /**
- * Auth coolie expiration time
+ * Send notification to admin after new user registration if required
+ *
+ * @param $user_id
  */
-add_filter( 'auth_cookie_expiration', 'kanda_auth_cookie_expiration', 10, 3 );
-function kanda_auth_cookie_expiration( $length, $user_id, $remember ) {
-    if( user_can( (int)$user_id, 'administrator' ) ) {
-        $length = KH_Config::get( 'cookie_lifetime->authentication->administrator' );
-    } else {
-        $length = KH_Config::get( 'cookie_lifetime->authentication->agency' );
+add_action( 'kanda/after_new_user_registration', 'kanda_after_new_user_registration', 10, 1 );
+function kanda_after_new_user_registration( $user_id ) {
+
+    /* Do not send if admin does not want */
+    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_register' );
+    if( ! $sent ) {
+        return;
     }
 
-    return $length;
+    $user = get_user_by( 'id', (int)$user_id );
+    if( $user ) {
+
+        $user_meta = get_user_meta( $user->ID );
+
+        $subject = esc_html__( 'New User Registration', 'kanda' );
+
+        $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+        $message .= sprintf( '<p>%1$s</p>', esc_html__( 'A new user registered at %SITE_NAME% with following details.', 'kanda' ) );
+        $message .= '<table style="width:100%;">';
+            $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Username', 'kanda' ), $user->user_login );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Email', 'kanda' ), $user->user_email );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'First Name', 'kanda' ), $user->first_name );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Last Name', 'kanda' ), $user->last_name );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Company Name', 'kanda' ), $user_meta['company_name'][0] );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'License ID', 'kanda' ), $user_meta['company_license'][0] );
+            $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Profile Status', 'kanda' ), $user_meta['profile_status'][0] ? esc_html__( 'Active', 'kanda' ) : esc_html__( 'Inactive', 'kanda' ) );
+        $message .= '</table>';
+
+        $message .= '<p></p>';
+        $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see more detailed information and activate / deactivate user profile by visiting following link', 'kanda' ) );
+        $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
+
+        if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+            Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        }
+
+    }
 }
 
+/**
+ * Send notification to admin after user forgot password success
+ *
+ * @param $user
+ */
+add_action( 'kanda/after_forgot_password', 'kanda_after_forgot_password', 10, 1 );
+function kanda_after_forgot_password( $user ) {
+
+    /* Do not send if admin does not want */
+    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_forgot_password' );
+    if( ! $sent ) {
+        return;
+    }
+
+    $user_meta = get_user_meta( $user->ID );
+
+    $subject = esc_html__( 'Forgot password request', 'kanda' );
+
+    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'A user requested for password reset at %SITE_NAME% with following details.', 'kanda' ) );
+    $message .= '<table style="width:100%;">';
+        $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Username', 'kanda' ), $user->user_login );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Email', 'kanda' ), $user->user_email );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'First Name', 'kanda' ), $user->first_name );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Last Name', 'kanda' ), $user->last_name );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Company Name', 'kanda' ), $user_meta['company_name'][0] );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'License ID', 'kanda' ), $user_meta['company_license'][0] );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Profile Status', 'kanda' ), $user_meta['profile_status'][0] ? esc_html__( 'Active', 'kanda' ) : esc_html__( 'Inactive', 'kanda' ) );
+    $message .= '</table>';
+
+    $message .= '<p></p>';
+    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see more detailed information about user by visiting following link', 'kanda' ) );
+    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
+
+    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+    }
+}
+
+/**
+ * Send notification to admin after successfull password change
+ *
+ * @param $user
+ */
+add_action( 'kanda/after_password_reset', 'kanda_after_password_reset', 10, 1 );
+function kanda_after_password_reset( $user ) {
+
+    /* Do not send if admin does not want */
+    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_password_reset' );
+    if( ! $sent ) {
+        return;
+    }
+
+    $user_meta = get_user_meta( $user->ID );
+
+    $subject = esc_html__( 'Profile password reset', 'kanda' );
+
+    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'A user with following details successfully reset profile password in at %SITE_NAME%', 'kanda' ) );
+    $message .= '<table style="width:100%;">';
+        $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Username', 'kanda' ), $user->user_login );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Email', 'kanda' ), $user->user_email );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'First Name', 'kanda' ), $user->first_name );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Last Name', 'kanda' ), $user->last_name );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Company Name', 'kanda' ), $user_meta['company_name'][0] );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'License ID', 'kanda' ), $user_meta['company_license'][0] );
+        $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Profile Status', 'kanda' ), $user_meta['profile_status'][0] ? esc_html__( 'Active', 'kanda' ) : esc_html__( 'Inactive', 'kanda' ) );
+    $message .= '</table>';
+
+    $message .= '<p></p>';
+    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see more detailed information about user by visiting following link', 'kanda' ) );
+    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
+
+    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+    }
+}
+/************************************************ /end Action callbacks **********************************************/
+
+/********************************************* 4. Authorization template *********************************************/
+/**
+ * Authorization template functionality
+ */
 add_action( 'kanda/authorization', 'kanda_authorization_page' );
 function kanda_authorization_page() {
 
@@ -59,6 +223,19 @@ function kanda_authorization_page() {
     } else {
         $wp_query->set_404();
     }
+}
+/**
+ * Auth coolie expiration time
+ */
+add_filter( 'auth_cookie_expiration', 'kanda_auth_cookie_expiration', 10, 3 );
+function kanda_auth_cookie_expiration( $length, $user_id, $remember ) {
+    if( user_can( (int)$user_id, 'administrator' ) ) {
+        $length = KH_Config::get( 'cookie_lifetime->authentication->administrator' );
+    } else {
+        $length = KH_Config::get( 'cookie_lifetime->authentication->agency' );
+    }
+
+    return $length;
 }
 
 /**
@@ -97,13 +274,20 @@ function kanda_check_login() {
             $remember = isset( $_POST['remember'] ) ? (bool)$_POST['password'] : false;
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_login' );
 
             $kanda_request['fields']['username']['value'] = $username;
             if( ! $username ) {
                 $has_error = true;
                 $kanda_request['fields']['username'] = array_merge(
                     $kanda_request['fields']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
+                );
+            } elseif( ! ctype_alnum( $username ) ) {
+                $has_error = true;
+                $kanda_request['fields']['username'] = array_merge(
+                    $kanda_request['fields']['username'],
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
                 );
             }
 
@@ -112,7 +296,7 @@ function kanda_check_login() {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                 );
             }
 
@@ -141,6 +325,9 @@ function kanda_check_login() {
                             $kanda_request['fields']['username']['valid'] = false;
                             $kanda_request['fields']['password']['valid'] = false;
                         } else {
+
+                            do_action( 'kanda/after_user_login', $user );
+
                             wp_redirect( site_url('/portal') ); die;
                         }
 
@@ -160,7 +347,7 @@ function kanda_check_login() {
     }
 
     ob_start();
-    include ( KH_THEME_PATH . 'template-parts/front/login.php' );
+    include ( KH_THEME_PATH . 'views/front/login.php' );
     echo ob_get_clean();
 
 }
@@ -282,27 +469,27 @@ function kanda_check_register() {
             $company_website = isset( $_POST['company']['website'] ) ? $_POST['company']['website'] : '';
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_register' );
 
-            $username_min_length = 6;
-            $username_max_length = 25;
+            $validation_data = KH_Config::get( 'validation->front->data' );
             $kanda_request['fields']['personal']['username']['value'] = $username;
             if( ! $username ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                 );
             } elseif( ! ctype_alnum( $username ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
                 );
-            } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $username_min_length, 'max_range' => $username_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['username_min_length'], 'max_range' => $validation_data['username_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['username'] = array_merge(
                     $kanda_request['fields']['personal']['username'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Username must be between %1$d and %2$d characters in length', 'kanda' ), $username_min_length, $username_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username']['rangelength'] )
                 );
             }
 
@@ -311,30 +498,28 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['email'] = array_merge(
                     $kanda_request['fields']['personal']['email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['email']['required'] )
                 );
             } elseif( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['email'] = array_merge(
                     $kanda_request['fields']['personal']['email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid email', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['email']['email'] )
                 );
             }
 
-            $password_min_length = 8;
-            $password_max_length = 50;
             $kanda_request['fields']['personal']['password']['value'] = $password;
             if( ! $password ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['password'] = array_merge(
                     $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                 );
-            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $password_min_length, 'max_range' => $password_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['password'] = array_merge(
                     $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Password must be between %1$d and %2$d characters in length', 'kanda' ), $password_min_length, $password_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['password']['rangelength'] )
                 );
             }
 
@@ -343,17 +528,13 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['confirm_password'] = array_merge(
                     $kanda_request['fields']['personal']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['required'] )
                 );
             } elseif( $password && ( $confirm_password != $password ) ) {
                 $has_error = true;
-                $kanda_request['fields']['personal']['password'] = array_merge(
-                    $kanda_request['fields']['personal']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
-                );
                 $kanda_request['fields']['personal']['confirm_password'] = array_merge(
                     $kanda_request['fields']['personal']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['equalTo'] )
                 );
             }
 
@@ -362,7 +543,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['first_name'] = array_merge(
                     $kanda_request['fields']['personal']['first_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['first_name']['required'] )
                 );
             }
 
@@ -371,25 +552,16 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['personal']['last_name'] = array_merge(
                     $kanda_request['fields']['personal']['last_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
-                );
-            }
-
-            $kanda_request['fields']['personal']['last_name']['value'] = $last_name;
-            if( ! $last_name ) {
-                $has_error = true;
-                $kanda_request['fields']['personal']['last_name'] = array_merge(
-                    $kanda_request['fields']['personal']['last_name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['last_name']['required'] )
                 );
             }
 
             $kanda_request['fields']['personal']['mobile']['value'] = $mobile;
-            if( $mobile && !( preg_match( '/^[^:]*\d{9,}$/', $mobile ) ) ) {
+            if( $mobile && !( preg_match( '/^[\+:]*\d{9,}$/', $mobile ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['personal']['mobile'] = array_merge(
                     $kanda_request['fields']['personal']['mobile'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid mobile number', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['mobile']['phone_number'] )
                 );
             }
 
@@ -398,7 +570,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['name'] = array_merge(
                     $kanda_request['fields']['company']['name'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_name']['required'] )
                 );
             }
 
@@ -407,7 +579,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['license'] = array_merge(
                     $kanda_request['fields']['company']['license'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_license']['required'] )
                 );
             }
 
@@ -416,7 +588,7 @@ function kanda_check_register() {
                 $has_error = true;
                 $kanda_request['fields']['company']['phone'] = array_merge(
                     $kanda_request['fields']['company']['phone'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Invalid phone number', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['company_phone']['phone_number'] )
                 );
             }
 
@@ -464,7 +636,7 @@ function kanda_check_register() {
                     $kanda_request['success'] = true;
                     $kanda_request['message'] = esc_html__( 'Your profile has been successfully created. You will get an email once it is activated.', 'kanda' );
 
-                    do_action( 'kanda/new_user_registration', $user_id );
+                    do_action( 'kanda/after_new_user_registration', $user_id );
                 }
             }
 
@@ -475,7 +647,7 @@ function kanda_check_register() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/register.php';
+    include get_template_directory() . '/views/front/register.php';
     echo ob_get_clean();
 
 }
@@ -506,13 +678,14 @@ function kanda_check_forgot_password() {
             $username_email = (isset($_POST['username_email']) && $_POST['username_email']) ? $_POST['username_email'] : '';
 
             $has_error = false;
+            $validation_rules = KH_Config::get( 'validation->front->form_forgot_password' );
 
             $kanda_request['fields']['username_email']['value'] = $username_email;
             if( ! $username_email ) {
                 $has_error = true;
                 $kanda_request['fields']['username_email'] = array_merge(
                     $kanda_request['fields']['username_email'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_rules['username_email']['required'] )
                 );
             }
 
@@ -535,34 +708,30 @@ function kanda_check_forgot_password() {
                     add_filter('nonce_life', function () { return KH_Config::get( 'cookie_lifetime->reset_password' ); });
 
                     $reset_password_token = generate_random_string( 20 );
-                    $password_reset_url = wp_nonce_url( add_query_arg( array( 'rpt' => $reset_password_token ), site_url( '/reset-password' ) ), 'kanda_reset_password', 'rps' );
+                    $password_reset_url = wp_nonce_url(
+                        add_query_arg( array( 'rpt' => $reset_password_token ), site_url( '/reset-password' ) ),
+                        'kanda_reset_password',
+                        'rps'
+                    );
+                    $password_reset_url = sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url );
 
                     update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
 
-                    echo $password_reset_url; die;
-                    $site_name = get_bloginfo( 'name' );
-                    $subject = sprintf( '%1%s: %2$s', $site_name, esc_html__( 'Reset Password', 'kanda' ) );
-                    $headers = array(
-                        'Content-Type: text/html; charset=UTF-8',
-                        'From: My Name <noreply@kandaholidays.com>'
-                    );
+                    $to = $user->user_email;
+                    $subject = kanda_fields()->get_option( 'kanda_email_forgot_password_subject' );
+                    $message = kanda_fields()->get_option( 'kanda_email_forgot_password_body' );
+                    $variables = array( '%RESET_LINK%' => $password_reset_url );
 
-                    $message = sprintf( '<p>%s</p>', esc_html__( 'Hello', 'kanda' ) );
-                    $message .= sprintf( '<p>%1$s %2$s</p>', esc_html__( 'We have received a password reset request at', 'kanda' ), sprintf( '<a href="%1$s">%2$s</a>', site_url( '/' ), $site_name ) );
-                    $message .= sprintf( '<p>%1$s %2$s</p>', esc_html__( 'Please use this link to reset your password', 'kanda' ), sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ) );
-
-                    $message .= sprintf( '<p>%s</p>', esc_html__( 'If you did not reqest a password reset, just ignore this email.', 'kanda' ) );
-
-                    $message .= sprintf( '<p style="margin-top:30px;">%1$s</p><p>%2$s</p>', esc_html__( 'Best Regards.', 'kanda' ), $site_name );
-
-                    $sent = wp_mail( $user->user_email, $subject, $message, $headers );
-
-                    if( $sent ) {
+                    if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
                         $kanda_request['success'] = true;
-                        $kanda_request['message'] = esc_html__( 'We have sent and email. Please follow instrcutions in it to reset your password', 'kanda' );
+                        $kanda_request['message'] = esc_html__( 'An email with instructions is sent to your email address.', 'kanda' );
                         $kanda_request['fields']['username_email']['value'] = '';
+
+                        do_action( 'kanda/after_forgot_password', $user );
+
                     } else {
-                        $kanda_request['message'] = esc_html__( 'There was an error sending email. Please try again', 'kanda' );
+                        $kanda_request['message'] = esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' );
+                        Kanda_Log::log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
                     }
 
                 }
@@ -572,7 +741,7 @@ function kanda_check_forgot_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/forgot.php';
+    include get_template_directory() . '/views/front/forgot.php';
     echo ob_get_clean();
 
 }
@@ -617,21 +786,20 @@ function kanda_check_reset_password() {
             $user_id = (isset($_POST['user_id']) && $_POST['user_id']) ? $_POST['user_id'] : '';
 
             $has_error = false;
+            $validation_data = KH_Config::get( 'validation->front->form_reset_password' );
 
-            $password_min_length = 8;
-            $password_max_length = 50;
             $kanda_request['fields']['password']['value'] = $password;
             if( ! $password ) {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['password']['required'] )
                 );
-            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $password_min_length, 'max_range' => $password_max_length ) ) ) ) {
+            } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                 $has_error = true;
                 $kanda_request['fields']['password'] = array_merge(
                     $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => sprintf( esc_html__( 'Password must be between %1$d and %2$d characters in length', 'kanda' ), $password_min_length, $password_max_length ) )
+                    array( 'valid' => false, 'msg' => $validation_data['password']['rangelength'] )
                 );
             }
 
@@ -640,17 +808,13 @@ function kanda_check_reset_password() {
                 $has_error = true;
                 $kanda_request['fields']['confirm_password'] = array_merge(
                     $kanda_request['fields']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Required', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['confirm_password']['required'] )
                 );
             } elseif( $password && ( $confirm_password != $password ) ) {
                 $has_error = true;
-                $kanda_request['fields']['password'] = array_merge(
-                    $kanda_request['fields']['password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
-                );
                 $kanda_request['fields']['confirm_password'] = array_merge(
                     $kanda_request['fields']['confirm_password'],
-                    array( 'valid' => false, 'msg' => esc_html__( 'Passwords don\'t match', 'kanda' ) )
+                    array( 'valid' => false, 'msg' => $validation_data['confirm_password']['equalTo'] )
                 );
             }
 
@@ -671,6 +835,8 @@ function kanda_check_reset_password() {
                         'user_password' => $password,
                         'remember'      => true
                     ));
+
+                    do_action( 'kanda/after_password_reset', $user );
 
                     wp_redirect( site_url( '/' ) ); die;
 
@@ -706,7 +872,8 @@ function kanda_check_reset_password() {
     }
 
     ob_start();
-    include get_template_directory() . '/template-parts/front/reset.php';
+    include get_template_directory() . '/views/front/reset.php';
     echo ob_get_clean();
 
 }
+/******************************************** /end Authorization template ********************************************/
