@@ -9,7 +9,7 @@ class Kanda_Log {
      */
     private static function get_log_file() {
         $date = date( 'Y/m/d', current_time( 'timestamp', true ) );
-        $path = KH_THEME_PATH . 'logs/' . $date;
+        $path = KANDA_THEME_PATH . 'logs/' . $date;
 
         $file = false;
         if( wp_mkdir_p( $path ) ){

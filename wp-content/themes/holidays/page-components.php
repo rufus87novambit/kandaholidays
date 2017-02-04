@@ -1,3 +1,8 @@
+<?php
+/**
+ * Template name: Components
+ */
+?>
 <?php get_header(); ?>
 
 <div class="container">

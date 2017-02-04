@@ -44,7 +44,7 @@ function kanda_get_exchange_rates ( $force = false ) {
                 $rates[ $rate->ISO ] = $rate;
             }
             $rates = json_decode( json_encode( $rates ), true );
-            set_transient( 'kanda_exchange_rates', $rates, KH_Config::get( 'transient_expiration->exchange_update' ) );
+            set_transient( 'kanda_exchange_rates', $rates, Kanda_Config::get( 'transient_expiration->exchange_update' ) );
 
         } else {
 

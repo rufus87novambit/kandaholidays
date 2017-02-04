@@ -1,6 +1,6 @@
 <?php
 
-class KH_Config {
+class Kanda_Config {
 
     /**
      * Developer email address
@@ -25,7 +25,19 @@ class KH_Config {
      */
     private static $transient_expiration;
 
+    /**
+     * Forms validation data
+     *
+     * @var array
+     */
     private static $validation;
+
+    /**
+     * Controllers map
+     *
+     * @var array
+     */
+    private static $controller_map;
 
     /**
      * Get configuration value
@@ -50,6 +62,9 @@ class KH_Config {
         return $value;
     }
 
+    /**
+     * Init class
+     */
     static function init() {
         self::$developer_email = explode( ', ', kanda_fields()->get_option( 'developer_email' ) );
         self::$agency_role = 'agency';
@@ -141,8 +156,11 @@ class KH_Config {
                 ),
             )
         );
+        self::$controller_map = array(
+            'auth' => 'login|register|forgot|reset'
+        );
     }
 
 }
 
-KH_Config::init();
+Kanda_Config::init();

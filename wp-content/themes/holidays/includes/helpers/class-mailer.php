@@ -23,7 +23,7 @@ class Kanda_Mailer {
      * Constructor
      */
     public function __construct() {
-        $this->layout_path = trailingslashit( KH_THEME_PATH . 'views/email' );
+        $this->layout_path = trailingslashit( KANDA_THEME_PATH . 'views/email' );
     }
 
     /**
@@ -33,7 +33,7 @@ class Kanda_Mailer {
      */
     private function get_email_constant_variables() {
         return array(
-            '%SITE_NAME%' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( home_url( '/' ) ), get_option( 'blogname' ) )
+            '{{SITE_NAME}}' => sprintf( '<a href="%1$s">%2$s</a>', kanda_url_to( 'home' ), get_option( 'blogname' ) )
         );
     }
 
@@ -106,11 +106,10 @@ class Kanda_Mailer {
      */
     public function send_developer_email( $subject, $message, $variables = array(), $headers = array() ) {
 
-        $to = KH_Config::get( 'developer_email' );
+        $to = Kanda_Config::get( 'developer_email' );
         $subject = $this->normalize_email_subject( $subject );
         $message = $this->normalize_email_content( $message, $variables );
         $headers = $this->get_html_email_headers();
-
 
         return $to ? wp_mail( $to, $subject, $message, $headers ) : null;
     }

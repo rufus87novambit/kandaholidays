@@ -24,7 +24,7 @@ class Kanda_Fields {
 
         if( ! $this->active ) return;
 
-        add_action( 'init', array( $this, 'add_option_pages' ), 100 );
+        $this->add_option_pages();
 
         if( is_admin() ) {
             add_filter( 'acf/update_value/name=send_activation_email', array( $this, 'send_activation_email' ), 10, 3 );
@@ -47,7 +47,8 @@ class Kanda_Fields {
     /**
      * Add option pages
      */
-    public function add_option_pages() {
+    private function add_option_pages() {
+
         $option_pages = array(
             array(
                 'parent' => array(
@@ -135,7 +136,12 @@ class Kanda_Fields {
             $user = get_user_by('id', (int)$user_id);
 
             if ( $user ) {
-                $sent = kanda_mailer()->send_user_email($user->user_email, 'Profile Activated', 'Your profile is activated');
+
+                $subject = kanda_fields()->get_option( 'kanda_email_profile_approved_subject' );
+                $message = kanda_fields()->get_option( 'kanda_email_profile_approved_body' );
+                $variables = array( '{{LOGIN_URL}}' => sprintf( '<a href="%1$s">%1$s</a>', kanda_url_to( 'login' ) ) );
+
+                $sent = kanda_mailer()->send_user_email( $user->user_email, $subject, $message, $variables );
                 if( ! $sent ) {
                     Kanda_Log::log( sprintf( 'Error sending email to user for account activation notification. Details: user_id=%d', $user->ID ) );
                 }
