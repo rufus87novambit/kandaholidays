@@ -44,11 +44,10 @@ gulp.task('js-front', function() {
         '../assets/js/plugins/easing.js',
         '../assets/js/plugins/animate-enhanced.min.js',
         '../assets/js/plugins/superslides.min.js',
-        'node_modules/jquery-validation/dist/jquery.validate.js',
         '../assets/js/front.js',
     ])
         .pipe(concat('front.min.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 
@@ -79,12 +78,16 @@ gulp.task('front-build', ['css-front','js-front']);
  */
 gulp.task('css-portal', function () {
     gulp.src([
+        '../icon-fonts/style.css',
         '../assets/css/reset.css',
-        '../assets/css/helper.css',
-        '../assets/css/icon-fonts.css',
         '../assets/css/grid.css',
+        '../assets/css/components.css',
+        '../assets/css/editor.css',
         '../assets/css/menu.css',
-        '../assets/css/portal.css'
+        '../assets/css/form.css',
+        '../assets/css/portal-base.css',
+        '../assets/css/portal.css',
+        '../assets/css/responsive.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('portal.min.css'))
@@ -103,6 +106,7 @@ gulp.task('css-portal-watch', function() {
  */
 gulp.task('js-portal', function () {
     gulp.src([
+        '../assets/js/plugins/jquery.customSelect.min.js',
         '../assets/js/portal.js'
     ])
         .pipe(concat('portal.min.js'))

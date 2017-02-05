@@ -4,12 +4,11 @@
  */
 get_header();
 ?>
-    <div class="portal clearfix">
-        <header>
-            <div class="clearfix">
+    <div class="portal">
+        <header class="header clearfix">
                 <h1 class="portal-logo">
                     <a href="<?php echo site_url( '/portal' ); ?>">
-                        <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
+                        <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" width="250" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                     </a>
                 </h1>
                 <nav class="main-menu">
@@ -74,13 +73,85 @@ get_header();
                         </ul>
                     </nav>
                 </div>
-            </div>
         </header><!-- .header -->
         <section class="main">
             <div class="container">
                 <div class="row">
-                    <aside class="sidebar col-sm-4">sidebar</aside>
-                    <div class="primary col-sm-8">primary</div>
+                    <aside class="sidebar col-sm-4">
+                        <div class="box">
+                            <ul class="side-nav">
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                            </ul>
+                            <ul class="side-nav">
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                                <li><a href="">sdfsdf</a></li>
+                            </ul>
+                        </div>
+                    </aside>
+                    <div class="primary col-sm-8">
+                        <div class="box">
+
+                            <form class="form-block">
+                                <fieldset class="fieldset sep-btm">
+                                    <h4 class="form-title">Form title</h4>
+                                    <div class="row">
+                                        <div class="form-group col-sm-6">
+                                            <div class="select-wrap">
+                                                <select class="custom-select" name="name[]">
+                                                    <option class="placeholder" selected disabled>Select label</option>
+                                                    <option>value1</option>
+                                                    <option>value2</option>
+                                                    <option>value3</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <input type="text" class="form-control" placeholder="Input text">
+                                        </div>
+                                    </div>
+                                    <div class="form-notice text-right">* Form notice example</div>
+                                    <div class="ctrl-group">
+                                        <label class="ctrl-field -rbtn">
+                                            <input type='radio' class="ctrl-inp" name="radio_group3" checked>
+                                            <span class="ctrl-btn"></span>
+                                            <span class="ctrl-label">radio label</span>
+                                        </label>
+                                        <label class="ctrl-field -rbtn">
+                                            <input type='radio' class="ctrl-inp" name="radio_group3">
+                                            <span class="ctrl-btn"></span>
+                                            <span class="ctrl-label">radio label</span>
+                                        </label>
+                                    </div>
+                                    <div class="ctrl-group">
+                                        <label class="ctrl-field -chbox">
+                                            <input type='checkbox' class="ctrl-inp" name="" checked>
+                                            <span class="ctrl-btn"></span>
+                                            <span class="ctrl-label">Checkbox label</span>
+                                        </label>
+                                        <label class="ctrl-field -chbox">
+                                            <input type='checkbox' class="ctrl-inp" name="" checked>
+                                            <span class="ctrl-btn"></span>
+                                            <span class="ctrl-label">Checkbox label</span>
+                                        </label>
+                                        <label class="ctrl-field -chbox">
+                                            <input type='checkbox' class="ctrl-inp" name="">
+                                            <span class="ctrl-btn"></span>
+                                            <span class="ctrl-label">Checkbox label</span>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section><!-- .main -->

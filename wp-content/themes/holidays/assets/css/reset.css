@@ -56,6 +56,14 @@ img {
     max-width: 100%;
 }
 
+input, textarea, button {
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-border-radius: 0;
+}
+
 p {
     margin-bottom: 10px;
 }
+
+
