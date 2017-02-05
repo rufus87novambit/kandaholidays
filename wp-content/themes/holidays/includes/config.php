@@ -157,7 +157,8 @@ class Kanda_Config {
             )
         );
         self::$controller_map = array(
-            'auth' => 'login|register|forgot|reset'
+            'auth'      => 'login|register|forgot|reset',
+            'hotels'    => 'index'
         );
     }
 

@@ -46,6 +46,63 @@ function kanda_get_header( $name ) {
 }
 
 /**
+ * Theme setup
+ */
+add_action( 'after_setup_theme', 'kanda_setup_theme', 10 );
+function kanda_setup_theme() {
+    /*
+     * Make theme available for translation.
+     */
+    load_theme_textdomain( 'kanda', get_stylesheet_directory() . '/languages' );
+
+    /*
+     * Let WordPress manage the document title.
+     * By adding theme support, we declare that this theme does not use a
+     * hard-coded <title> tag in the document head, and expect WordPress to
+     * provide it for us.
+     */
+    add_theme_support( 'title-tag' );
+
+    /*
+     * Enable support for Post Thumbnails on posts and pages.
+     *
+     * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
+     */
+    add_theme_support( 'post-thumbnails' );
+
+    // This theme uses wp_nav_menu() in two locations.
+    register_nav_menus( array(
+        'guests_nav'    => esc_html__( 'Guests Menu', 'kanda' ),
+        'main_nav'      => esc_html__( 'Main Menu', 'kanda' ),
+    ) );
+
+    /**
+     * This theme styles the visual editor to resemble the theme style,
+     * specifically font, colors, icons, and column width.
+     */
+    add_editor_style( array( 'editor-style.css' ) );
+
+}
+
+add_action( 'widgets_init', 'kanda_widgets_init', 10 );
+function kanda_widgets_init() {
+    $register_sidebars = kanda_get_sidebars();
+
+    foreach( $register_sidebars as $register_sidebar ){
+
+        register_sidebar( array(
+            'name'          => $register_sidebar['name'],
+            'id'            => $register_sidebar['id'],
+            'description'   => $register_sidebar['description'],
+            'before_widget' => '<section id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</section>',
+            'before_title'  => '<h2 class="widget-title">',
+            'after_title'   => '</h2>',
+        ) );
+    }
+}
+
+/**
  * Add custom role
  */
 add_action( 'after_switch_theme', 'kanda_add_user_roles', 10 );
@@ -96,13 +153,24 @@ function generate_random_string( $length = 10 ) {
 }
 
 /**
+ * Get enabled currencies
+ *
+ * @return array
+ */
+function kanda_get_active_currencies() {
+    // todo -> Set preferred_exchanges configurable from admin panel
+    $currencies = array( 'USD', 'RUB', 'EUR', 'GBP' );
+
+    return $currencies;
+}
+
+/**
  * Get required exchange rates
  *
  * @return array
  */
 function kanda_get_exchange() {
-    // todo -> Set preferred_exchanges configurable from admin panel
-    $preferred_exchanges = array( 'USD', 'RUB', 'EUR', 'GBP' );
+    $preferred_exchanges = kanda_get_active_currencies();
     return array_intersect_key( kanda_get_exchange_rates(), array_flip( $preferred_exchanges ) );
 }
 
@@ -132,6 +200,21 @@ function kanda_get_page_template_variables( $type = false ) {
 
     return $return;
 
+}
+
+/**
+ * Get sidebars configuration
+ *
+ * @return array
+ */
+function kanda_get_sidebars() {
+    return array(
+        array(
+            'name'          => esc_html__( 'Default', 'kanda' ),
+            'id'            => 'default-sidebar',
+            'description'   => esc_html__( 'The widgets added here will appear on all the pages.', 'kanda' ),
+        )
+    );
 }
 
 /**

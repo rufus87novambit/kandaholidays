@@ -111,3 +111,15 @@ header .back-logo img {
 .currency .sub-menu i {
     margin-right: 20px;
 }
+
+.content {
+    margin-bottom: 50px;
+}
+.sidebar {
+    float: left;
+    width: 24.5%;
+}
+.site-main {
+    float: right;
+    width: 72.7%;
+}
