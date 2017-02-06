@@ -8,14 +8,14 @@
 
     <body <?php body_class(); ?>>
 
-        <?php get_template_part( 'views/front/slides' ); ?>
+        <?php get_template_part( 'views/partials/slides' ); ?>
 
         <div class="wrapper">
 
             <header class="page-header clearfix">
                 <h1 class="logo site-title">
                     <a href="<?php echo esc_url( '/' ); ?>">
-                        <img src="<?php echo KH_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
+                        <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
                     </a>
                 </h1>
             </header>

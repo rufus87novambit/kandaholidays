@@ -1,6 +1,6 @@
 <?php
 
-class KH_Config {
+class Kanda_Config {
 
     /**
      * Developer email address
@@ -25,7 +25,19 @@ class KH_Config {
      */
     private static $transient_expiration;
 
+    /**
+     * Forms validation data
+     *
+     * @var array
+     */
     private static $validation;
+
+    /**
+     * Controllers map
+     *
+     * @var array
+     */
+    private static $controller_map;
 
     /**
      * Get configuration value
@@ -50,6 +62,9 @@ class KH_Config {
         return $value;
     }
 
+    /**
+     * Init class
+     */
     static function init() {
         self::$developer_email = explode( ', ', kanda_fields()->get_option( 'developer_email' ) );
         self::$agency_role = 'agency';
@@ -78,7 +93,7 @@ class KH_Config {
                     // key => input_id
                     'username' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'alphanumeric' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' )
+                        'loginRegex' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' )
                     ),
                     'password' => array(
                         'required' => esc_html__( 'Required', 'kanda' )
@@ -88,8 +103,8 @@ class KH_Config {
                     // key => input_id
                     'username' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'alphanumeric' => esc_html__( 'Must contain only numbers and/or letters', 'kanda' ),
-                        'rangelength' => esc_html__( 'Username must be between {0} and {1} characters in length', 'kanda' )
+                        'loginRegex' => esc_html__( 'Numbers, letters, dashes, underlines only', 'kanda' ),
+                        'rangelength' => sprintf( esc_html__( 'Username must be between %1$s and %2$s characters in length', 'kanda' ), '{0}', '{1}' ),
                     ),
                     'email' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
@@ -132,7 +147,7 @@ class KH_Config {
                     // key => input_id
                     'password'          => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'rangelength' => esc_html__( 'Password must be between {0} and {1} characters in length', 'kanda' )
+                        'rangelength' => sprintf( esc_html__( 'Password must be between %1$s and %2$s characters in length', 'kanda' ), '{0}', '{1}' )
                     ),
                     'confirm_password'  => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
@@ -141,8 +156,11 @@ class KH_Config {
                 ),
             )
         );
+        self::$controller_map = array(
+            'auth' => 'login|register|forgot|reset'
+        );
     }
 
 }
 
-KH_Config::init();
+Kanda_Config::init();

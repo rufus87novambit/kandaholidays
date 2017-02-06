@@ -74,9 +74,9 @@ gulp.task('front-build', ['css-front','js-front']);
 
 /********************************** Portal **********************************/
 /**
- * Build portal css
+ * Build back css
  */
-gulp.task('css-portal', function () {
+gulp.task('css-back', function () {
     gulp.src([
         '../icon-fonts/style.css',
         '../assets/css/reset.css',
@@ -85,51 +85,51 @@ gulp.task('css-portal', function () {
         '../assets/css/editor.css',
         '../assets/css/menu.css',
         '../assets/css/form.css',
-        '../assets/css/portal-base.css',
-        '../assets/css/portal.css',
+        '../assets/css/back-base.css',
+        '../assets/css/back.css',
         '../assets/css/responsive.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
-        .pipe(concat('portal.min.css'))
+        .pipe(concat('back.min.css'))
         .pipe(gulp.dest('../css/'))
 });
 
 /**
- * Watch for portal css changes
+ * Watch for back css changes
  */
-gulp.task('css-portal-watch', function() {
-    gulp.watch(['../assets/css/*'], ['css-portal']);
+gulp.task('css-back-watch', function() {
+    gulp.watch(['../assets/css/*'], ['css-back']);
 });
 
 /**
- * Build portal js
+ * Build back js
  */
-gulp.task('js-portal', function () {
+gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
-        '../assets/js/portal.js'
+        '../assets/js/back.js'
     ])
-        .pipe(concat('portal.min.js'))
+        .pipe(concat('back.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 
 /**
- * Watch for portal js changes
+ * Watch for back js changes
  */
-gulp.task('js-portal-watch', function() {
-    gulp.watch(['../assets/js/*'], ['js-portal']);
+gulp.task('js-back-watch', function() {
+    gulp.watch(['../assets/js/*'], ['js-back']);
 });
 
 /**
- * Watch for portal assets ( css & js ) changes
+ * Watch for back assets ( css & js ) changes
  */
-gulp.task('portal-watch', ['css-portal-watch', 'js-portal-watch']);
+gulp.task('back-watch', ['css-back-watch', 'js-back-watch']);
 
 /**
- * Build portal assets ( css & js )
+ * Build back assets ( css & js )
  */
-gulp.task('portal-build', ['css-portal','js-portal']);
+gulp.task('back-build', ['css-back','js-back']);
 /********************************** /end Portal **********************************/
 
 /********************************** Admin **********************************/
@@ -179,7 +179,7 @@ gulp.task('js-admin-watch', function() {
 gulp.task('admin-watch', ['css-admin-watch', 'js-admin-watch']);
 
 /**
- * Build portal assets ( css & js )
+ * Build back assets ( css & js )
  */
 gulp.task('admin-build', ['css-admin','js-admin']);
 /********************************** Admin **********************************/
@@ -187,4 +187,4 @@ gulp.task('admin-build', ['css-admin','js-admin']);
 /**
  * Build everything
  */
-gulp.task('build', ['front-build', 'portal-build', 'admin-build']);
+gulp.task('build', ['front-build', 'back-build', 'admin-build']);

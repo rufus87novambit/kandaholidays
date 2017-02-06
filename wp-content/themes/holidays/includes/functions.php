@@ -6,73 +6,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Add theme rewrite rules
+ * Get dependencies router
  */
-add_action( 'init', 'kanda_rewrite_basic', 10 );
-function kanda_rewrite_basic() {
-    add_rewrite_rule( 'portal\/?([^\/]*)\/?([^\/]*)\/?([^\/]*)\/?', 'index.php?pagename=portal&pa=$matches[1]', 'top' );
+require_once ( KANDA_INCLUDES_PATH . 'router.php' );
+require_once( KANDA_INCLUDES_PATH . 'fields.php' );
+require_once( KANDA_INCLUDES_PATH . 'config.php' );
+require_once( KANDA_INCLUDES_PATH . 'helpers/class-logger.php' );
+require_once( KANDA_INCLUDES_PATH . 'helpers/class-mailer.php' );
+require_once( KANDA_INCLUDES_PATH . 'helpers/shortcodes.php' );
+require_once( KANDA_INCLUDES_PATH . 'cron.php' );
 
-//    add_rewrite_rule(
-//        'portal\/([a-zA-Z]*)?(\/([a-zA-Z]*))?(\/([a-zA-Z0-9]*))?(\/([a-zA-Z0-9]*))?',
-//        'index.php?pagename=portal&controller=$matches[1]&action=$matches[3]&fp=$matches[5]&sp=$matches[7]',
-//        'top'
-//    );
+if( is_user_logged_in() ) {
+    require_once( KANDA_BACK_PATH . 'functions.php' );
+} else {
+    require_once( KANDA_FRONT_PATH . 'functions.php' );
+}
+
+if( is_admin() ) {
+    require_once( KANDA_ADMIN_PATH . 'functions.php' );
 }
 
 /**
- * Transfer required actions to query_vars
+ * Remove admin bar for non admins
  */
-add_filter( 'query_vars', 'kanda_query_vars' );
-function kanda_query_vars( $public_query_vars ) {
-    return array_merge( $public_query_vars, array(
-        'pa',
-        // other variables should go here
-    ) );
+if ( ! current_user_can( 'administrator' ) ) {
+    add_filter('show_admin_bar', '__return_false');
 }
 
 /**
- * Trigger actions depended from request
- *
- * @param $query_vars
+ * Deny accesses
  */
-function kanda_parse_request( $query_vars ) {
-
-    do_action( 'kanda/common/init' );
-
-    $pagename = isset( $query_vars->query_vars['pagename'] ) ? $query_vars->query_vars['pagename'] : '';
-    if( $pagename === 'portal' ) {
-        do_action( 'kanda/portal/init', $query_vars->query_vars['pa'] );
-    } else {
-        do_action( 'kanda/front/init' );
+add_action( 'get_header', 'kanda_get_header', 10, 1 );
+function kanda_get_header( $name ) {
+    if( ! $name ) {
+        kanda_deny_guest_access();
+    } elseif( $name == 'guests' ) {
+        kanda_deny_user_access( Kanda_Config::get( 'agency_role' ) );
     }
-}
-
-/**
- * Add listener to common( front & portal ) initialization
- */
-add_action( 'kanda/common/init', 'kanda_common_init' );
-function kanda_common_init() {
-    require_once( KH_INCLUDES_PATH . 'fields.php' );
-    require_once( KH_INCLUDES_PATH . 'config.php' );
-    require_once( KH_INCLUDES_PATH . 'log.php' );
-    require_once( KH_INCLUDES_PATH . 'cron.php' );
-    require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
-}
-
-/**
- * Add listener to front initialization
- */
-add_action( 'kanda/front/init', 'kanda_front_init', 10 );
-function kanda_front_init() {
-    require_once( KH_FRONT_PATH . 'front-functions.php' );
-}
-
-/**
- * Add listener for portal initialization
- */
-add_action( 'kanda/portal/init', 'kanda_portal_init', 10, 1 );
-function kanda_portal_init( $action ) {
-    require_once( KH_INCLUDES_PATH . 'portal/portal-functions.php' );
 }
 
 /**
@@ -92,24 +62,21 @@ function kanda_add_user_roles() {
 }
 
 /**
- * Deny travel agency access to page
+ * Deny role access
  */
-add_action( 'kanda/deny_user_access', 'kanda_deny_user_access', 10, 1 );
 function kanda_deny_user_access( $role ) {
     if( is_user_logged_in() && current_user_can( $role ) ) {
-        global $wp_query;
-        $wp_query->set_404();
-        status_header( 404 );
-        get_template_part( 404 );
-        exit();
+        kanda_to( 'home' );
     }
 }
 
 /**
- * Remove admin bar for non admins
+ * Deny guest access
  */
-if ( ! current_user_can( 'administrator' ) ) {
-    add_filter('show_admin_bar', '__return_false');
+function kanda_deny_guest_access() {
+    if( ! is_user_logged_in() ) {
+        kanda_to( 'login' );
+    }
 }
 
 /**
@@ -128,7 +95,6 @@ function generate_random_string( $length = 10 ) {
     return $randomString;
 }
 
-
 /**
  * Get required exchange rates
  *
@@ -138,4 +104,82 @@ function kanda_get_exchange() {
     // todo -> Set preferred_exchanges configurable from admin panel
     $preferred_exchanges = array( 'USD', 'RUB', 'EUR', 'GBP' );
     return array_intersect_key( kanda_get_exchange_rates(), array_flip( $preferred_exchanges ) );
+}
+
+/**
+ * Get template variables
+ *
+ * @param bool|false $type
+ * @return array
+ */
+function kanda_get_page_template_variables( $type = false ) {
+
+    $is_user = is_user_logged_in();
+
+    $return = array(
+        'header' => $is_user ? null : 'guests',
+        'footer' => $is_user ? null : 'guests',
+    );
+    switch ( $type ) {
+        case '404':
+            $postfix = $is_user ? 'users' : 'guests';
+            $return = array_merge( $return, array(
+                'title'     => kanda_fields()->get_option( sprintf( '404_page_title_for_%s', $postfix ) ),
+                'content'   => kanda_fields()->get_option( sprintf( '404_page_content_for_%s', $postfix ) )
+            ) );
+            break;
+    }
+
+    return $return;
+
+}
+
+/**
+ * Redirect to
+ *
+ * @param $name
+ */
+function kanda_to( $name ) {
+    if( $name == '404' ) {
+        global $wp_query;
+
+        $wp_query->set_404();
+        status_header( 404 );
+        get_template_part( '404' );
+        exit();
+    }
+    $url = kanda_url_to( $name );
+    if( $url ) {
+        wp_redirect( $url ); exit();
+    }
+}
+
+/**
+ * Get url to
+ *
+ * @param $name
+ * @return bool|false|string|void
+ */
+function kanda_url_to( $name ) {
+    switch( $name ) {
+        case 'home';
+            $url = home_url();
+            break;
+        case 'login':
+            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_login' ) );
+            break;
+        case 'register':
+            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_register' ) );
+            break;
+        case 'forgot-password':
+            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_forgot' ) );
+            break;
+        case 'reset-password':
+            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_reset' ) );
+            break;
+        default:
+            $url = false;
+    }
+
+    return $url;
 }

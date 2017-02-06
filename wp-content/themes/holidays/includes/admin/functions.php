@@ -1,8 +1,8 @@
 <?php
 
-require_once( KH_INCLUDES_PATH . 'fields.php' );
-require_once( KH_INCLUDES_PATH . 'config.php' );
-require_once( KH_INCLUDES_PATH . 'helpers/class-mailer.php' );
+require_once( KANDA_INCLUDES_PATH . 'fields.php' );
+require_once( KANDA_INCLUDES_PATH . 'config.php' );
+require_once( KANDA_INCLUDES_PATH . 'helpers/class-mailer.php' );
 
 add_filter( 'additional_capabilities_display', function(){ return false; } );
 
@@ -11,7 +11,7 @@ add_filter( 'additional_capabilities_display', function(){ return false; } );
  */
 add_action( 'admin_enqueue_scripts', 'kanda_admin_enqueue_styles' );
 function kanda_admin_enqueue_styles() {
-    wp_enqueue_style( 'kanda-admin', KH_THEME_URL . 'css/admin.min.css', array(), null);
+    wp_enqueue_style( 'kanda-admin', KANDA_THEME_URL . 'css/admin.min.css', array(), null);
 }
 
 /**
@@ -19,7 +19,7 @@ function kanda_admin_enqueue_styles() {
  */
 add_action( 'admin_enqueue_scripts', 'kanda_admin_enqueue_scripts' );
 function kanda_admin_enqueue_scripts() {
-    wp_enqueue_script( 'kanda-admin', KH_THEME_URL . 'js/admin.min.js', array('jquery'), null);
+    wp_enqueue_script( 'kanda-admin', KANDA_THEME_URL . 'js/admin.min.js', array('jquery'), null);
 }
 
 /******************************************* Add extra fields to users table *******************************************/
@@ -49,7 +49,7 @@ function kanda_manage_users_custom_column( $value, $column_name, $user_id ) {
     switch ($column_name) {
         case 'status' :
             $value = $empty_value;
-            if( user_can( (int)$user_id, KH_Config::get( 'agency_role' ) ) ) {
+            if( user_can( (int)$user_id, Kanda_Config::get( 'agency_role' ) ) ) {
                 $status = get_the_author_meta('profile_status', $user_id);
                 if ($status) {
                     $icon = 'checkmark';

@@ -7,20 +7,20 @@
  */
 
 /**
- * Add portal css files
+ * Add back css files
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
-    wp_enqueue_script( 'portal', KH_THEME_URL . 'js/portal.min.js', array( 'jquery' ), null, true );
+    wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', array( 'jquery' ), null, true );
 }
 
 /**
- * Add portal js files
+ * Add back js files
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
-function kanda_enqueue_styles() {
-    wp_enqueue_style( 'icon-fonts', KH_THEME_URL . 'icon-fonts/style.css', array(), null );
-    wp_enqueue_style( 'portal', KH_THEME_URL . 'css/portal.min.css', array(), null );
+function kanda_enqueue_styles(){
+    wp_enqueue_style('icon-fonts', KANDA_THEME_URL . 'icon-fonts/style.css', array(), null);
+    wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
 }
 
 // search request example
