@@ -8,8 +8,7 @@
 
     <body <?php body_class( array( 'back' ) ); ?>>
         <div class="back clearfix">
-            <header>
-                <div class="clearfix">
+            <header class="header clearfix">
                     <h1 class="back-logo">
                         <a href="<?php echo site_url( '/back' ); ?>">
                             <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
@@ -77,5 +76,7 @@
                             </ul>
                         </nav>
                     </div>
-                </div>
-            </header>
+            </header><!-- /.header -->
+            <section class="main">
+                <div class="container">
+

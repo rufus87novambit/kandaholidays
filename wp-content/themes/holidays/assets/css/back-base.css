@@ -1,0 +1,125 @@
+:root {
+    --bg-color: #efefef;
+    --border-color:#d8d8d8;
+    --text-color: #373b42;
+    --color-muted: #636c72;
+
+    --gray:#757575;
+    --gray2:#ccc;
+
+    --brand-primary: #3d4795;
+    --brand-info: #18aba9;
+    --brand-success: #5ABD7E;
+    --brand-warning: #D0C048;
+    --brand-danger: #fd5477;
+
+    --brand-primary-border: #2856b6;
+    --brand-info-border: #bcdff1;
+    --brand-success-border: #d0e9c6;
+    --brand-warning-border: #faf2cc;
+    --brand-danger-border: #ebcccc;
+}
+
+/*icon fonts*/
+[class^="icon-"], [class*=" icon-"] {
+    display:inline-block;
+    vertical-align:middle;
+}
+/*RESET*/
+a{
+    cursor: pointer;
+    text-decoration: none;
+}
+ul,ol{
+    list-style:none;
+}
+
+/*ELEMENTS*/
+a{    -webkit-transition:all 0.15s ease;
+    -moz-transition:all 0.15s ease;
+    transition:all 0.15s ease;
+}
+.small, small {
+    font-size: 80%;
+    font-weight: 400;
+}
+/*HELPERS*/
+/*text color*/
+.text-light{color:#fff;}
+.text-dark{	color:#2a4f61;}
+.text-primary{color:#2a4f61;}
+.text-info{color:#18aba9;}
+.text-success{color:#5ABD7E;}
+.text-warning{color:#D0C048;}
+.text-danger{color:#fd5477;}
+
+.text-muted { color: var(--color-muted) !important; }
+
+/*background color*/
+.bg-dark{background-color:#2a4f61;}
+.bg-primary{background-color:#2a4f61;}
+.bg-info{background-color:#18aba9;}
+.bg-success{background-color:#5ABD7E;}
+.bg-warning{background-color:#D0C048;}
+.bg-danger{background-color:#fd5477;}
+
+/*border color*/
+.border-default{border-color:var(--gray);}
+.border-primary{border-color:#2a4f61;}
+.border-info{border-color:#18aba9;}
+.border-success{border-color:#5ABD7E;}
+.border-warning{border-color:#D0C048;}
+.border-danger{border-color:#fd5477;}
+
+
+.clearfix::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+.center{
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform:translate(-50%, -50%);
+    -moz-transform:translate(-50%, -50%);
+    transform:translate(-50%, -50%);
+}
+
+.vert-center{
+    position:absolute;
+    top:50%;
+    -webkit-transform:translate(0, -50%);
+    -moz-transform:translate(0, -50%);
+    transform:translate(0, -50%);
+}
+
+.bg-block{
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:cover;
+}
+
+/*Typography*/
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 15px;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.3;
+    color: inherit;
+}
+h1 {  font-size: 4.5rem; }
+h2 {  font-size: 2.6rem; }
+h3 {  font-size: 3rem; }
+h4 {  font-size: 2.4rem; }
+h5 {  font-size: 20px; }
+h6 {  font-size: 18px; }
+
+.container {
+    max-width: 1160px;
+}
+
+html{
+    font-size:10px;
+}

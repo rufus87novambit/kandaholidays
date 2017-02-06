@@ -44,11 +44,10 @@ gulp.task('js-front', function() {
         '../assets/js/plugins/easing.js',
         '../assets/js/plugins/animate-enhanced.min.js',
         '../assets/js/plugins/superslides.min.js',
-        'node_modules/jquery-validation/dist/jquery.validate.js',
         '../assets/js/front.js',
     ])
         .pipe(concat('front.min.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 
@@ -79,12 +78,17 @@ gulp.task('front-build', ['css-front','js-front']);
  */
 gulp.task('css-back', function () {
     gulp.src([
+        '../icon-fonts/style.css',
         '../assets/css/reset.css',
-        '../assets/css/helper.css',
-        '../assets/css/icon-fonts.css',
+        '../assets/css/grid.css',
+        '../assets/css/components.css',
+        '../assets/css/editor.css',
         '../assets/css/rating/kanda-stars.css',
         '../assets/css/menu.css',
-        '../assets/css/back.css'
+        '../assets/css/form.css',
+        '../assets/css/back-base.css',
+        '../assets/css/back.css',
+        '../assets/css/responsive.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('back.min.css'))
@@ -103,7 +107,8 @@ gulp.task('css-back-watch', function() {
  */
 gulp.task('js-back', function () {
     gulp.src([
-        'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',
+        '../assets/js/plugins/jquery.customSelect.min.js',
+        /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
