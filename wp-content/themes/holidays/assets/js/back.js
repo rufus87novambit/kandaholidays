@@ -12,6 +12,21 @@
         }
     }
 
+   /* $('#hotel-rating').barrating({
+        theme: 'kanda-stars',
+        initialRating: '',
+        allowEmpty : true,
+        emptyValue : '',
+        deselectable: true,
+        hoverState: false,
+        showValues: true,
+        onSelect: function( value, text, event ) {
+            var _helper = $( this.$elem.data( 'text-holder' )),
+                _value = ( value && text ) ? $(text).text() : _helper.data( 'default' );
+            _helper.html( _value );
+        }
+    });*/
+
     $('body').on('click', function( e ){
         close_currency_block( e );
     });
@@ -32,14 +47,12 @@
 
 
     //customSelect
-    if($(".custom-select").length>0){
+    if($(".custom-select").length>0) {
         $(".custom-select").customSelect();
     }
 
 
-
-
-    //magnific popup
+    //magnific popup example
     if($('.popup-block').length>0){
         $('.open-popup').magnificPopup({
             type:'inline',

@@ -83,6 +83,7 @@ gulp.task('css-back', function () {
         '../assets/css/grid.css',
         '../assets/css/components.css',
         '../assets/css/editor.css',
+        '../assets/css/rating/kanda-stars.css',
         '../assets/css/menu.css',
         '../assets/css/form.css',
         '../assets/css/back-base.css',
@@ -98,7 +99,7 @@ gulp.task('css-back', function () {
  * Watch for back css changes
  */
 gulp.task('css-back-watch', function() {
-    gulp.watch(['../assets/css/*'], ['css-back']);
+    gulp.watch(['../assets/css/*', '../assets/css/rating/*'], ['css-back']);
 });
 
 /**
@@ -107,10 +108,11 @@ gulp.task('css-back-watch', function() {
 gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
+        /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 

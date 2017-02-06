@@ -6,7 +6,9 @@ body {
     color: var(--text-color);
     font-size: 16px;
     line-height: 1.5;
-    background: var(--bg-color) url(../images/portal/world_map.png) no-repeat center 150px;
+    background: var(--bg-color) url(../images/back/world_map.png) no-repeat center 150px;
+    box-shadow: 0 5px 19px var(--brand-primary);
+    border-top: 5px solid #fff;
 }
 /*********************** Header ***********************/
 header {
@@ -86,7 +88,6 @@ header .back-logo img {
     margin-right: 20px;
 }
 
-
 /*Main*/
 .main{
     margin:30px 0;
@@ -95,17 +96,17 @@ header .back-logo img {
 .sidebar{
 
 }
-.side-nav{
-    padding-bottom:10px;
-    margin-bottom:10px;
-    border-bottom:solid 2px #ccc;
-}
 .side-nav li{
     padding:3px 0;
+}
+.side-nav li.sep{
+    padding-bottom:10px;
+    margin-bottom:10px;
+    border-bottom:solid 1px var(--border-color);
 }
 .side-nav a{
     color:inherit;
 }
 .side-nav a:hover{
-    text-decoration:underline;
+    color:var(--brand-primary);
 }

@@ -1,0 +1,61 @@
+.br-theme-kanda-stars {
+    display: inline-block;
+}
+.br-theme-kanda-stars select {
+    display: none;
+}
+.br-theme-kanda-stars .br-widget {
+    height: 28px;
+    white-space: nowrap;
+}
+.br-theme-kanda-stars .br-widget a {
+    font: normal normal normal 28px/1 icomoon;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    text-decoration: none;
+    padding: 0 2px;
+    display: inline-block;
+    color: #3d4795;
+    position: relative;
+}
+.br-theme-kanda-stars .br-widget a .helper {
+    position: absolute;
+    bottom: 100%;
+    left: -36px;
+    padding: 5px 0px;
+    text-align: center;
+    background: #fff;
+    display: none;
+    font-size: 14px;
+    width: 100px;
+}
+.br-theme-kanda-stars .br-widget a:after {
+    content: '\e9d7';
+}
+.br-theme-kanda-stars .br-widget a:hover .helper {
+    display: block;
+}
+.br-theme-kanda-stars .br-widget a.br-active:after,
+.br-theme-kanda-stars .br-widget a.br-selected:after {
+    content: '\e9d9';
+}
+.br-theme-kanda-stars .br-widget .br-current-rating {
+    display: none;
+}
+.br-theme-kanda-stars .br-readonly a {
+    cursor: default;
+}
+
+
+
+.hotel-rating-wrapper select {
+    display: none;
+}
+.hotel-rating-wrapper .br-wrapper,
+.hotel-rating-wrapper .selected-text {
+    float: left;
+}
+.hotel-rating-wrapper .selected-text {
+    margin-left: 20px;
+    padding: 2px 0;
+}

@@ -9,10 +9,6 @@ class Auth_Controller extends Base_Controller {
     protected $name = 'auth';
     public $default_action = 'login';
 
-    public function __construct() {
-        parent::__construct();
-    }
-
     private function deny_user_access() {
         if( is_user_logged_in() ) {
             kanda_to( 'home' );
