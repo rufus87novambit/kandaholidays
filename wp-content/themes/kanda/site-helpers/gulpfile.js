@@ -142,7 +142,7 @@ gulp.task('back-build', ['css-back','js-back']);
  */
 gulp.task('css-admin', function () {
     gulp.src([
-        '../assets/css/icon-fonts.css',
+        '../icon-fonts/style.css',
         '../assets/css/admin/admin.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
