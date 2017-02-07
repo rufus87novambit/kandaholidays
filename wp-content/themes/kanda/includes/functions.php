@@ -85,6 +85,9 @@ function kanda_setup_theme() {
 
 }
 
+/**
+ * Register widgets
+ */
 add_action( 'widgets_init', 'kanda_widgets_init', 10 );
 function kanda_widgets_init() {
     $register_sidebars = kanda_get_sidebars();
@@ -117,6 +120,16 @@ function kanda_add_user_roles() {
             'delete_posts' => false, // Use false to explicitly deny
         )
     );
+}
+
+/**
+ * Remove "jquery migrate" console notice
+ */
+add_action( 'wp_default_scripts', 'kanda_remove_migrate_notice', 10, 1 );
+function kanda_remove_migrate_notice( $scripts ) {
+    if ( ! empty( $scripts->registered['jquery'] ) ) {
+        $scripts->registered['jquery']->deps = array_diff( $scripts->registered['jquery']->deps, array( 'jquery-migrate' ) );
+    }
 }
 
 /**
@@ -159,10 +172,59 @@ function generate_random_string( $length = 10 ) {
  * @return array
  */
 function kanda_get_active_currencies() {
-    // todo -> Set preferred_exchanges configurable from admin panel
-    $currencies = array( 'USD', 'RUB', 'EUR', 'GBP' );
-
+    $currencies = kanda_get_theme_option( 'exchange_active_currencies' );
     return $currencies;
+}
+
+/**
+ * Get exchange rates from cache / cba
+ */
+function kanda_get_exchange_rates ( $force = false ) {
+
+    $transient_name = 'kanda_exchange_rates';
+    $rates = get_transient( $transient_name );
+
+    if( $force || !$rates ) {
+
+        $endpoint = 'http://api.cba.am/exchangerates.asmx?wsdl';
+        $success = false;
+        try {
+            $client = new SoapClient($endpoint, array(
+                'version' => SOAP_1_1
+            ));
+            $result = $client->__soapCall("ExchangeRatesLatest", array());
+            if (is_soap_fault($result)) {
+                $error = $result->faultstring;
+            } else {
+                $success = true;
+                $data = $result->ExchangeRatesLatestResult;
+            }
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+        if ($success) {
+            $rates = array();
+            foreach( $data->Rates->ExchangeRate as $rate ) {
+                $rates[ $rate->ISO ] = $rate;
+            }
+            $rates = json_decode( json_encode( $rates ), true );
+            set_transient( 'kanda_exchange_rates', $rates, Kanda_Config::get( 'transient_expiration->exchange_update' ) );
+
+        } else {
+
+            $message = "Hi developer.\n";
+            $message .= sprintf("There was an error geting rates from %s.\n with following details.", $endpoint);
+            $message .= sprintf("Error: %s", $error);
+
+            kanda_mailer()->send_developer_email( 'CBA problem', $message );
+            Kanda_Log::log( $message );
+        }
+
+    }
+
+    if( ! defined( 'DOING_CRON' ) ) {
+        return $rates;
+    }
 }
 
 /**
@@ -173,6 +235,19 @@ function kanda_get_active_currencies() {
 function kanda_get_exchange() {
     $preferred_exchanges = kanda_get_active_currencies();
     return array_intersect_key( kanda_get_exchange_rates(), array_flip( $preferred_exchanges ) );
+}
+
+/**
+ * Get available currencies ISO codes
+ * @return array
+ */
+function kanda_get_currency_iso_array() {
+    $rates = array_keys( kanda_get_exchange_rates() );
+    $rates[] = 'AMD';
+
+    sort( $rates );
+
+    return apply_filters( 'kanda/available_currencies', array_combine( $rates, $rates ) );
 }
 
 /**
