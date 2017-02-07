@@ -35,6 +35,9 @@ function kanda_enqueue_scripts() {
     wp_enqueue_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null );
     wp_enqueue_script( 'front', KANDA_THEME_URL . 'js/front.min.js', array( 'jquery' ), null );
     wp_localize_script( 'front', 'kanda', array(
+        'slider' => array(
+            'play' => (int)kanda_get_theme_option( 'front_pages_slider_animation_delay' ) * 1000
+        ),
         'validation' => Kanda_Config::get( 'validation->front' )
     ) );
 }

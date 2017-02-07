@@ -14,7 +14,7 @@
 
     $( document).on( 'ready', function() {
 
-        /****************************************** 1. Variable definitions *****************************************/
+        /****************************************** 1. Variables definitions *****************************************/
 
         var
             kanda_slides = $('.slides'),
@@ -36,12 +36,12 @@
                 }
             };
 
-        /****************************************** /end Variable definitions *****************************************/
+        /****************************************** /end Variables definitions *****************************************/
 
         /******************************************* 2. Background Slider *******************************************/
 
         kanda_slides.superslides({
-            play : 3000,
+            play : kanda.slider.play,
             animation : 'fade',
             pagination : false,
             hashchange: false
