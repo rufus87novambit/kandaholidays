@@ -13,7 +13,7 @@ $section = array(
         'title'          => esc_html__( 'Debug', 'kanda' ),
         'description'    => esc_html__( 'Debug options', 'kanda' ),
         'panel'          => basename( __DIR__ ),
-        'priority'       => 160,
+        'priority'       => 20,
         'capability'     => 'edit_theme_options',
     )
 );

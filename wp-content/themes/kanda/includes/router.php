@@ -27,37 +27,45 @@ function kanda_add_rewrite_rule() {
      * 1. Auth Controller
      * 2. Hotels Controller
      */
-    /******************************************** 1. Auth Controller ********************************************/
-    add_rewrite_rule( 'login(\/)?',
-        'index.php?pagename=login&controller=auth&action=login',
-        'top'
-    );
-    add_rewrite_rule(
-        'register(\/)?',
-        'index.php?pagename=register&controller=auth&action=register',
-        'top'
-    );
-    add_rewrite_rule(
-        'forgot(\/)?',
-        'index.php?pagename=forgot&controller=auth&action=forgot',
-        'top'
-    );
-    add_rewrite_rule(
-        'reset(\/)?([a-zA-Z0-9]+)?',
-        'index.php?pagename=reset&controller=auth&action=reset&key=$matches[2]',
-        'top'
-    );
-    /******************************************** /end Auth Controller ********************************************/
 
-    /******************************************** 2. Hotels Controller ********************************************/
-    add_rewrite_rule(
-        'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
-        'index.php?pagename=hotels&controller=hotels&action=index&hsid=$matches[2]&kp=$matches[4]',
-        'top'
-    );
-    /******************************************** /end Hotels Controller ********************************************/
+    $rules = array(
+        /******************************************** 1. Auth Controller ********************************************/
+        array(
+            'regex' => 'login(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_login' ), 'auth', 'login' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'register(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_register' ), 'auth', 'register' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'forgot(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_forgot' ), 'auth', 'forgot' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'reset(\/)?([a-zA-Z0-9]+)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&key=$matches[2]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
+            'after' => 'top'
+        ),
+        /******************************************** /end Auth Controller ********************************************/
 
-    // other rules should go here
+        /******************************************** 2. Hotels Controller ********************************************/
+        array(
+            'regex' => 'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
+            'query' => sprintf( 'index.php?pagename=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 'hotels', 'hotels', 'index' ),
+            'after' => 'top'
+        )
+        /******************************************** /end Hotels Controller ********************************************/
+
+        // other rules should go here
+    );
+
+    foreach( $rules as $rule ) {
+        add_rewrite_rule( $rule['regex'], $rule['query'], $rule['after'] );
+    }
 }
 
 /**

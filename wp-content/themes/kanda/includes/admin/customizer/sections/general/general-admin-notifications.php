@@ -13,20 +13,26 @@ $section = array(
         'title'          => esc_html__( 'Admin Notifications', 'kanda' ),
         'description'    => esc_html__( 'Admin notifications settings', 'kanda' ),
         'panel'          => basename( __DIR__ ),
-        'priority'       => 160,
+        'priority'       => 11,
         'capability'     => 'edit_theme_options',
     )
 );
 
 $fields = array(
-//    'auth_page_login' => array(
-//        'type'        => 'dropdown-pages',
-//        'settings'    => $theme_name . 'auth_page_login',
-//        'label'       => esc_html__( 'Page for "Login"', 'kanda' ),
-//        'section'     => $section['id'],
-//        'default'     => 0,
-//        'priority'    => 10,
-//    ),
+    'admin_notifications_events' => array(
+        'type'        => 'multicheck',
+        'settings'    => $theme_name . 'admin_notifications_events',
+        'label'       => esc_attr__( 'Notifications', 'kanda' ),
+        'section'     => $section['id'],
+        'default'     => $kanda_customizer_defaults[ 'admin_notifications_events' ],
+        'priority'    => 10,
+        'choices'     => array(
+            'on_user_login'             => esc_attr__( 'On user login', 'kanda' ),
+            'on_user_register'          => esc_attr__( 'On user register', 'kanda' ),
+            'on_user_forgot_password'   => esc_attr__( 'On user forgot password request', 'kanda' ),
+            'on_user_password_reset'    => esc_attr__( 'On user password reset', 'kanda' ),
+        ),
+    ),
     //other fields go here
 );
 

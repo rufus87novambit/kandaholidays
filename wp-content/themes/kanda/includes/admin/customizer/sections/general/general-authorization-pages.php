@@ -13,7 +13,7 @@ $section = array(
         'title'          => esc_html__( 'Authorization Pages', 'kanda' ),
         'description'    => esc_html__( 'Authorization page settings', 'kanda' ),
         'panel'          => basename( __DIR__ ),
-        'priority'       => 160,
+        'priority'       => 10,
         'capability'     => 'edit_theme_options',
     )
 );

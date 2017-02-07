@@ -44,6 +44,7 @@ gulp.task('js-front', function() {
         '../assets/js/plugins/easing.js',
         '../assets/js/plugins/animate-enhanced.min.js',
         '../assets/js/plugins/superslides.min.js',
+        'node_modules/jquery-validation/dist/jquery.validate.js',
         '../assets/js/front.js',
     ])
         .pipe(concat('front.min.js'))
