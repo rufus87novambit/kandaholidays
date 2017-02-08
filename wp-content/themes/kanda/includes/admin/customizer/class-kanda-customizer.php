@@ -19,7 +19,7 @@ final class Kanda_Customizer {
     private $configs = array();
 
     /**
-     * Holds constomizer panels
+     * Holds customizer panels
      * @var array
      */
     private $panels = array();
@@ -36,14 +36,34 @@ final class Kanda_Customizer {
      */
     private $fields = array();
 
+    /**
+     * Holds sections directory name for scanning
+     * @var string
+     */
     private $sections_path = 'sections';
 
+    /**
+     * Whether customizer has already processed
+     * @var bool
+     */
     private $processed = false;
 
+    /**
+     * Holds option name
+     * @var string
+     */
     private $theme_name = '';
 
+    /**
+     * Holds default values
+     * @var mixed|string
+     */
     public $defaults = '';
 
+    /**
+     * Holds customizer data
+     * @var array
+     */
     private $data = array();
 
     /**
@@ -182,7 +202,7 @@ final class Kanda_Customizer {
      * @param $panel_id
      */
     private function include_sections( $panel_id = false ) {
-        $sections_path = $this->sections_path . $panel_id;
+        $sections_path = trailingslashit( $this->sections_path . $panel_id );
 
         $files = glob( $sections_path . '*.php', GLOB_BRACE );
         foreach( $files as $file ) {

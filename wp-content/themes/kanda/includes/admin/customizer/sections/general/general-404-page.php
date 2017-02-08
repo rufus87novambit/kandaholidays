@@ -30,7 +30,7 @@ return array(
     'fields' => array(
         '404_page_guest_page' => array(
             'type'          => 'dropdown-pages',
-            'settings'      => $theme_name . '404_page_guest_page',
+            'settings'      => $theme_name . '[404_page_guest_page]',
             'label'         => __( '404 for guests', 'kanda' ),
             'description'   => esc_html__( 'Select 404 page to use for guests.', 'kanda' ),
             'section'       => $section_id,
@@ -39,7 +39,7 @@ return array(
         ),
         '404_page_user_page' => array(
             'type'          => 'dropdown-pages',
-            'settings'      => $theme_name . '404_page_user_page',
+            'settings'      => $theme_name . '[404_page_user_page]',
             'label'         => __( '404 for users', 'kanda' ),
             'description'   => esc_html__( 'Select 404 page to use for users.', 'kanda' ),
             'section'       => $section_id,

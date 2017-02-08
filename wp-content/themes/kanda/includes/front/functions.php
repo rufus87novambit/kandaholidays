@@ -56,7 +56,7 @@ add_action( 'kanda/after_user_login', 'kanda_after_user_login', 10, 1 );
 function kanda_after_user_login( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_login' );
+    $sent = kanda_multicheck_checked( 'on_user_login', 'admin_notifications_events' );
     if( ! $sent || user_can( $user, 'administrator' ) ) {
         return;
     }
@@ -87,8 +87,6 @@ function kanda_after_user_login( $user ) {
     }
 }
 
-//do_action( 'kanda/after_user_login', new WP_User(2) );
-
 /**
  * Send notification to admin after new user registration if required
  *
@@ -98,7 +96,7 @@ add_action( 'kanda/after_new_user_registration', 'kanda_after_new_user_registrat
 function kanda_after_new_user_registration( $user_id ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_register' );
+    $sent = kanda_multicheck_checked( 'on_user_register', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }
@@ -143,7 +141,7 @@ add_action( 'kanda/after_forgot_password', 'kanda_after_forgot_password', 10, 1 
 function kanda_after_forgot_password( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_forgot_password' );
+    $sent = kanda_multicheck_checked( 'on_user_forgot_password', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }
@@ -183,7 +181,7 @@ add_action( 'kanda/after_password_reset', 'kanda_after_password_reset', 10, 1 );
 function kanda_after_password_reset( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_password_reset' );
+    $sent = kanda_multicheck_checked( 'on_user_password_reset', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }

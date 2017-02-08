@@ -76,8 +76,8 @@ function kanda_add_rewrite_rule() {
             'after' => 'top'
         ),
         array(
-            'regex' => 'reset(\/)?([a-zA-Z0-9]+)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&key=$matches[2]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
+            'regex' => 'reset(\/)?([a-zA-Z0-9]*)?(\/)?([a-zA-Z0-9]*)?(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&ksecurity=$matches[2]&key=$matches[4]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
             'after' => 'top'
         ),
         /******************************************** /end Auth Controller ********************************************/
@@ -85,7 +85,7 @@ function kanda_add_rewrite_rule() {
         /******************************************** 2. Hotels Controller ********************************************/
         array(
             'regex' => 'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
-            'query' => sprintf( 'index.php?pagename=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 'hotels', 'hotels', 'index' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 123, 'hotels', 'index' ),
             'after' => 'top'
         )
         /******************************************** /end Hotels Controller ********************************************/
@@ -107,6 +107,7 @@ function kanda_query_vars( $public_query_vars ) {
         'controller',
         'action',
         'key',
+        'ksecurity',
         'hsid',
         'kp'
         // other variables should go here
@@ -154,7 +155,7 @@ function kanda_parse_request( $query_vars ) {
             require_once ( $controller_file );
 
             if( class_exists( $controller_class_name ) ) {
-                $controller = new $controller_class_name();
+                $controller = new $controller_class_name( $query_vars->query_vars[ "page_id" ] );
 
                 $action = $action ? $action : $controller->default_action;
 

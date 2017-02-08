@@ -31,7 +31,7 @@ return array(
     'fields' => array(
         'admin_notifications_events' => array(
             'type'        => 'multicheck',
-            'settings'    => $theme_name . 'admin_notifications_events',
+            'settings'    => $theme_name . '[admin_notifications_events]',
             'label'       => esc_attr__( 'Notifications', 'kanda' ),
             'section'     => $section_id,
             'default'     => $kanda_customizer_defaults[ 'admin_notifications_events' ],

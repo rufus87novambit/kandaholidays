@@ -144,10 +144,19 @@ function kanda_get_page_template_variables( $type = false ) {
     );
     switch ( $type ) {
         case '404':
-            $postfix = $is_user ? 'users' : 'guests';
+            $title = '';
+            $content = '';
+
+            $field_name = sprintf( '404_page_%s_page', ( $is_user ? 'user' : 'guest' ) );
+            $not_found_page_id = absint( kanda_get_theme_option( $field_name ) );
+
+            if( $not_found_page_id && ( $not_found_page = get_post( $not_found_page_id ) ) ) {
+                $title = apply_filters( 'the_title', $not_found_page->post_title, $not_found_page_id );
+                $content = apply_filters( 'the_content', $not_found_page->post_content );
+            }
             $return = array_merge( $return, array(
-                'title'     => kanda_fields()->get_option( sprintf( '404_page_title_for_%s', $postfix ) ),
-                'content'   => kanda_fields()->get_option( sprintf( '404_page_content_for_%s', $postfix ) )
+                'title'     => $title,
+                'content'   => $content
             ) );
             break;
     }
@@ -203,16 +212,16 @@ function kanda_url_to( $name ) {
             $url = home_url();
             break;
         case 'login':
-            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_login' ) );
+            $url = get_permalink( kanda_get_theme_option( 'auth_page_login' ) );
             break;
         case 'register':
-            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_register' ) );
+            $url = get_permalink( kanda_get_theme_option( 'auth_page_register' ) );
             break;
         case 'forgot-password':
-            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_forgot' ) );
+            $url = get_permalink( kanda_get_theme_option( 'auth_page_forgot' ) );
             break;
         case 'reset-password':
-            $url = get_permalink( kanda_fields()->get_option( 'kanda_auth_page_reset' ) );
+            $url = get_permalink( kanda_get_theme_option( 'auth_page_reset' ) );
             break;
         default:
             $url = false;

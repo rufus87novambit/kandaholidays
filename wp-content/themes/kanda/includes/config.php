@@ -77,7 +77,7 @@ class Kanda_Config {
             ),
             'login'             => 10 * MINUTE_IN_SECONDS,
             'register'          => 10 * MINUTE_IN_SECONDS,
-            'forgot_password'   => 10 * MINUTE_IN_SECONDS,
+            'forgot_password'   => 1 * HOUR_IN_SECONDS,
             'reset_password'    => 1  * DAY_IN_SECONDS
         );
         self::$validation = array(

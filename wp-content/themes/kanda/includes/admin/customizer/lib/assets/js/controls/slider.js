@@ -11,11 +11,15 @@ wp.customize.controlConstructor['kirki-slider'] = wp.customize.Control.extend({
 		    changeAction;
 
 		// Update the text value
-		jQuery( 'input[type=range]' ).on( 'mousedown', function() {
-			value = jQuery( this ).attr( 'value' );
+		jQuery( 'input[type="range"]' ).on( 'mousedown', function() {
+			var _label = jQuery( this ).closest( 'label' ).find( '.kirki_range_value .value'),
+				_value = jQuery( this ).attr( 'value' );
+
+			_label.text( _value );
 			jQuery( this ).mousemove( function() {
-				value = jQuery( this ).attr( 'value' );
-				jQuery( this ).closest( 'label' ).find( '.kirki_range_value .value' ).text( value );
+				_value = jQuery( this).val();
+
+				_label.text( _value );
 			});
 		});
 
