@@ -1,24 +1,41 @@
 <?php
 
-class Kanda_Log {
+class Kanda_Logger {
+
+    private $file = false;
+    /**
+     * Singleton.
+     */
+    static function get_instance() {
+        static $instance = null;
+        if ( $instance == null) {
+            $instance = new self();
+        }
+        return $instance;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->get_and_set_or_create_log();
+    }
 
     /**
      * Get log file path
      *
      * @return bool|string
      */
-    private static function get_log_file() {
-        $date = date( 'Y/m/d', current_time( 'timestamp', true ) );
-        $path = KANDA_THEME_PATH . 'logs/' . $date;
+    private function get_and_set_or_create_log() {
+        $date = date( 'Y-m-d', current_time( 'timestamp', true ) );
+        $folder = trailingslashit( KANDA_THEME_PATH . 'log' );
+        $file = $folder . 'log.log';
 
-        $file = false;
-        if( wp_mkdir_p( $path ) ){
-            $file = $path . '/log.log';
-            if( ! file_exists( $file ) && ! fopen( $file, 'w+' ) ) {
-                $file = false;
-            }
+        $path = $folder . $date;
+
+        if( ! file_exists( $file ) && wp_mkdir_p( $path ) && fopen( $file, 'w+' ) ) {
+            $this->file = $file;
         }
-        return $file;
     }
 
     /**
@@ -26,17 +43,27 @@ class Kanda_Log {
      *
      * @param $message
      */
-    public static function log( $message = "" ) {
-        $log_file = self::get_log_file();
-        if( $log_file ) {
-            $message = sprintf(
-                '%1$s - %2$s',
-                date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) ),
-                $message . "\n"
-            );
-
-            @error_log( $message, 3, $log_file );
+    public function log( $message = "" ) {
+        if( ! $this->file ) {
+            return;
         }
+
+        $message = sprintf(
+            '%1$s - %2$s',
+            date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) ),
+            $message . "\n"
+        );
+
+        @error_log( $message, 3, $this->file );
     }
 
+}
+
+/**
+ * Get logger instance
+ *
+ * @return Kanda_Logger
+ */
+function kanda_logger() {
+    return Kanda_Logger::get_instance();
 }

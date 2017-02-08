@@ -498,7 +498,7 @@ class Auth_Controller extends Base_Controller {
 
                         } else {
                             $this->request['message'] = esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' );
-                            Kanda_Log::log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
+                            kanda_logger()->log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
                         }
 
                     }

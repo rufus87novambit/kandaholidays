@@ -1,9 +1,5 @@
 <?php
 
-require_once( KANDA_INCLUDES_PATH . 'fields.php' );
-require_once( KANDA_INCLUDES_PATH . 'config.php' );
-require_once( KANDA_INCLUDES_PATH . 'helpers/class-mailer.php' );
-
 add_filter( 'additional_capabilities_display', function(){ return false; } );
 
 /**

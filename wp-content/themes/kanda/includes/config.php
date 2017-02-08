@@ -2,13 +2,6 @@
 
 class Kanda_Config {
 
-    /**
-     * Developer email address
-     *
-     * @var string
-     */
-    private static $developer_email;
-
     private static $agency_role;
 
     /**
@@ -66,7 +59,6 @@ class Kanda_Config {
      * Init class
      */
     static function init() {
-        self::$developer_email = explode( ', ', kanda_fields()->get_option( 'developer_email' ) );
         self::$agency_role = 'agency';
         self::$cookie_lifetime = array(
             'authentication'    => array(
@@ -77,9 +69,6 @@ class Kanda_Config {
             'register'          => 10 * MINUTE_IN_SECONDS,
             'forgot_password'   => 10 * MINUTE_IN_SECONDS,
             'reset_password'    => 1  * DAY_IN_SECONDS
-        );
-        self::$transient_expiration = array(
-            'exchange_update' => 12 * HOUR_IN_SECONDS
         );
         self::$validation = array(
             'front' => array(

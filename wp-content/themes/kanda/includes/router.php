@@ -1,4 +1,28 @@
 <?php
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
+
+/**
+ * Get controller name by slug
+ *
+ * @param $slug
+ * @return bool|int|string
+ */
+function get_controller_by_slug( $slug ) {
+    $controller = false;
+
+    $map = Kanda_Config::get( 'controller_map' );
+    foreach( $map as $controller_name => $methods ) {
+        if( in_array( $slug, explode( '|', $methods ) ) ) {
+            $controller = $controller_name;
+            break;
+        }
+    }
+
+    return $controller;
+}
 
 /**
  * Disable canonical redirect for front page
@@ -136,24 +160,4 @@ function kanda_parse_request( $query_vars ) {
             }
         }
     }
-}
-
-/**
- * Get controller name by slug
- *
- * @param $slug
- * @return bool|int|string
- */
-function get_controller_by_slug( $slug ) {
-    $controller = false;
-
-    $map = Kanda_Config::get( 'controller_map' );
-    foreach( $map as $controller_name => $methods ) {
-        if( in_array( $slug, explode( '|', $methods ) ) ) {
-            $controller = $controller_name;
-            break;
-        }
-    }
-
-    return $controller;
 }
