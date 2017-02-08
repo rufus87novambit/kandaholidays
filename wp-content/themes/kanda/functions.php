@@ -1,4 +1,9 @@
 <?php
+/**
+ * Kanda Theme functions and definitions
+ *
+ * @package Kanda_Theme
+ */
 
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {

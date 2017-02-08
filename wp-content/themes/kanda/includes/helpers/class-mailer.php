@@ -1,4 +1,10 @@
 <?php
+/**
+ * Kanda Theme Mailer
+ *
+ * @package Kanda_Theme
+ */
+
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );

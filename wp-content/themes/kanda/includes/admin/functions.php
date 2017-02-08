@@ -1,6 +1,22 @@
 <?php
+/**
+ * Kanda Theme admin functions
+ *
+ * @package Kanda_Theme
+ */
 
-add_filter( 'additional_capabilities_display', function(){ return false; } );
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
+
+/**
+ * Remove additional capabilities
+ */
+add_filter( 'additional_capabilities_display', 'kanda_additional_capabilities_display' );
+function kanda_additional_capabilities_display(){
+    return false;
+}
 
 /**
  * Add admin css files

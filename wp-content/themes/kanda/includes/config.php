@@ -1,4 +1,14 @@
 <?php
+/**
+ * Kanda Theme configuration
+ *
+ * @package Kanda_Theme
+ */
+
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
 
 class Kanda_Config {
 

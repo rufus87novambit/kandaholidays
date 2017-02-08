@@ -1,9 +1,14 @@
 <?php
+/**
+ * Kanda Theme section
+ *
+ * @package Kanda_Theme
+ */
+
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
-
 $theme_name = kanda_get_theme_name();
 $kanda_customizer_defaults = kanda_get_customizer_defaults();
 $section_id = '404_page';
