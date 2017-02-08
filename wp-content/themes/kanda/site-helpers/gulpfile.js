@@ -79,7 +79,6 @@ gulp.task('front-build', ['css-front','js-front']);
  */
 gulp.task('css-back', function () {
     gulp.src([
-        '../icon-fonts/style.css',
         '../assets/css/reset.css',
         '../assets/css/grid.css',
         '../assets/css/components.css',
