@@ -1,10 +1,14 @@
 <?php
-
 /**
- * Get exchange data
+ * Kanda Theme back functions
  *
- * @return array
+ * @package Kanda_Theme
  */
+
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
 
 /**
  * Add back css files

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Kanda Theme shortcodes
+ *
+ * @package Kanda_Theme
+ */
+
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
 
 /**
  * Button shortcode
@@ -33,7 +43,7 @@ function kanda_shortcode_button( $atts, $content = '' ) {
                 }
                 break;
             case 'login':
-                if( $page_id = kanda_fields()->get_option( 'auth_page_login' ) ) {
+                if( $page_id = kanda_get_theme_option( 'auth_page_login' ) ) {
                     $url = get_permalink( $page_id );
                     if( ! $label ) {
                         $page = get_post( $page_id );
@@ -43,7 +53,7 @@ function kanda_shortcode_button( $atts, $content = '' ) {
 
                 break;
             case 'register':
-                if( $page_id = kanda_fields()->get_option( 'auth_page_login' ) ) {
+                if( $page_id = kanda_get_theme_option( 'auth_page_register' ) ) {
                     $url = get_permalink( $page_id );
                     if( ! $label ) {
                         $page = get_post( $page_id );
@@ -54,7 +64,7 @@ function kanda_shortcode_button( $atts, $content = '' ) {
                 break;
             case 'forgot-password':
             case 'forgot_password':
-                if( $page_id = kanda_fields()->get_option( 'auth_page_login' ) ) {
+                if( $page_id = kanda_get_theme_option( 'auth_page_forgot' ) ) {
                     $url = get_permalink( $page_id );
                     if( ! $label ) {
                         $page = get_post( $page_id );

@@ -1,104 +1,358 @@
 <?php
+/**
+ * Kanda Theme customizer helper
+ *
+ * @package Kanda_Theme
+ */
 
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
-class Kanda_Customizer {
-
-    protected static $sections_path = 'sections';
+final class Kanda_Customizer {
 
     /**
-     * Register panels, appropriate sections and single sections
-     *
-     * @param array $panels
+     * Holds customizer configurations
+     * @var array
      */
-    public static function register( $panels = array() ) {
+    private $configs = array();
 
-        $theme_name = kanda_get_theme_name();
-        $customizer_defaults = kanda_get_theme_defaults();
-        $kanda_customizer_defaults = $customizer_defaults[ $theme_name ];
+    /**
+     * Holds customizer panels
+     * @var array
+     */
+    private $panels = array();
 
-        $sections_path = trailingslashit( KANDA_CUSTOMIZER_PATH . self::$sections_path );
+    /**
+     * Holds customizer sections
+     * @var array
+     */
+    private $sections = array();
 
-        /**
-         * Add Config
-         */
-        self::add_config( kanda_get_theme_name(), array(
+    /**
+     * Holds customizer fields
+     * @var array
+     */
+    private $fields = array();
+
+    /**
+     * Holds sections directory name for scanning
+     * @var string
+     */
+    private $sections_path = 'sections';
+
+    /**
+     * Whether customizer has already processed
+     * @var bool
+     */
+    private $processed = false;
+
+    /**
+     * Holds option name
+     * @var string
+     */
+    private $theme_name = '';
+
+    /**
+     * Holds default values
+     * @var mixed|string
+     */
+    public $defaults = '';
+
+    /**
+     * Holds customizer data
+     * @var array
+     */
+    private $data = array();
+
+    /**
+     * Get class instance
+     *
+     * @return Kanda_Customizer
+     */
+    public static function get_instance() {
+        static $instance;
+        if ( $instance == null) {
+            $instance = new self();
+        }
+        return $instance;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->sections_path = trailingslashit( KANDA_CUSTOMIZER_PATH . $this->sections_path );
+        $this->theme_name = kanda_get_theme_name();
+        $this->defaults = include_once ( KANDA_CUSTOMIZER_PATH . 'defaults.php' );
+
+        $this->add_config( $this->theme_name, array(
             'capability'    => 'edit_theme_options',
             'option_type'   => 'theme_mod',
         ) );
+    }
 
-        /**
-         * Scan and register single sections
-         */
-        $sections = glob( $sections_path . '*.php', GLOB_BRACE );
-        foreach( $sections as $section ) {
-            include_once( $section );
+    /**
+     * Add panels
+     *
+     * @param array $panels
+     * @return $this
+     */
+    public function add_panels( $panels = array() ) {
+        $panels = (array) $panels;
+        foreach( $panels as $panel_id => $args ) {
+            $this->add_panel( $panel_id, $args );
         }
 
+        return $this;
+    }
 
-        foreach( $panels as $panel_id => $args ) {
-            self::add_panel( $panel_id, $args );
+    /**
+     * Add a single panel
+     *
+     * @param $panel_id
+     * @param $args
+     * @return $this
+     */
+    public function add_panel( $panel_id, $args = array() ) {
+        $this->panels[ $panel_id ] = $args;
+        $this->include_sections( $panel_id );
+        return $this;
+    }
 
-            $panel_sections_path = trailingslashit( $sections_path . $panel_id );
-            if( is_dir( $panel_sections_path ) ) {
-                $panel_sections = glob( $panel_sections_path . '/*.php', GLOB_BRACE );
-                foreach ( $panel_sections as $panel_section ) {
-                    include_once( $panel_section );
-                }
+    /**
+     * Add configs
+     *
+     * @param array $configs
+     * @return $this
+     */
+    public function add_configs( $configs = array() ) {
+        foreach( $configs as $config_id => $args ) {
+            $this->add_config( $config_id, $args );
+        }
+        return $this;
+    }
+
+    /**
+     * Add a single config
+     *
+     * @param $config_id
+     * @param array $args
+     * @return $this
+     */
+    public function add_config( $config_id, $args = array() ) {
+        $this->configs[ $config_id ] = $args;
+        return $this;
+    }
+
+    /**
+     * Add sections
+     *
+     * @param array $sections
+     * @return $this
+     */
+    public function add_sections( $sections = array() ) {
+        foreach( $sections as $section_id => $args ) {
+            $this->add_section( $section_id, $args );
+        }
+        return $this;
+    }
+
+    /**
+     * Add a single section
+     *
+     * @param $section_id
+     * @param $args
+     * @return $this
+     */
+    public function add_section( $section_id, $args ) {
+        $this->sections[ $section_id ] = $args;
+        return $this;
+    }
+
+    /**
+     * Add fields
+     *
+     * @param array $fields
+     * @return $this
+     */
+    public function add_fields( $fields = array() ) {
+        foreach( $fields as $field_id => $args ) {
+            $this->add_field( $field_id, $args );
+        }
+        return $this;
+    }
+
+    /**
+     * Add a single field
+     *
+     * @param $field_id
+     * @param array $args
+     * @return $this
+     */
+    public function add_field( $field_id, $args = array() ) {
+        $this->fields[ $field_id ] = $args;
+        return $this;
+    }
+
+    /**
+     * Register single panel sections
+     *
+     * @param $panel_id
+     */
+    private function include_sections( $panel_id = false ) {
+        $sections_path = trailingslashit( $this->sections_path . $panel_id );
+
+        $files = glob( $sections_path . '*.php', GLOB_BRACE );
+        foreach( $files as $file ) {
+            $section_data = include_once( $file );
+
+            if( $section_data ) {
+                $section = isset( $section_data['section'] ) ? $section_data['section'] : false;
+                $fields = isset( $section_data['fields'] ) ? $section_data['fields'] : array();
+
+                $this->add_section( $section['id'], $section['args']);
+                $this->add_fields( $fields );
             }
         }
     }
 
     /**
-     * Create a new panel
-     *
-     * @param   string      the ID for this panel
-     * @param   array       the panel arguments
+     * Hook into before registering
      */
-    public static function add_panel( $id = '', $args = array() ) {
-        if ( class_exists( 'Kirki' ) ) {
-            Kirki::add_panel( $id, $args );
-        }
+    private function before_run() {
+        $this->include_sections();
+
+        do_action( 'kanda/customizer/before_run', $this );
     }
 
     /**
-     * Create a new section
-     *
-     * @param   string      the ID for this section
-     * @param   array       the section arguments
+     * Hook into after registering
      */
-    public static function add_section( $id, $args ) {
-        if ( class_exists( 'Kirki' ) ) {
-            Kirki::add_section( $id, $args );
-        }
+    private function after_run() {
+        do_action( 'kanda/customizer/after_run', $this );
     }
 
     /**
-     * Sets the configuration options.
-     *
-     * @param    string    $config_id    The configuration ID
-     * @param    array     $args         The configuration arguments
+     * Process registration
      */
-    public static function add_config( $config_id, $args = array() ) {
-        if ( class_exists( 'Kirki' ) ) {
-            Kirki::add_config( $config_id, $args );
+    public function run() {
+        /**
+         * We do not need to process anything in case of class absence or if ir already processed
+         */
+        if ( ! class_exists( 'Kirki' ) || $this->processed ) {
             return;
         }
+
+        /**
+         * add possiblity to hook into
+         */
+        $this->before_run();
+
+        /**
+         * Add configs
+         */
+        foreach( $this->configs as $config_id => $config_args ) {
+            Kirki::add_config( $config_id, $config_args );
+        }
+
+        /**
+         * Add panels
+         */
+        foreach( $this->panels as $panel_id => $panel_args ) {
+            Kirki::add_panel( $panel_id, $panel_args );
+        }
+
+        /**
+         * Add panel sections
+         */
+        foreach( $this->sections as $section_id => $section_args ) {
+            Kirki::add_section( $section_id, $section_args );
+        }
+
+        /**
+         * Add fields
+         */
+        foreach( $this->fields as $field_id => $field_args ) {
+            Kirki::add_field( $field_id, $field_args );
+        }
+
+        /**
+         * add possiblity to hook into
+         */
+        $this->after_run();
+
+        /**
+         * Let instance to know that it already processed
+         */
+        $this->processed = true;
     }
 
     /**
-     * Create a new field
+     * Get defauls values
      *
-     * @param    string    $config_id    The configuration ID
-     * @param    array     $args         The field's arguments
+     * @return mixed|string
      */
-    public static function add_field( $config_id, $args ) {
-        if ( class_exists( 'Kirki' ) ) {
-            Kirki::add_field( $config_id, $args );
+    public function get_defaults() {
+        return $this->defaults;
+    }
+    /**
+     * Get customizer value
+     *
+     * @param $option_name
+     * @return null
+     */
+    public function get_option( $option_name ) {
+        if( empty( $this->data ) ) {
+            $this->data = get_theme_mod( $this->theme_name );
         }
+
+        $value = null;
+        if( isset( $this->data[ $option_name ] ) ) {
+            $value = $this->data[ $option_name ];
+        } elseif( isset( $this->defaults[ $option_name ] ) ) {
+            $value = $this->defaults[ $option_name ];
+        }
+
+        return $value;
     }
 
+}
+
+/**
+ * Get theme name
+ *
+ * @return string
+ */
+function kanda_get_theme_name() {
+    return 'kanda_theme';
+}
+
+/**
+ * Get customizer instance
+ *
+ * @return Kanda_Customizer
+ */
+function kanda_customizer() {
+    return Kanda_Customizer::get_instance();
+}
+
+/**
+ * Get theme option
+ *
+ * @param $option_name
+ * @return null
+ */
+function kanda_get_theme_option( $option_name ) {
+    return kanda_customizer()->get_option( $option_name );
+}
+
+/**
+ * Get customizer default values
+ *
+ * @return mixed
+ */
+function kanda_get_customizer_defaults() {
+    return kanda_customizer()->get_defaults();
 }

@@ -1,10 +1,22 @@
 <?php
+/**
+ * Kanda Theme admin functions
+ *
+ * @package Kanda_Theme
+ */
 
-require_once( KANDA_INCLUDES_PATH . 'fields.php' );
-require_once( KANDA_INCLUDES_PATH . 'config.php' );
-require_once( KANDA_INCLUDES_PATH . 'helpers/class-mailer.php' );
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die( 'No direct script access allowed' );
+}
 
-add_filter( 'additional_capabilities_display', function(){ return false; } );
+/**
+ * Remove additional capabilities
+ */
+add_filter( 'additional_capabilities_display', 'kanda_additional_capabilities_display' );
+function kanda_additional_capabilities_display(){
+    return false;
+}
 
 /**
  * Add admin css files

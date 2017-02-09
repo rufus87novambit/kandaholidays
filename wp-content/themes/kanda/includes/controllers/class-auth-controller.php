@@ -9,6 +9,9 @@ class Auth_Controller extends Base_Controller {
     protected $name = 'auth';
     public $default_action = 'login';
 
+    /**
+     * Deny logged in user access
+     */
     private function deny_user_access() {
         if( is_user_logged_in() ) {
             kanda_to( 'home' );
@@ -244,8 +247,8 @@ class Auth_Controller extends Base_Controller {
 
                 $has_error = false;
                 $validation_rules = Kanda_Config::get( 'validation->front->form_register' );
-
                 $validation_data = Kanda_Config::get( 'validation->front->data' );
+
                 $this->request['fields']['personal']['username']['value'] = $username;
                 if( ! $username ) {
                     $has_error = true;
@@ -480,13 +483,13 @@ class Auth_Controller extends Base_Controller {
                         add_filter('nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); });
 
                         $reset_password_token = generate_random_string( 20 );
-                        $password_reset_url = home_url( '/reset/' . $reset_password_token );
+                        $password_reset_url = home_url( '/reset/' . wp_create_nonce( 'kanda_reset_password' ) . '/' . $reset_password_token );
 
                         update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
 
                         $to = $user->user_email;
-                        $subject = kanda_fields()->get_option( 'kanda_email_forgot_password_subject' );
-                        $message = kanda_fields()->get_option( 'kanda_email_forgot_password_body' );
+                        $subject = kanda_get_theme_option( 'email_forgot_password_title' );
+                        $message = kanda_get_theme_option( 'email_forgot_password_body' );
                         $variables = array( '{{RESET_URL}}' => sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ) );
 
                         if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
@@ -498,7 +501,7 @@ class Auth_Controller extends Base_Controller {
 
                         } else {
                             $this->request['message'] = esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' );
-                            Kanda_Log::log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
+                            kanda_logger()->log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
                         }
 
                     }
@@ -551,20 +554,22 @@ class Auth_Controller extends Base_Controller {
                 $user_id = isset( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
 
                 $has_error = false;
-                $validation_data = Kanda_Config::get( 'validation->front->form_reset_password' );
+
+                $validation_rules = Kanda_Config::get( 'validation->front->form_reset_password' );
+                $validation_data = Kanda_Config::get( 'validation->front->data' );
 
                 $this->request['fields']['password']['value'] = $password;
                 if( ! $password ) {
                     $has_error = true;
                     $this->request['fields']['password'] = array_merge(
                         $this->request['fields']['password'],
-                        array( 'valid' => false, 'msg' => $validation_data['password']['required'] )
+                        array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                     );
                 } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                     $has_error = true;
                     $this->request['fields']['password'] = array_merge(
                         $this->request['fields']['password'],
-                        array( 'valid' => false, 'msg' => $validation_data['password']['rangelength'] )
+                        array( 'valid' => false, 'msg' => $validation_rules['password']['rangelength'] )
                     );
                 }
 
@@ -573,13 +578,13 @@ class Auth_Controller extends Base_Controller {
                     $has_error = true;
                     $this->request['fields']['confirm_password'] = array_merge(
                         $this->request['fields']['confirm_password'],
-                        array( 'valid' => false, 'msg' => $validation_data['confirm_password']['required'] )
+                        array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['required'] )
                     );
                 } elseif( $password && ( $confirm_password != $password ) ) {
                     $has_error = true;
                     $this->request['fields']['confirm_password'] = array_merge(
                         $this->request['fields']['confirm_password'],
-                        array( 'valid' => false, 'msg' => $validation_data['confirm_password']['equalTo'] )
+                        array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['equalTo'] )
                     );
                 }
 
@@ -616,9 +621,9 @@ class Auth_Controller extends Base_Controller {
 
             add_filter('nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); });
 
-            $args = wp_parse_args( $args, array( 'key' => '' ) );
+            $args = wp_parse_args( $args, array( 'ksecurity' => '' ) );
 
-            if( wp_verify_nonce( $args['key'], 'kanda_reset_password' ) ) {
+            if( wp_verify_nonce( $args['ksecurity'], 'kanda_reset_password' ) ) {
 
                 $users = get_users( array( 'meta_key' => 'forgot_password_token', 'meta_value' => $args['key'] ) );
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Kanda Theme front functions
+ *
+ * @package Kanda_Theme
+ */
 
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -8,17 +13,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 /*
  * Map
  *
- * 1. Dependencies
- * 2. Assets
- * 3. Action callbacks
- * 4. Authorization template
+ * 1. Assets
+ * 2. Action callbacks
+ * 3. Authorization template
  */
 
 /************************************************** 1. Dependencies **************************************************/
 
 /************************************************** /end Dependencies ************************************************/
 
-/***************************************************** 2. Assets *****************************************************/
+/***************************************************** 1. Assets *****************************************************/
 /**
  * Add frontend css files
  */
@@ -43,7 +47,7 @@ function kanda_enqueue_scripts() {
 }
 /***************************************************** /end Assets ***************************************************/
 
-/************************************************* 3. Action callbacks ***********************************************/
+/************************************************* 2. Action callbacks ***********************************************/
 /**
  * Send notification to admin after user login
  * @param $user
@@ -52,7 +56,7 @@ add_action( 'kanda/after_user_login', 'kanda_after_user_login', 10, 1 );
 function kanda_after_user_login( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_login' );
+    $sent = kanda_multicheck_checked( 'on_user_login', 'admin_notifications_events' );
     if( ! $sent || user_can( $user, 'administrator' ) ) {
         return;
     }
@@ -79,11 +83,9 @@ function kanda_after_user_login( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
     }
 }
-
-//do_action( 'kanda/after_user_login', new WP_User(2) );
 
 /**
  * Send notification to admin after new user registration if required
@@ -94,7 +96,7 @@ add_action( 'kanda/after_new_user_registration', 'kanda_after_new_user_registrat
 function kanda_after_new_user_registration( $user_id ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_register' );
+    $sent = kanda_multicheck_checked( 'on_user_register', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }
@@ -124,7 +126,7 @@ function kanda_after_new_user_registration( $user_id ) {
         $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
         if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-            Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+            kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
         }
 
     }
@@ -139,7 +141,7 @@ add_action( 'kanda/after_forgot_password', 'kanda_after_forgot_password', 10, 1 
 function kanda_after_forgot_password( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_forgot_password' );
+    $sent = kanda_multicheck_checked( 'on_user_forgot_password', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }
@@ -166,7 +168,7 @@ function kanda_after_forgot_password( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
     }
 }
 
@@ -179,7 +181,7 @@ add_action( 'kanda/after_password_reset', 'kanda_after_password_reset', 10, 1 );
 function kanda_after_password_reset( $user ) {
 
     /* Do not send if admin does not want */
-    $sent = kanda_fields()->get_option( 'send_admin_notification_on_user_password_reset' );
+    $sent = kanda_multicheck_checked( 'on_user_password_reset', 'admin_notifications_events' );
     if( ! $sent ) {
         return;
     }
@@ -206,12 +208,12 @@ function kanda_after_password_reset( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        Kanda_Log::log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
     }
 }
 /************************************************ /end Action callbacks **********************************************/
 
-/********************************************* 4. Authorization template *********************************************/
+/********************************************* 3. Authorization template *********************************************/
 
 /**
  * Auth coolie expiration time

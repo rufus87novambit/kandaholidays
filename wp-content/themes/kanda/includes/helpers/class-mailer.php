@@ -1,4 +1,10 @@
 <?php
+/**
+ * Kanda Theme Mailer
+ *
+ * @package Kanda_Theme
+ */
+
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
@@ -106,7 +112,7 @@ class Kanda_Mailer {
      */
     public function send_developer_email( $subject, $message, $variables = array(), $headers = array() ) {
 
-        $to = Kanda_Config::get( 'developer_email' );
+        $to = preg_replace('/\s+/', '', kanda_get_theme_option( 'debug_developer_email' ) );
         $subject = $this->normalize_email_subject( $subject );
         $message = $this->normalize_email_content( $message, $variables );
         $headers = $this->get_html_email_headers();
@@ -146,7 +152,9 @@ class Kanda_Mailer {
      */
     public function send_user_email( $user_id_email, $subject, $message, $variables = array(), $headers = array() ) {
 
-        if( ! $user_id_email ) return;
+        if( ! $user_id_email ) {
+            return;
+        }
 
         if( is_numeric( $user_id_email ) ) {
             $user_data = get_userdata( $user_id_email );
