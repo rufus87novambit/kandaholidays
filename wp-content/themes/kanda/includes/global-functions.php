@@ -204,9 +204,13 @@ function kanda_to( $name ) {
  * Get url to
  *
  * @param $name
+ * @param string $params
  * @return bool|false|string|void
  */
-function kanda_url_to( $name ) {
+function kanda_url_to( $name, $params = '' ) {
+    if( $params && (strpos( $params, '/' ) === 0) ) {
+        $params = substr( $params, 1 );
+    }
     switch( $name ) {
         case 'home';
             $url = home_url();
@@ -227,7 +231,7 @@ function kanda_url_to( $name ) {
             $url = false;
     }
 
-    return $url;
+    return $url ? ( $url . $params ) : $url;
 }
 
 /**

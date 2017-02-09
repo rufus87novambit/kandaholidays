@@ -6,11 +6,11 @@
         <?php wp_head(); ?>
     </head>
 
-    <body <?php body_class( array( 'back' ) ); ?>>
-        <div class="back clearfix">
+    <body <?php body_class(); ?>>
+        <div class="clearfix">
             <header class="header clearfix">
                     <h1 class="back-logo">
-                        <a href="<?php echo site_url( '/back' ); ?>">
+                        <a href="<?php echo home_url( '/' ); ?>">
                             <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                         </a>
                     </h1>

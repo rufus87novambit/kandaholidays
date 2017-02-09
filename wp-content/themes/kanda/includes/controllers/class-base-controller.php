@@ -27,6 +27,11 @@ class Base_Controller {
     protected $request;
 
     /**
+     * Current title
+     * @var
+     */
+    protected $title;
+    /**
      * Current view to render
      * @var
      */
@@ -50,7 +55,23 @@ class Base_Controller {
 
         $this->views_path = trailingslashit( KANDA_THEME_PATH . 'views' );
         $this->has_content = true;
+        add_filter( 'the_title', array( $this, 'change_title' ), 10, 2 );
         add_filter( 'the_content', array( $this, 'render' ), 10, 1 );
+    }
+
+    /**
+     * Change page title
+     *
+     * @param $title
+     * @param null $id
+     * @return mixed
+     */
+    public function change_title( $title, $id = null ) {
+        if( $this->post_id == $id && $this->title ) {
+            $title = $this->title;
+        }
+
+        return $title;
     }
 
     /**
@@ -61,11 +82,14 @@ class Base_Controller {
      */
     public function render( $content ) {
         if( $this->post_id == get_the_ID() ) {
+
             $template = trailingslashit($this->views_path . $this->name) . $this->view . '.php';
-            if (file_exists($template)) {
+            if ( file_exists( $template ) ) {
                 ob_start();
                 include $template;
                 $content = ob_get_clean();
+            } else {
+                $content = kanda_default_page_content( $content );
             }
         }
 

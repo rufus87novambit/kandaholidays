@@ -87,7 +87,21 @@ function kanda_add_rewrite_rule() {
             'regex' => 'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
             'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 123, 'hotels', 'index' ),
             'after' => 'top'
-        )
+        ),
+        /******************************************** /end Hotels Controller ********************************************/
+
+        /******************************************** 3. Profiles Controller ********************************************/
+
+        array(
+            'regex' => 'profile/edit(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'profile(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'view' ),
+            'after' => 'top'
+        ),
         /******************************************** /end Hotels Controller ********************************************/
 
         // other rules should go here
@@ -128,7 +142,6 @@ function kanda_parse_request( $query_vars ) {
     if( empty( $query_vars->query_vars ) ) {
         $show_on_front = get_option( 'show_on_front' );
 
-
         if( 'page' == $show_on_front ) {
             $front_page = get_post( get_option( 'page_on_front' ) );
 
@@ -166,5 +179,9 @@ function kanda_parse_request( $query_vars ) {
                 }
             }
         }
+    }
+
+    if( ! $controller ) {
+        add_filter( 'the_content', 'kanda_default_page_content', 10, 1 );
     }
 }
