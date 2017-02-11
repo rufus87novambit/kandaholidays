@@ -21,16 +21,23 @@ class Base_Controller {
     private $views_path;
 
     /**
-     * Received request
-     * @var
+     * Holds instance data
+     * @var array
      */
-    protected $request;
+    private $data = array();
 
     /**
      * Current title
      * @var
      */
     protected $title;
+
+    /**
+     * Holds notification data for user
+     * @var array
+     */
+    protected $notification = array();
+
     /**
      * Current view to render
      * @var
@@ -57,6 +64,48 @@ class Base_Controller {
         $this->has_content = true;
         add_filter( 'the_title', array( $this, 'change_title' ), 10, 2 );
         add_filter( 'the_content', array( $this, 'render' ), 10, 1 );
+    }
+
+    /**
+     * Setter
+     *
+     * @param string $name Variable key
+     * @param midex $value Variable value
+     */
+    public function __set( $name, $value ) {
+        if( property_exists( $this, $name ) ) {
+            $this->{$name} = $value;
+        } else {
+            $this->data[$name] = $value;
+        }
+    }
+
+    /**
+     * Getter
+     *
+     * @param $name Variable key
+     * @return mixed Variable value if it exists or null otherwise
+     */
+    public function __get( $name ) {
+        if( property_exists( $this, $name ) ) {
+            return $this->{$name};
+        } else if ( array_key_exists( $name, $this->data ) ) {
+            return $this->data[ $name ];
+        }
+        return null;
+    }
+
+    /**
+     * Set notification
+     *
+     * @param $type
+     * @param string $message
+     */
+    protected function set_notification( $type, $message = '' ) {
+        $this->notification['type'] = $type;
+        $this->notification['message'] = $message;
+
+        echo '<pre>'; var_dump($type); echo '</pre>';
     }
 
     /**

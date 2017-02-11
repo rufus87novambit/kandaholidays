@@ -21,8 +21,8 @@ return array(
     'section' => array(
         'id' => $section_id,
         'args' => array(
-            'title'          => esc_html__( 'Authorization Pages', 'kanda' ),
-            'description'    => esc_html__( 'Authorization page settings', 'kanda' ),
+            'title'          => esc_html__( 'Pages assignment', 'kanda' ),
+            'description'    => esc_html__( 'Pages assignment settings', 'kanda' ),
             'panel'          => basename( __DIR__ ),
             'priority'       => 10,
             'capability'     => 'edit_theme_options',
@@ -64,6 +64,15 @@ return array(
             'section'     => $section_id,
             'default'     => $kanda_customizer_defaults[ 'auth_page_reset' ],
             'priority'    => 13,
+        ),
+        'user_page_profile' => array(
+            'type'        => 'dropdown-pages',
+            'settings'    => $theme_name . '[user_page_profile]',
+            'label'       => esc_html__( 'Page for "Profile"', 'kanda' ),
+            'description' => esc_html__( 'Choose page to use for "Reset Password"', 'kanda' ),
+            'section'     => $section_id,
+            'default'     => $kanda_customizer_defaults[ 'user_page_profile' ],
+            'priority'    => 14,
         ),
         //other fields go here
     )
