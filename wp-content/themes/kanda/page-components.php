@@ -5,21 +5,22 @@
 ?>
 <?php get_header(); ?>
 
-
     <div class="row">
         <aside class="sidebar col-sm-3">
-            <ul class="side-nav">
-                <li><a href="">Search Bookings</a></li>
-                <li><a href="">Confirmed Bookings</a></li>
-                <li><a href="">On Request Bookings</a></li>
-                <li class="sep"><a href="">Cancelled Bookings</a></li>
-                <li><a href="">User List</a></li>
-                <li><a href="">Cancellation List</a></li>
-                <li><a href="">My Profile</a></li>
-                <li class="sep"><a href="">User Guide</a></li>
-                <li class="sep"><a href="">Customer Agreement</a></li>
-                <li><a href="">Logout</a></li>
-            </ul>
+            <div class="box">
+                <ul class="side-nav">
+                    <li><a href="">Search Bookings</a></li>
+                    <li><a href="">Confirmed Bookings</a></li>
+                    <li><a href="">On Request Bookings</a></li>
+                    <li class="sep"><a href="">Cancelled Bookings</a></li>
+                    <li><a href="">User List</a></li>
+                    <li><a href="">Cancellation List</a></li>
+                    <li><a href="">My Profile</a></li>
+                    <li class="sep"><a href="">User Guide</a></li>
+                    <li class="sep"><a href="">Customer Agreement</a></li>
+                    <li><a href="">Logout</a></li>
+                </ul>
+            </div>
         </aside>
         <div class="primary col-sm-9">
             <div class="box">
@@ -149,48 +150,48 @@
 
                     <fieldset class="fieldset sep-btm">
                         <div class="col-sm-8">
-                        <legend>SELECT YOUR TRAVEL DATES</legend>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-sm-5">Check IN date</label>
-                            <div class="calendar-item col-sm-7">
-                                <input type="text" class="form-control">
+                            <legend>SELECT YOUR TRAVEL DATES</legend>
+                            <div class="form-group row clearfix">
+                                <label class="form-label col-sm-5">Check IN date</label>
+                                <div class="calendar-item col-sm-7">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row clearfix">
+                                <label class="form-label col-sm-5">Check IN date</label>
+                                <div class="calendar-item col-sm-7">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row clearfix">
+                                <label class="form-label col-sm-5">sdfsdf</label>
+                                <div class="select-wrap col-sm-7">
+                                    <select class="custom-select" name="name[]">
+                                        <option class="placeholder" selected disabled>1</option>
+                                        <option>value1</option>
+                                        <option>value2</option>
+                                        <option>value3</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-sm-5">Check IN date</label>
-                            <div class="calendar-item col-sm-7">
-                                <input type="text" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-sm-5">sdfsdf</label>
-                            <div class="select-wrap col-sm-7">
-                                <select class="custom-select" name="name[]">
-                                    <option class="placeholder" selected disabled>1</option>
-                                    <option>value1</option>
-                                    <option>value2</option>
-                                    <option>value3</option>
-                                </select>
-                            </div>
-                        </div>
-                            </div>
                     </fieldset>
 
                     <fieldset class="fieldset">
                         <div class="col-sm-8">
-                        <legend>SELECT YOUR ROOM/S</legend>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-sm-5">How Many Rooms Do You Require?</label>
-                            <div class="select-wrap col-sm-7">
-                                <select class="custom-select" name="name[]">
-                                    <option class="placeholder" selected disabled>1</option>
-                                    <option>value1</option>
-                                    <option>value2</option>
-                                    <option>value3</option>
-                                </select>
+                            <legend>SELECT YOUR ROOM/S</legend>
+                            <div class="form-group row clearfix">
+                                <label class="form-label col-sm-5">How Many Rooms Do You Require?</label>
+                                <div class="select-wrap col-sm-7">
+                                    <select class="custom-select" name="name[]">
+                                        <option class="placeholder" selected disabled>1</option>
+                                        <option>value1</option>
+                                        <option>value2</option>
+                                        <option>value3</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                            </div>
                     </fieldset>
 
                     <div class="text-right clearfix">

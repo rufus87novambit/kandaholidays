@@ -21,10 +21,22 @@ class Base_Controller {
     private $views_path;
 
     /**
-     * Received request
+     * Holds instance data
+     * @var array
+     */
+    private $data = array();
+
+    /**
+     * Current title
      * @var
      */
-    protected $request;
+    protected $title;
+
+    /**
+     * Holds notification data for user
+     * @var array
+     */
+    protected $notification = array();
 
     /**
      * Current view to render
@@ -50,7 +62,63 @@ class Base_Controller {
 
         $this->views_path = trailingslashit( KANDA_THEME_PATH . 'views' );
         $this->has_content = true;
+        add_filter( 'the_title', array( $this, 'change_title' ), 10, 2 );
         add_filter( 'the_content', array( $this, 'render' ), 10, 1 );
+    }
+
+    /**
+     * Setter
+     *
+     * @param string $name Variable key
+     * @param midex $value Variable value
+     */
+    public function __set( $name, $value ) {
+        if( property_exists( $this, $name ) ) {
+            $this->{$name} = $value;
+        } else {
+            $this->data[$name] = $value;
+        }
+    }
+
+    /**
+     * Getter
+     *
+     * @param $name Variable key
+     * @return mixed Variable value if it exists or null otherwise
+     */
+    public function __get( $name ) {
+        if( property_exists( $this, $name ) ) {
+            return $this->{$name};
+        } else if ( array_key_exists( $name, $this->data ) ) {
+            return $this->data[ $name ];
+        }
+        return null;
+    }
+
+    /**
+     * Set notification
+     *
+     * @param $type
+     * @param string $message
+     */
+    protected function set_notification( $type, $message = '' ) {
+        $this->notification['type'] = $type;
+        $this->notification['message'] = $message;
+    }
+
+    /**
+     * Change page title
+     *
+     * @param $title
+     * @param null $id
+     * @return mixed
+     */
+    public function change_title( $title, $id = null ) {
+        if( $this->post_id == $id && $this->title ) {
+            $title = $this->title;
+        }
+
+        return $title;
     }
 
     /**
@@ -61,11 +129,14 @@ class Base_Controller {
      */
     public function render( $content ) {
         if( $this->post_id == get_the_ID() ) {
+
             $template = trailingslashit($this->views_path . $this->name) . $this->view . '.php';
-            if (file_exists($template)) {
+            if ( file_exists( $template ) ) {
                 ob_start();
                 include $template;
                 $content = ob_get_clean();
+            } else {
+                $content = kanda_default_page_content( $content );
             }
         }
 

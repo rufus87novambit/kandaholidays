@@ -61,23 +61,23 @@ function kanda_add_rewrite_rule() {
     $rules = array(
         /******************************************** 1. Auth Controller ********************************************/
         array(
-            'regex' => 'login(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_login' ), 'auth', 'login' ),
+            'regex' => 'login(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'auth_page_login' ), 'auth', 'login' ),
             'after' => 'top'
         ),
         array(
-            'regex' => 'register(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_register' ), 'auth', 'register' ),
+            'regex' => 'register(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'auth_page_register' ), 'auth', 'register' ),
             'after' => 'top'
         ),
         array(
-            'regex' => 'forgot(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'auth_page_forgot' ), 'auth', 'forgot' ),
+            'regex' => 'forgot(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'auth_page_forgot' ), 'auth', 'forgot' ),
             'after' => 'top'
         ),
         array(
-            'regex' => 'reset(\/)?([a-zA-Z0-9]*)?(\/)?([a-zA-Z0-9]*)?(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&ksecurity=$matches[2]&key=$matches[4]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
+            'regex' => 'reset(\/([a-zA-Z0-9]*)\/([a-zA-Z0-9]+)(\/)?([a-zA-Z0-9]+)?)?',
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&ksecurity=$matches[1]&key=$matches[2]&unwanted=$matches[4]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
             'after' => 'top'
         ),
         /******************************************** /end Auth Controller ********************************************/
@@ -87,7 +87,21 @@ function kanda_add_rewrite_rule() {
             'regex' => 'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
             'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 123, 'hotels', 'index' ),
             'after' => 'top'
-        )
+        ),
+        /******************************************** /end Hotels Controller ********************************************/
+
+        /******************************************** 3. Profiles Controller ********************************************/
+
+        array(
+            'regex' => 'profile/edit(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'profile(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'view' ),
+            'after' => 'top'
+        ),
         /******************************************** /end Hotels Controller ********************************************/
 
         // other rules should go here
@@ -109,7 +123,8 @@ function kanda_query_vars( $public_query_vars ) {
         'key',
         'ksecurity',
         'hsid',
-        'kp'
+        'kp',
+        'unwanted'
         // other variables should go here
     ) );
 }
@@ -125,9 +140,12 @@ function kanda_parse_request( $query_vars ) {
     $controller = false;
     $action = false;
 
+    if( isset( $query_vars->query_vars['unwanted'] ) && $query_vars->query_vars['unwanted'] ) {
+        kanda_to( '404' );
+    }
+
     if( empty( $query_vars->query_vars ) ) {
         $show_on_front = get_option( 'show_on_front' );
-
 
         if( 'page' == $show_on_front ) {
             $front_page = get_post( get_option( 'page_on_front' ) );
@@ -166,5 +184,9 @@ function kanda_parse_request( $query_vars ) {
                 }
             }
         }
+    }
+
+    if( ! $controller ) {
+        add_filter( 'the_content', 'kanda_default_page_content', 10, 1 );
     }
 }

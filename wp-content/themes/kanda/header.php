@@ -6,11 +6,11 @@
         <?php wp_head(); ?>
     </head>
 
-    <body <?php body_class( array( 'back' ) ); ?>>
-        <div class="back clearfix">
+    <body <?php body_class(); ?>>
+        <div class="clearfix">
             <header class="header clearfix">
                     <h1 class="back-logo">
-                        <a href="<?php echo site_url( '/back' ); ?>">
+                        <a href="<?php echo home_url( '/' ); ?>">
                             <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                         </a>
                     </h1>
@@ -56,10 +56,10 @@
 
                     <div class="agency-logo">
                         <!--            <a href="#" class="avatar avatar-default"><i class="icon icon-plane"></i></a>-->
-                        <a href="#" class="avatar"><img src="<?php echo KANDA_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" /></a>
+                        <a href="<?php echo kanda_url_to( 'profile' ); ?>" class="avatar"><img src="<?php echo KANDA_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" /></a>
                         <div class="sub-menu">
                             <ul>
-                                <li><a href="#"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a></li>
+                                <li><a href="<?php echo kanda_url_to( 'profile', 'edit' ); ?>"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a></li>
                                 <li><a href="#"><i class="icon icon-cog"></i> <?php esc_html_e( 'Settings', 'kanda' ); ?></a></li>
                                 <li><a href="<?php echo wp_logout_url( esc_url( site_url( '/' ) ) ); ?>"><i class="icon icon-exit"></i> <?php esc_html_e( 'Logout', 'kanda' ); ?></a></li>
                             </ul>

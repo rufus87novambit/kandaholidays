@@ -166,6 +166,33 @@ function kanda_get_page_template_variables( $type = false ) {
 }
 
 /**
+ * Show notification
+ *
+ * @param $notification
+ */
+function kanda_show_notification( $notification ) {
+    if( isset( $notification['type'] ) && $notification['type'] && isset( $notification['message'] ) && $notification['message'] ) {
+        switch ($notification['type']) {
+            case 'success':
+                $icon = '<i class=icon icon-checkmark"></i>';
+                break;
+            case 'info':
+                $icon = '<i class="icon icon-info"></i>';
+                break;
+            case 'warning':
+                $icon = '<i class="icon icon-warrning"></i>';
+                break;
+            case 'danger':
+                $icon = '<i class="icon icon-cross"></i>';
+                break;
+            default:
+                $icon = '';
+        }
+        printf('<div class="alert alert-%1$s" role="alert">%2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
+    }
+}
+
+/**
  * Get sidebars configuration
  *
  * @return array
@@ -204,9 +231,13 @@ function kanda_to( $name ) {
  * Get url to
  *
  * @param $name
+ * @param string $params
  * @return bool|false|string|void
  */
-function kanda_url_to( $name ) {
+function kanda_url_to( $name, $params = '' ) {
+    if( $params && (strpos( $params, '/' ) === 0) ) {
+        $params = substr( $params, 1 );
+    }
     switch( $name ) {
         case 'home';
             $url = home_url();
@@ -223,11 +254,14 @@ function kanda_url_to( $name ) {
         case 'reset-password':
             $url = get_permalink( kanda_get_theme_option( 'auth_page_reset' ) );
             break;
+        case 'profile':
+            $url = get_permalink( kanda_get_theme_option( 'user_page_profile' ) );
+            break;
         default:
             $url = false;
     }
 
-    return $url;
+    return $url ? ( $url . $params ) : $url;
 }
 
 /**
@@ -258,7 +292,7 @@ function kanda_get_post_meta( $post_id, $key = '' ) {
 
         $cached_posts[ $post_id ] = isset( $cached_posts[ $post_id ] ) ? $cached_posts[ $post_id ] : array();
 
-        $metas = (array)get_term_meta( $post_id );
+        $metas = (array)get_post_meta( $post_id );
 
         $meta_cache = array();
         foreach( $metas as $meta_key => $meta_value ) {
@@ -297,16 +331,16 @@ function &kanda_get_cached_users() {
  */
 function kanda_get_user_meta( $user_id, $key = '' ) {
 
-    $cached_users = &kanda_get_cached_posts();
+    $cached_users = &kanda_get_cached_users();
     if( ! isset( $cached_users[ $user_id ] ) ) {
 
         $cached_users[ $user_id ] = isset( $cached_users[ $user_id ] ) ? $cached_users[ $user_id ] : array();
 
-        $metas = (array)get_term_meta( $user_id );
+        $metas = (array)get_user_meta( $user_id );
 
         $meta_cache = array();
         foreach( $metas as $meta_key => $meta_value ) {
-            $meta_cache[ $meta_key ] = $meta_value[0];
+            $meta_cache[ $meta_key ] = maybe_unserialize( $meta_value[0] );
         }
         $cached_users[ $user_id ] = $meta_cache;
     }
@@ -315,7 +349,7 @@ function kanda_get_user_meta( $user_id, $key = '' ) {
         return $cached_users[ $user_id ];
     }
 
-    return isset( $cached_users[ $user_id ][ $key ] ) ? maybe_unserialize( $cached_users[ $user_id ][ $key ] ) : null;
+    return isset( $cached_users[ $user_id ][ $key ] ) ? $cached_users[ $user_id ][ $key ] : null;
 }
 
 /**

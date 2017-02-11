@@ -8,8 +8,8 @@ class Hotels_Controller extends Base_Controller {
     protected $name = 'hotels';
     public $default_action = 'index';
 
-    public function __contruct( $post_id = 0 ) {
-        if( is_user_logged_in() ) {
+    public function __construct( $post_id = 0 ) {
+        if( ! is_user_logged_in() ) {
             kanda_to( 'login' );
         }
 

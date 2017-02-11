@@ -18,6 +18,16 @@ if ( ! current_user_can( 'administrator' ) ) {
 }
 
 /**
+ * Default content callback
+ *
+ * @param $content
+ * @return string
+ */
+function kanda_default_page_content( $content ) {
+    return sprintf( '<div class="editor-content">%1$s</div>', $content );
+}
+
+/**
  * Deny accesses
  */
 add_action( 'get_header', 'kanda_get_header', 10, 1 );

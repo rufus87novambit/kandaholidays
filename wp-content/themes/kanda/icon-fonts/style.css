@@ -51,6 +51,12 @@
 .icon-cross:before {
   content: "\ea0f";
 }
+.icon-warrning:before {
+  content: "\ea07";
+}
+.icon-info:before {
+  content: "\ea08";
+}
 .icon-currency-gbp:before {
   content: "\e909";
 }
