@@ -172,7 +172,23 @@ function kanda_get_page_template_variables( $type = false ) {
  */
 function kanda_show_notification( $notification ) {
     if( isset( $notification['type'] ) && $notification['type'] && isset( $notification['message'] ) && $notification['message'] ) {
-        printf('<div class="alert alert-%1$s" role="alert">%2$s</div>', $notification['type'], $notification['message']);
+        switch ($notification['type']) {
+            case 'success':
+                $icon = '<i class=icon icon-checkmark"></i>';
+                break;
+            case 'info':
+                $icon = '<i class="icon icon-info"></i>';
+                break;
+            case 'warning':
+                $icon = '<i class="icon icon-warrning"></i>';
+                break;
+            case 'danger':
+                $icon = '<i class="icon icon-cross"></i>';
+                break;
+            default:
+                $icon = '';
+        }
+        printf('<div class="alert alert-%1$s" role="alert">%2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
     }
 }
 

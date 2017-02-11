@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-
+                <img style="max-width: 150px; border-radius: 50%;" src="<?php echo KANDA_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" />
             </div>
         </div>
     </fieldset>
@@ -135,28 +135,46 @@
         <legend><?php esc_html_e( 'CHANGE PASSWORD', 'kanda' ); ?></legend>
         <div class="row">
             <div class="col-sm-4">
-                <div class="form-group row clearfix">
+
+                <?php $has_error = isset( $this->errors[ 'old_password' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-12"><?php esc_html_e( 'Old password', 'kanda' ); ?>:</label>
                     <div class="col-sm-12">
-                        <input type="password" class="form-control">
+                        <input type="password" name="old_password" class="form-control" value="<?php echo $this->old_password; ?>">
+                        <?php if( $has_error && $this->errors[ 'old_password' ] ) { ?>
+                            <div class="error-msg"><?php echo $this->errors[ 'old_password' ]; ?></div>
+                        <?php } ?>
                     </div>
                 </div>
+
             </div>
             <div class="col-sm-4">
-                <div class="form-group row clearfix">
+
+                <?php $has_error = isset( $this->errors[ 'new_password' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-12"><?php esc_html_e( 'New password', 'kanda' ); ?>:</label>
                     <div class="col-sm-12">
-                        <input type="password" class="form-control">
+                        <input type="password" name="new_password" class="form-control" value="<?php echo $this->new_password; ?>">
+                        <?php if( $has_error && $this->errors[ 'new_password' ] ) { ?>
+                            <div class="error-msg"><?php echo $this->errors[ 'new_password' ]; ?></div>
+                        <?php } ?>
                     </div>
                 </div>
+
             </div>
             <div class="col-sm-4">
-                <div class="form-group row clearfix">
+
+                <?php $has_error = isset( $this->errors[ 'confirm_password' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-12"><?php esc_html_e( 'Confirm password', 'kanda' ); ?>:</label>
                     <div class="col-sm-12">
-                        <input type="password" class="form-control">
+                        <input type="password" name="confirm_password" class="form-control" value="<?php echo $this->confirm_password; ?>">
+                        <?php if( $has_error && $this->errors[ 'confirm_password' ] ) { ?>
+                            <div class="error-msg"><?php echo $this->errors[ 'confirm_password' ]; ?></div>
+                        <?php } ?>
                     </div>
                 </div>
+
             </div>
         </div>
     </fieldset>

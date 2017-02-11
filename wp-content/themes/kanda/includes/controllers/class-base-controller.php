@@ -104,8 +104,6 @@ class Base_Controller {
     protected function set_notification( $type, $message = '' ) {
         $this->notification['type'] = $type;
         $this->notification['message'] = $message;
-
-        echo '<pre>'; var_dump($type); echo '</pre>';
     }
 
     /**

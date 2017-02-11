@@ -34,6 +34,13 @@ class Profiles_Controller extends Base_Controller {
 
         if( isset( $_POST['kanda_save'] ) ) {
 
+            $user = wp_get_current_user();
+            $user_meta = kanda_get_user_meta( get_current_user_id() );
+
+            $this->user_login = $user->user_login;
+            $this->company_name = $user_meta['company_name'];
+            $this->company_license = $user_meta['company_license'];
+
             $security = isset( $_POST['security'] ) ? $_POST['security'] : '';
             if( wp_verify_nonce( $security, 'kanda_save_profile' ) ) {
 
@@ -83,17 +90,77 @@ class Profiles_Controller extends Base_Controller {
                 $this->company_website = isset( $_POST['website'] ) ? $_POST['website'] : '';
                 if( $this->company_website && ( filter_var( $this->company_website, FILTER_VALIDATE_URL) === false ) ) {
                     $is_valid = false;
+                    $errors['company_website'] = esc_html__( 'Invalid URL', 'kanda' );
+                }
+
+                $this->new_password = isset( $_POST['new_password'] ) ? $_POST['new_password'] : '';
+                $this->confirm_password = isset( $_POST['confirm_password'] ) ? $_POST['confirm_password'] : '';
+                if( $this->new_password || $this->confirm_password ) {
+
+                    $is_current_password_valid = true;
+                    $this->old_password = isset( $_POST['old_password'] ) ? $_POST['old_password'] : '';
+
+                    if( ! $this->old_password ) {
+                        $is_current_password_valid = false;
+                        $is_valid = false;
+                        $errors['old_password'] = esc_html__( 'Required', 'kanda' );
+                    } else {
+                        $user = wp_get_current_user();
+                        if( ! wp_check_password( $this->old_password, $user->user_pass, $user->ID ) ) {
+                            $is_current_password_valid = false;
+                            $is_valid = false;
+                            $errors['old_password'] = esc_html__( 'Required', 'kanda' );
+                        }
+                    }
+
+                    if( $is_current_password_valid ) {
+                        $validation_data = Kanda_Config::get( 'validation->front->data' );
+                        $validation_rules = Kanda_Config::get( 'validation->front->form_register' );
+
+                        if( ! $this->new_password ) {
+                            $is_valid = false;
+                            $errors['new_password'] =  esc_html__( 'Required', 'kanda' );
+                        } elseif( $this->new_password == $this->old_password ) {
+                            $is_valid = false;
+                            $errors['new_password'] =  esc_html__( 'Current and new passwords are the same', 'kanda' );
+                        } elseif( ! filter_var( strlen( $this->new_password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
+                            $is_valid = false;
+                            $errors['new_password'] = strtr( $validation_rules['password']['rangelength'], array( '{0}' => $validation_data['password_min_length'], '{1}' => $validation_data['password_max_length'] ) );
+                        }
+
+                        if( ! $this->confirm_password ) {
+                            $is_valid = false;
+                            $errors['confirm_password'] =  esc_html__( 'Required', 'kanda' );
+                        } elseif( $this->new_password && ( $this->new_password != $this->confirm_password ) ) {
+                            $is_valid = false;
+                            $match_message = esc_html__( 'Passwords does not match', 'kanda' );
+                            $errors['confirm_password'] = $match_message;
+                            if( ! isset( $errors['new_password'] ) ) {
+                                $errors['new_password'] = $match_message;
+                            }
+
+                        }
+                    }
+                }
+
+                $this->company_website = isset( $_POST['company_website'] ) ? $_POST['company_website'] : '';
+                if( $this->company_website && ! preg_match( '/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/', $this->company_website ) ) {
+                    $is_valid = false;
                     $errors['company_website'] =  esc_html__( 'Invalid URL', 'kanda' );
                 }
 
                 if( $is_valid ) {
-                    $user_id = wp_update_user( array(
+                    $userdata = array(
                         'ID' => get_current_user_id(),
                         'user_email' => $this->user_email,
                         'first_name' => $this->first_name,
                         'last_name'  => $this->last_name,
                         'user_url'   => $this->company_website
-                    ) );
+                    );
+                    if( $this->new_password ) {
+                        $userdata[ 'user_pass' ] = $this->new_password;
+                    }
+                    $user_id = wp_update_user( $userdata );
 
                     if( is_wp_error( $user_id ) ) {
                         $this->set_notification( 'danger', esc_html__( 'Error updating. Please try again.', 'kanda' ) );
@@ -106,6 +173,7 @@ class Profiles_Controller extends Base_Controller {
                         update_user_meta( $user_id, 'company_phone', $this->company_phone );
 
                         $this->set_notification( 'success', esc_html__( 'Profile successfully updated', 'kanda' ) );
+                        $this->old_password = $this->new_password = $this->confirm_password = '';
                     }
                 } else {
                     $this->errors = $errors;
