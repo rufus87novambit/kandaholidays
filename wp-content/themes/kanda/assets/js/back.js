@@ -45,7 +45,7 @@
     if( $( '.datepicker' ).length > 0 ) {
         $( '.datepicker' ).datepicker({
             showOn: 'button',
-            buttonImage: '../images/back/calendar.gif',
+            buttonImage: kanda.theme_url + 'images/back/calendar.gif',
             buttonImageOnly: true,
             buttonText: 'Select date'
         });
