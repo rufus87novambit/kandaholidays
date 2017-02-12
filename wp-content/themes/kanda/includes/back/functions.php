@@ -23,6 +23,7 @@ function kanda_enqueue_scripts() {
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
 function kanda_enqueue_styles(){
+    wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
     wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
 }
 

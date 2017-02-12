@@ -51,6 +51,15 @@
         $(".custom-select").customSelect();
     }
 
+    //datepicker
+    if($(".datepicker").length>0) {
+        $(".datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "../images/back/calendar.gif",
+            buttonImageOnly: true,
+            buttonText: "Select date"
+        });
+    }
 
     //magnific popup example
     if($('.popup-block').length>0){

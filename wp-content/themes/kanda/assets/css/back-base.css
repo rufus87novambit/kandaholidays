@@ -3,21 +3,22 @@
     --border-color:#d8d8d8;
     --text-color: #373b42;
     --color-muted: #636c72;
+    --color-light: #fff;
 
     --gray:#757575;
     --gray2:#ccc;
 
     --brand-primary: #3d4795;
-    --brand-info: #18aba9;
     --brand-success: #5ABD7E;
+    --brand-info: #5bc0de;
     --brand-warning: #D0C048;
     --brand-danger: #fd5477;
 
     --brand-primary-border: #2856b6;
-    --brand-info-border: #bcdff1;
-    --brand-success-border: #d0e9c6;
-    --brand-warning-border: #faf2cc;
-    --brand-danger-border: #ebcccc;
+    --brand-success-border: #449d44;
+    --brand-info-border: #31b0d5;
+    --brand-warning-border: #ec971f;
+    --brand-danger-border: #c9302c;
 }
 
 /*icon fonts*/
@@ -54,6 +55,7 @@ a{    -webkit-transition:all 0.15s ease;
 .text-danger{color:#fd5477;}
 
 .text-muted { color: var(--color-muted) !important; }
+.text-light { color: var(--color-light) !important; }
 
 /*background color*/
 .bg-dark{background-color:#2a4f61;}
@@ -103,23 +105,20 @@ a{    -webkit-transition:all 0.15s ease;
 
 /*Typography*/
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 15px;
+    margin-bottom: .5rem;
     font-family: inherit;
     font-weight: 500;
-    line-height: 1.3;
+    line-height: 1.1;
     color: inherit;
 }
-h1 {  font-size: 4.5rem; }
-h2 {  font-size: 2.6rem; }
-h3 {  font-size: 3rem; }
-h4 {  font-size: 2.4rem; }
-h5 {  font-size: 20px; }
-h6 {  font-size: 18px; }
+
+h1 {  font-size: 2.5rem; }
+h2 {  font-size: 2rem; }
+h3 {  font-size: 1.75rem; }
+h4 {  font-size: 1.5rem; }
+h5 {  font-size: 1.25rem; }
+h6 {  font-size: 1rem; }
 
 .container {
     max-width: 1160px;
-}
-
-html{
-    font-size:10px;
 }

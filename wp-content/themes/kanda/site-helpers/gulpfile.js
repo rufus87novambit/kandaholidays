@@ -79,7 +79,7 @@ gulp.task('front-build', ['css-front','js-front']);
  */
 gulp.task('css-back', function () {
     gulp.src([
-        '../icons/style.css',
+        'node_modules/jquery-ui-dist/jquery-ui.min.css',
         '../assets/css/reset.css',
         '../assets/css/grid.css',
         '../assets/css/components.css',
@@ -112,6 +112,7 @@ gulp.task('js-back', function () {
         '../assets/js/plugins/jquery.customSelect.min.js',
         /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
         'node_modules/cropper/dist/cropper.js',
+        'node_modules/jquery-ui-dist/jquery-ui.min.js',
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
