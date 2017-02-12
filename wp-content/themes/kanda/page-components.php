@@ -6,19 +6,28 @@
 <?php get_header(); ?>
 
 <!--Popup-->
-<div class="popup-block">
-    <!--white box-->
-    <div class="popup-content popup-box">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Ad assumenda atque commodi ea est iure iusto nobis numquam pariatur,
-        praesentium quasi quia, sapiente sit totam voluptas. A at consequuntur deserunt dolor dolore,
-        dolorum eum facere minima modi provident repellat ullam.
+<div class="popup-wrap">
+    <div class="popup-container">
+        <div class="popup-content">
+            <!--white block-->
+            <div class="popup-block white-popup-block">
+                <button title="Close (Esc)" type="button" class="popup-close">×</button>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Ad assumenda atque commodi ea est iure iusto nobis numquam pariatur,
+                praesentium quasi quia, sapiente sit totam voluptas. A at consequuntur deserunt dolor dolore,
+                dolorum eum facere minima modi provident repellat ullam.
+            </div>
+
+            <!--simple block-->
+           <!-- <div class="popup-block text-center text-light">
+                <button title="Close (Esc)" type="button" class="popup-close">×</button>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Ad assumenda atque commodi ea est iure iusto nobis numquam pariatur,
+                praesentium quasi quia, sapiente sit totam voluptas. A at consequuntur deserunt dolor dolore,
+                dolorum eum facere minima modi provident repellat ullam.
+            </div>-->
+        </div>
     </div>
-    <!--simple box-->
-   <!-- <div class="popup-content text-center text-light">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Ad assumenda atque commodi ea est iure iusto nobis numquam pariatur
-    </div>-->
 </div>
 <div class="popup-overlay"></div>
 <!--End Popup-->
