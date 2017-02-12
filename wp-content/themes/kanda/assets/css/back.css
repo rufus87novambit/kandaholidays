@@ -1,4 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
 
 html {
     font-family: sans-serif;
@@ -8,11 +8,11 @@ html {
 }
 
 body {
-    font-family: 'Cabin', 'Trebuchet MS', 'Arial', 'Helvetica', 'Verdana', sans-serif;
-    /*font-family: 'Open Sans', sans-serif;*/
+    /*font-family: 'Cabin', 'Trebuchet MS', 'Arial', 'Helvetica', 'Verdana', sans-serif;*/
+    font-family: 'Open Sans', sans-serif;
     color: var(--text-color);
     font-size: 1rem;
-    line-height: 1.15;
+    line-height: 1.5;
     background: var(--bg-color) url(../images/back/world_map.png) no-repeat center 150px;
     box-shadow: 0 5px 19px var(--brand-primary);
     border-top: 5px solid #fff;

@@ -62,12 +62,12 @@
     }
 
     //magnific popup example
-    if($('.popup-block').length>0){
+   /* if($('.popup-block').length>0){
         $('.open-popup').magnificPopup({
             type:'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         });
-    }
+    }*/
 
     //slider
     if($('.slider').length>0){
