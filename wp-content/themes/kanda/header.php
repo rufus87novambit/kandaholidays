@@ -55,7 +55,7 @@
                     </nav>
 
                     <div class="agency-logo">
-                        <a href="<?php echo kanda_url_to( 'profile' ); ?>" class="avatar"><?php echo kanda_get_user_avatar( get_current_user_id(), array('class' => 'user-avatar') ); ?></a>
+                        <a href="<?php echo kanda_url_to( 'profile' ); ?>" class="avatar"><?php echo kanda_get_user_avatar( get_current_user_id(), array('class' => 'user-avatar', 'data-default' => kanda_get_user_avatar_url() ) ); ?></a>
                         <div class="sub-menu">
                             <ul>
                                 <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a></li>

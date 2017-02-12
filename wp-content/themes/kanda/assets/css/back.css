@@ -157,20 +157,15 @@ header .back-logo img {
     color: var(--brand-danger);
 }
 
-.popup {
-    position: fixed;
-    width:50%;
-    left: 25%;
-    top: 25%;
-    z-index: 1000;
+.popup-image-crop {
+    margin-bottom: 1rem;
+    line-height: 0;
     display: none;
-    border:2px solid #000;
-    background: #ccc;
-    box-sizing: border-box;
 }
-.popup.opened {
+.popup-image-crop-wrapper.has-cropper .popup-image-crop {
     display: block;
 }
+
 .popup#image-crop {
     line-height: 0;
 }

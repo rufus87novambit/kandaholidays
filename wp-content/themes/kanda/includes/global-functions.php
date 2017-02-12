@@ -55,17 +55,34 @@ function kanda_get_user_avatar( $user_id = false, $atts = array() ) {
     if( ! $user_id ) {
         $user_id = get_current_user_id();
     }
-    $avatar = kanda_get_user_meta( $user_id, 'avatar' );
+
+    $avatar = kanda_get_user_avatar_url( $user_id );
     $company_name = kanda_get_user_meta( $user_id, 'company_name' );
+    $img_atts = '';
+
+    foreach( $atts as $attr => $value ) {
+        $img_atts .= sprintf( '%1$s="%2$s"', $attr, $value );
+    }
+
+    return sprintf( '<img src="%1$s" %2$s alt="%3$s"/>', $avatar, $img_atts, $company_name );
+}
+
+/**
+ * Get user avatar url
+ *
+ * @param bool|false $user_id
+ * @return mixed|null
+ */
+function kanda_get_user_avatar_url( $user_id = false ) {
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+    $avatar = kanda_get_user_meta( $user_id, 'avatar' );
     if( ! $avatar ) {
         $avatar = kanda_get_theme_option( 'other_default_avatar' );
     }
 
-    $img_atts = '';
-    foreach( $atts as $attr => $value ) {
-        $img_atts .= sprintf( '%1$s="%2$s"', $attr, $value );
-    }
-    return sprintf( '<img src="%1$s" %2$s alt="%3$s"/>', $avatar, $img_atts, $company_name );
+    return $avatar;
 }
 
 /**

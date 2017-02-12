@@ -141,7 +141,6 @@
 .sep-btm{
     border-bottom:solid 1px var(--border-color);
 }
-
 /*Popup*/
 .popup-overlay{
     position:fixed;
@@ -152,6 +151,7 @@
     height:100%;
     background:rgba(0,0,0,0.7);
     overflow:hidden;
+    display: none;
 }
 
 .popup-wrap {
@@ -163,6 +163,7 @@
     position: fixed;
     outline: 0!important;
     -webkit-backface-visibility: hidden;
+    display: none;
 }
 
 .popup-container {
@@ -193,7 +194,7 @@
 }
 .popup-block{
     position: relative;
-    padding: 1rem 1.5rem;
+    padding: 2rem 1.5rem 1rem 1.5rem;
     max-width: 650px;
     margin: 1.5rem auto;
 }
@@ -234,4 +235,13 @@ button.popup-close{
 
 .white-popup-block .popup-close {
     color: var(--text-color);
+}
+
+body.popup-open .popup-overlay,
+body.popup-open .popup-wrap.open {
+    display:block;
+}
+.popup-buttons {
+    padding-top: 1rem;
+    border-top:solid 1px var(--border-color);
 }
