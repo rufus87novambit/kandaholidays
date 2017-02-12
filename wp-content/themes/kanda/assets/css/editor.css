@@ -1,22 +1,10 @@
-.editor-content{
-    line-height:130%;
-}
-
 .editor-content p{
-    margin-bottom:15px;
+    margin-bottom:1rem;
 }
-
-/*.editor-content h1,
-.editor-content h2,
-.editor-content h3,
-.editor-content h4,
-.editor-content h5,
-.editor-content h6,
-.editor-content b,
-.editor-content strong{
-    font-family:'montserratbold';
-}*/
-
+.editor-content ul,
+.editor-content ol{
+    margin:0 0 1rem 20px;
+}
 .editor-content ol{
     list-style:decimal;
 }

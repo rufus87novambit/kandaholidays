@@ -131,7 +131,7 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Date</label>
-                                    <div class="date-field">
+                                    <div class="calendar-field">
                                         <input type="text" class="form-control datepicker">
                                     </div>
                                 </div>

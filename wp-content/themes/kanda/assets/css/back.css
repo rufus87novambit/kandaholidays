@@ -117,3 +117,25 @@ header .back-logo img {
 .side-nav a:hover{
     color:var(--brand-primary);
 }
+
+/*article list*/
+.articles-list li{
+    padding-bottom:1rem;
+    margin-bottom:1rem;
+    border-bottom:solid 1px var(--border-color);
+}
+.articles-list li:last-child{
+    border-bottom:0;
+}
+.article-title{
+    color:var(--brand-info);
+}
+.article-title a{
+    color:inherit;
+}
+.article-obj{
+    margin:5px 0 .75rem;
+}
+.article-body .btn{
+    margin-top:.5rem;
+}
