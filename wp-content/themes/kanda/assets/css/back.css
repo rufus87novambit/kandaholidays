@@ -139,7 +139,6 @@ header .back-logo img {
 .article-body .btn{
     margin-top:.5rem;
 }
-}
 
 .avatar-wrapper {
     width:151px;
@@ -179,19 +178,6 @@ header .back-logo img {
 .avatar-wrapper .avatar-actions-overlay .avatar-actions .bin {
     color: var(--brand-danger);
 }
-
-.popup-image-crop {
-    margin-bottom: 1rem;
-    line-height: 0;
-    display: none;
-}
-.popup-image-crop-wrapper.has-cropper .popup-image-crop {
-    display: block;
-}
-
-.popup#image-crop {
-    line-height: 0;
-}
-.popup#image-crop img {
-    width: 100%;
+.avatar-wrapper .avatar-actions-overlay .avatar-actions .edit {
+    color: var(--brand-info);
 }

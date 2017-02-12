@@ -25,22 +25,16 @@
             </div>
             <div class="col-sm-6 text-center">
                 <div class="avatar-wrapper text-left">
-                    <?php $user_id = get_current_user_id(); ?>
                     <div class="avatar-actions-overlay">
                         <div class="avatar-actions vert-center text-center">
-                            <?php $has_avatar = kanda_get_user_meta( $user_id, 'avatar' ); ?>
-                            <a href="#" class="action upload <?php echo $has_avatar ? '' : 'default' ?>" data-target="image-crop">U<i class="icon icon-upload"></i></a>
-                            <a href="#" class="action bin <?php echo $has_avatar ? '' : 'hidden-xl-down' ?>">D<i class="icon icon-bin"></i></a>
+                            <a href="#" class="action upload"><i class="icon icon-upload"></i></a>
+                            <?php if( kanda_get_user_meta( get_current_user_id(), 'avatar' ) ) { ?>
+                            <a href="#" class="action edit"><i class="icon icon-edit"></i></a>
+                            <?php } ?>
+                            <a href="#" class="action bin"><i class="icon icon-bin"></i></a>
                         </div>
                     </div>
-                    <?php
-                        echo kanda_get_user_avatar( $user_id, array(
-                            'class' => 'user-avatar',
-                            'id' => 'user-avatar',
-                            'data-default' => kanda_get_user_avatar_url()
-                        ) );
-                    ?>
-                    <input type="hidden" class="upload_field hidden-xl-down">
+                    <?php echo kanda_get_user_avatar(); ?>
                 </div>
             </div>
         </div>
@@ -201,25 +195,3 @@
         <a role="button" href="<?php echo kanda_url_to( 'profile' ); ?>" class="btn -secondary"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>
-
-<div class="popup-wrap" id="image-crop">
-    <div class="popup-container">
-        <div class="popup-content">
-            <!--white block-->
-            <div class="popup-block white-popup-block">
-                <div class="popup-image-crop-wrapper">
-                    <h3><?php esc_html_e( 'Upload avatar', 'kanda' ); ?></h3>
-                    <div class="popup-image-crop">
-                        <img src="" alt="<?php esc_html_e( 'avatar', 'kanda' ); ?>">
-                    </div>
-                    <div class="text-right popup-buttons">
-                        <input type="file" class="btn-upload-avatar hidden-xl-down" />
-                        <a role="button" class="btn -warning popup-upload-avatar"><?php esc_html_e( 'upload', 'kanda' ); ?></a>
-                        <a role="button" href="#" class="btn -primary avatar-save hidden-xl-down"><?php esc_html_e( 'save', 'kanda' ); ?></a>
-                        <a role="button" href="#" class="btn -danger avatar-discard"><?php esc_html_e( 'discard', 'kanda' ); ?></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
