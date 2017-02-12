@@ -26,6 +26,9 @@ return array(
     /** - Section Debug - **/
     'debug_developer_email' => '',
 
+    /** - Section Debug - **/
+    'other_default_avatar' => KANDA_THEME_URL . 'images/back/profile.png',
+
 /** - Panel Emails - **/
     'email_forgot_password_title'       => esc_html__( 'Reset Password', 'kanda' ),
     'email_forgot_password_body'        => '',

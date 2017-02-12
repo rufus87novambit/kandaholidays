@@ -12,6 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Kanda_Config {
 
+    /**
+     * Role for agencies
+     *
+     * @var
+     */
     private static $agency_role;
 
     /**

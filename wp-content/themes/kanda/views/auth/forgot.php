@@ -11,11 +11,9 @@ $form_links = array(
 
             <h1 class="page-title"><?php esc_html_e( 'Forgot Password', 'kanda' ); ?></h1>
 
-            <?php if( $this->request['message'] ) { ?>
-                <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
-            <?php } ?>
+            <?php kanda_show_notification( $this->notification ); ?>
 
-            <?php if( ! $this->request['success'] ) { ?>
+            <?php if( $this->show_form ) { ?>
             <p class="instructions"><?php esc_html_e( 'To reset your password please enter your username or email and click \'Submit\' button.', 'kanda' ); ?></p>
 
             <form id="form_forgot_password" method="post">
@@ -23,17 +21,17 @@ $form_links = array(
                 <div class="row clearfix">
                     <label for="username_email"><?php esc_html_e( 'Username / Email', 'kanda' ); ?>:</label>
 
-                    <?php $has_error = ! $this->request['fields']['username_email']['valid']; ?>
+                    <?php $has_error = isset( $this->errors['username_email'] ); ?>
                     <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                        <input id="username_email" name="username_email" type="text" value="<?php echo $this->request['fields']['username_email']['value']; ?>" />
-                        <div class="help-block"><?php echo $this->request['fields']['username_email']['msg']; ?></div>
+                        <input id="username_email" name="username_email" type="text" value="<?php echo $this->username_email; ?>" />
+                        <div class="help-block"><?php echo $this->errors['username_email']; ?></div>
                     </div>
                 </div>
 
                 <div class="row clearfix">
                     <label class="hidden-xss">&nbsp;</label>
                     <div class="input-holder">
-                        <?php wp_nonce_field( 'kanda_forgot', 'kanda_nonce' ); ?>
+                        <?php wp_nonce_field( 'kanda_security_forgot', 'security' ); ?>
                         <input type="submit" class="btn" name="kanda_forgot" value="<?php esc_html_e( 'Submit', 'kanda' ); ?>" />
                     </div>
                 </div>

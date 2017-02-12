@@ -1,5 +1,5 @@
 <?php kanda_show_notification( $this->notification ); ?>
-<form class="form-block form-inline" method="post">
+<form class="form-block form-inline" enctype="multipart/form-data" method="post">
     <fieldset class="fieldset sep-btm">
         <legend><?php esc_html_e( 'GENERAL', 'kanda' ); ?></legend>
         <div class="row">
@@ -23,8 +23,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <img style="max-width: 150px; border-radius: 50%;" src="<?php echo KANDA_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" />
+            <div class="col-sm-6 text-center">
+                <div class="avatar-wrapper text-left">
+                    <?php $user_id = get_current_user_id(); ?>
+                    <div class="avatar-actions-overlay">
+                        <div class="avatar-actions vert-center text-center">
+                            <a href="#" class="action upload" data-target="#avatar_field"><i class="icon icon-upload"></i></a>
+                            <?php $has_avatar = kanda_get_user_meta( $user_id, 'avatar' ); ?>
+                            <a href="#" class="action bin <?php echo $has_avatar ? '' : 'hidden-xl-down' ?>"><i class="icon icon-bin"></i></a>
+                        </div>
+                    </div>
+                    <?php
+                        echo kanda_get_user_avatar( $user_id, array(
+                            'class' => 'user-avatar',
+                            'id' => 'user-avatar',
+                            'data-default' => kanda_get_theme_option( 'other_default_avatar' )
+                        ) );
+                    ?>
+                    <input type="file" id="avatar_field" data-preview="#image-crop #image" class="upload_field hidden-xl-down">
+                </div>
             </div>
         </div>
     </fieldset>
@@ -184,3 +201,9 @@
         <a role="button" href="<?php echo kanda_url_to( 'profile' ); ?>" class="btn -secondary"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>
+
+<div id="image-crop" class="popup">
+    <div style="line-height: 0">
+        <img src="" alt="<?php esc_html_e( 'avatar', 'kanda' ); ?>">
+    </div>
+</div>

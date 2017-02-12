@@ -110,3 +110,63 @@ header .back-logo img {
 .side-nav a:hover{
     color:var(--brand-primary);
 }
+
+.avatar-wrapper {
+    width:151px;
+    height: 151px;
+    max-width: 100%;
+    position: relative;
+    border-radius: 50%;
+    line-height: 0;
+    display: inline-block;
+    border: 2px solid rgba(0,0,0,.15);
+    overflow: hidden;
+}
+.avatar-wrapper .avatar-actions-overlay {
+    background: rgba(0,0,0, .5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-transition: opacity .3s;
+    transition: opacity .3s;
+}
+.avatar-wrapper:hover .avatar-actions-overlay {
+    opacity: 1;
+}
+.avatar-wrapper .avatar-actions-overlay .avatar-actions {
+    width: 100%;
+}
+.avatar-wrapper .avatar-actions-overlay .action {
+    font-size: 1.4em;
+    margin: 0 4px;
+}
+.avatar-wrapper .avatar-actions-overlay .avatar-actions .upload {
+    color: var(--brand-success);
+}
+.avatar-wrapper .avatar-actions-overlay .avatar-actions .bin {
+    color: var(--brand-danger);
+}
+
+.popup {
+    position: fixed;
+    width:50%;
+    left: 25%;
+    top: 25%;
+    z-index: 1000;
+    display: none;
+    border:2px solid #000;
+    background: #ccc;
+    box-sizing: border-box;
+}
+.popup.opened {
+    display: block;
+}
+.popup#image-crop {
+    line-height: 0;
+}
+.popup#image-crop img {
+    width: 100%;
+}

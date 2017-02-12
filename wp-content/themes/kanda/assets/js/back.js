@@ -35,12 +35,12 @@
 
 
     //menu toggle
-    $('#menuBtn').click(function(){
+    $('#menuBtn').on( 'click', function(){
         $('body').toggleClass('menu-opened');
         return false;
     });
     //sub menu toggle
-    $('.touchevents .sub-toggler').click(function(){
+    $('.touchevents .sub-toggler').on( 'click', function(){
         $(this).parent().toggleClass('active');
         return false;
     });
@@ -69,6 +69,53 @@
             dots:true,
             dotsClass:'slick-dots container'
         });
+    }
+
+    //trigger upload
+    if( $('.avatar-actions .upload').length>0 ) {
+
+        function init_cropper_popup( image_src ) {
+            var popup = $( '#image-crop' ),
+                image = $( '#image-crop img' );
+
+            image.attr( 'src', image_src );
+            popup.addClass( 'opened' );
+
+            image.cropper( {
+                autoCrop: true,
+                zoomable: false,
+                aspectRatio: 1,
+                ready: function(){},
+                crop: function( e ) {
+                    var cropped_url = $(this).cropper('getCroppedCanvas', {
+                        width: 151,
+                        height: 151
+                    }).toDataURL();
+                    $('.user-avatar').attr( 'src', cropped_url );
+                }
+            } );
+        }
+
+
+        $('.avatar-actions .upload').on( 'click', function(){
+            var _target = $(this).data( 'target' );
+            $( _target).trigger( 'click' );
+
+            return false;
+        } );
+
+        $( '.upload_field').on( 'change', function(){
+
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    init_cropper_popup( e.target.result );
+                }
+
+                reader.readAsDataURL( this.files[0] );
+            }
+        } );
     }
 
 })(jQuery);
