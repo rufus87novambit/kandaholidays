@@ -4,9 +4,10 @@
     vertical-align: middle;
 }
 /*end inline form*/
+
 .fieldset{
-    padding-bottom:15px;
-    margin-bottom:25px;
+    padding-bottom:1rem;
+    margin-bottom:1.5rem;
 }
 
 .form-title,
@@ -21,7 +22,7 @@ legend {
 }
 
 .form-group{
-    margin-bottom:20px;
+    margin-bottom:1rem;
 }
 .form-label{
     font-size: 14px;
@@ -30,11 +31,10 @@ legend {
 .form-control{
     display: block;
     width: 100%;
-    min-width:200px;
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: .5rem .75rem;
+    font-size: 1rem;
     line-height: 1.25;
-    color: #464a4c;
+    color: var(--text-color);
     background-color: #fff;
     background-image: none;
     -webkit-background-clip: padding-box;
@@ -50,12 +50,11 @@ legend {
 
 .custom-select.customSelect{
     background:#fff url(../images/back/arrow_down.png) no-repeat right 12px center;
+    white-space:nowrap;
 }
 
 textarea.form-control{
-    height:auto;
     min-height:100px;
-    line-height:120%;
     padding-top:10px;
     padding-bottom:10px;
 }
@@ -66,36 +65,48 @@ textarea.form-control{
 :-moz-placeholder { color: var(--text-color);}
 
 .form-control:focus{
-    -webkit-box-shadow: 0 0 3px rgba(17, 88, 118, 0.38);
-    -moz-box-shadow: 0 0 3px rgba(17, 88, 118, 0.38);
-    box-shadow: 0 0 3px rgba(17, 88, 118, 0.38);
+    outline:none;
+    -webkit-box-shadow: 0 0 1px #ccc;
+    -moz-box-shadow: 0 0 1px #ccc;
+    box-shadow: 0 0 1px #ccc;
 }
 
-
-
-.has-error .form-control{
-    -webkit-box-shadow: 0 0 3px var(--brand-danger);
-    -moz-box-shadow: 0 0 3px var(--brand-danger);
-    box-shadow: 0 0 3px var(--brand-danger);
-}
-
-.error-msg{
-    color:var(--brand-danger);
-    margin-top:5px;
-    font-size:12px;
-    text-align:left;
-}
-
-
+/*helper texts*/
 .form-text {
     display: block;
-    margin-top: 5px;
+    margin-top: .25rem;
 }
+.form-control-feedback {
+    margin-top: .25rem;
+}
+
+/*defining states*/
+.has-error .form-label,
+.has-error .form-control-feedback{
+    color:var(--brand-danger);
+}
+.has-error .form-control{
+    border-color:var(--brand-danger);
+}
+
+.has-success .form-label,
+.has-success .form-control-feedback{
+    color:var(--brand-success);
+}
+.has-success .form-control{
+    border-color:var(--brand-success);
+}
+
+.has-warning .form-label,
+.has-warning .form-control-feedback{
+    color:var(--brand-warning);
+}
+.has-warning .form-control{
+    border-color:var(--brand-warning);
+}
+
+
 /*radiobutton/checkbox*/
-.calc-preform .ctrl-field{
-    display:inline-block;
-    margin-bottom:25px;
-}
 .ctrl-group >*{
     margin-right:4rem;
 }
@@ -169,5 +180,11 @@ textarea.form-control{
     content:'\ea10';
     font-size: 10px;
     color: var(--brand-primary);
+}
+
+/*date field*/
+.date-field >*{
+    display:inline-block;
+    vertical-align: middle;
 }
 

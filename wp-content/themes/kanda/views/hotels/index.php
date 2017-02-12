@@ -337,13 +337,13 @@
                         <div class="form-group row clearfix">
                             <label class="form-label col-sm-5"><?php esc_html_e( 'Currency', 'kanda' ); ?></label>
                             <?php if( $currencies = kanda_get_theme_option( 'exchange_active_currencies' ) ) { ?>
-                            <div class="select-wrap col-sm-7">
-                                <select class="custom-select" name="currency">
-                                    <?php foreach( $currencies as $currency ) { ?>
-                                        <option value="<?php echo $currency; ?>"><?php echo $currency; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                                <div class="select-wrap col-sm-7">
+                                    <select class="custom-select" name="currency">
+                                        <?php foreach( $currencies as $currency ) { ?>
+                                            <option value="<?php echo $currency; ?>"><?php echo $currency; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
                             <?php } ?>
                         </div>
                     </fieldset>
@@ -374,7 +374,7 @@
             </div>
         </div>
 
-        <div class="clearfix">
+        <div class="row clearfix">
             <div class="col-sm-6">
                 <fieldset class="fieldset">
                     <legend>SELECT YOUR ROOM/S</legend>
@@ -391,9 +391,9 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="col-sm-6">
-
-            </div>
+        </div>
+        <div class="clearfix">
+            <input type="submit" value="Search hotel" class="btn -primary pull-right">
         </div>
     </form>
 </div>

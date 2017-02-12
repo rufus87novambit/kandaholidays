@@ -1,9 +1,10 @@
 @media (max-width: 991px) {
-	html{
-		font-size:8px;
-	}
+
 }
 @media (max-width: 767px) {
+	html{
+		font-size:14px;
+	}
 	/*menu*/
 	body.menu-opened{
 		overflow:hidden;
