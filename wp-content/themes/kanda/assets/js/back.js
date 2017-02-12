@@ -1,16 +1,5 @@
 (function($) {
-    //currency
-    $('.currency a').on('click', function(){
-        $(this).parent().toggleClass( 'opened' );
 
-        return false;
-    });
-
-    function close_currency_block( e ) {
-        if( $( e.target).closest( '.currency' ).length === 0 ) {
-            $('.currency.opened').removeClass('opened');
-        }
-    }
 
    /* $('#hotel-rating').barrating({
         theme: 'kanda-stars',
@@ -27,57 +16,146 @@
         }
     });*/
 
-    $('body').on('click', function( e ){
-        close_currency_block( e );
-    });
-
 
 
 
     //menu toggle
-    $('#menuBtn').click(function(){
+    $('#menuBtn').on( 'click', function(){
         $('body').toggleClass('menu-opened');
         return false;
     });
+
     //sub menu toggle
-    $('.touchevents .sub-toggler').click(function(){
+    $('.touchevents .sub-toggler').on( 'click', function(){
         $(this).parent().toggleClass('active');
         return false;
     });
 
-
-    //customSelect
-    if($(".custom-select").length>0) {
+    /************************************************ Helpers **************************************************/
+    /**
+     * Custom Select
+     */
+    if($('.custom-select').length > 0) {
         $(".custom-select").customSelect();
     }
 
-    //datepicker
-    if($(".datepicker").length>0) {
-        $(".datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "../images/back/calendar.gif",
+    /**
+     * Date picker
+     */
+    if( $( '.datepicker' ).length > 0 ) {
+        $( '.datepicker' ).datepicker({
+            showOn: 'button',
+            buttonImage: '../images/back/calendar.gif',
             buttonImageOnly: true,
-            buttonText: "Select date"
+            buttonText: 'Select date'
         });
     }
 
-    //magnific popup example
-   /* if($('.popup-block').length>0){
-        $('.open-popup').magnificPopup({
-            type:'inline',
-            midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
-        });
-    }*/
-
-    //slider
-    if($('.slider').length>0){
+    /**
+     * Slider
+     */
+    if( $('.slider').length > 0 ){
         $('.slider').slick({
-            arrows: false,
-            fade: true,
-            autoplay: true,
-            dots:true,
-            dotsClass:'slick-dots container'
+            arrows      : false,
+            fade        : true,
+            autoplay    : true,
+            dots        :true,
+            dotsClass   : 'slick-dots container'
         });
     }
+    /********************************************** /end Helpers ***********************************************/
+
+    /***************************************** Currency functionality ******************************************/
+    /**
+     * Open currency block on node event (click)
+     */
+    $('.currency a').on('click', function(){
+        $(this).parent().toggleClass( 'opened' );
+
+        return false;
+    });
+
+    /**
+     * Close currency block on body event (click) except currency block
+     */
+    $('body').on('click', function( e ){
+        if( $( e.target ).closest( '.currency' ).length === 0 ) {
+            $( '.currency.opened' ).removeClass('opened');
+        }
+    });
+    /*************************************** /end Currency functionality ***************************************/
+
+    /******************************************* Popup functionality *******************************************/
+    /**
+     * Open popup on node event (click)
+     */
+    $('.popup-block').on('click', function(){
+        var popup_id = $(this).data('target');
+        if( popup_id ) {
+            open_popup( popup_id );
+        }
+    });
+
+    /**
+     * Close popup on close button event (click)
+     */
+    $('.popup-close').on('click', function(){
+        close_popup( $(this) );
+    });
+
+    /**
+     * Open popup by popup id
+     *
+     * @param popup_id
+     * @param callbacks
+     */
+    function open_popup( popup_id, callbacks ) {
+        var default_callbacks = { before : null, before_show : null, after : null };
+        $.extend( default_callbacks, callbacks );
+
+        if( typeof default_callbacks.before == 'function' ) {
+            default_callbacks.before();
+        }
+
+        $('body').addClass('popup-open');
+
+        if( typeof default_callbacks.before_show == 'function' ) {
+            default_callbacks.before_show();
+        }
+
+        $('#'+ popup_id ).addClass('open');
+
+        if( typeof default_callbacks.after == 'function' ) {
+            setTimeout( default_callbacks.after, 10 );
+        }
+    }
+
+    /**
+     * Close popup
+     *
+     * @param btn
+     * @param callbacks
+     */
+    function close_popup( btn, callbacks ) {
+        var default_callbacks = { before : null, after_close : null, after : null };
+        $.extend( default_callbacks, callbacks );
+
+        if( typeof default_callbacks.before == 'function' ) {
+            default_callbacks.before();
+        }
+
+        btn.closest( 'popup-wrap').removeClass('open');
+
+        if( typeof default_callbacks.after_close == 'function' ) {
+            default_callbacks.after_close();
+        }
+
+        $('body').removeClass('popup-open');
+
+        if( typeof default_callbacks.after == 'function' ) {
+            setTimeout( default_callbacks.after, 10 );
+        }
+    }
+    /***************************************** /end Popup functionality *****************************************/
 
 })(jQuery);

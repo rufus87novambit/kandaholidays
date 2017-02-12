@@ -1,5 +1,5 @@
 <?php kanda_show_notification( $this->notification ); ?>
-<form class="form-block form-inline" method="post">
+<form class="form-block form-inline" enctype="multipart/form-data" method="post">
     <fieldset class="fieldset sep-btm">
         <legend><?php esc_html_e( 'GENERAL', 'kanda' ); ?></legend>
         <div class="row">
@@ -23,8 +23,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <img style="max-width: 150px; border-radius: 50%;" src="<?php echo KANDA_THEME_URL; ?>images/delete/profile.jpg" alt="john doe" />
+            <div class="col-sm-6 text-center">
+                <div class="avatar-wrapper text-left">
+                    <div class="avatar-actions-overlay">
+                        <div class="avatar-actions vert-center text-center">
+                            <a href="#" class="action upload"><i class="icon icon-upload"></i></a>
+                            <?php if( kanda_get_user_meta( get_current_user_id(), 'avatar' ) ) { ?>
+                            <a href="#" class="action edit"><i class="icon icon-edit"></i></a>
+                            <?php } ?>
+                            <a href="#" class="action bin"><i class="icon icon-bin"></i></a>
+                        </div>
+                    </div>
+                    <?php echo kanda_get_user_avatar(); ?>
+                </div>
             </div>
         </div>
     </fieldset>

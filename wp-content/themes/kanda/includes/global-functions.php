@@ -45,6 +45,47 @@ function generate_random_string( $length = 10 ) {
 }
 
 /**
+ * Get user avatar image
+ *
+ * @param bool|false $user_id
+ * @param string $class
+ * @return string
+ */
+function kanda_get_user_avatar( $user_id = false, $atts = array() ) {
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+
+    $avatar = kanda_get_user_avatar_url( $user_id );
+    $company_name = kanda_get_user_meta( $user_id, 'company_name' );
+    $img_atts = '';
+
+    foreach( $atts as $attr => $value ) {
+        $img_atts .= sprintf( '%1$s="%2$s"', $attr, $value );
+    }
+
+    return sprintf( '<img src="%1$s" %2$s alt="%3$s"/>', $avatar, $img_atts, $company_name );
+}
+
+/**
+ * Get user avatar url
+ *
+ * @param bool|false $user_id
+ * @return mixed|null
+ */
+function kanda_get_user_avatar_url( $user_id = false ) {
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+    $avatar = kanda_get_user_meta( $user_id, 'avatar' );
+    if( ! $avatar ) {
+        $avatar = kanda_get_theme_option( 'other_default_avatar' );
+    }
+
+    return $avatar;
+}
+
+/**
  * Get enabled currencies
  *
  * @return array
@@ -234,34 +275,34 @@ function kanda_to( $name ) {
  * @param string $params
  * @return bool|false|string|void
  */
-function kanda_url_to( $name, $params = '' ) {
-    if( $params && (strpos( $params, '/' ) === 0) ) {
-        $params = substr( $params, 1 );
-    }
+function kanda_url_to( $name, $params = array() ) {
     switch( $name ) {
         case 'home';
             $url = home_url();
             break;
         case 'login':
-            $url = get_permalink( kanda_get_theme_option( 'auth_page_login' ) );
+            $url = home_url( '/login' );
             break;
         case 'register':
-            $url = get_permalink( kanda_get_theme_option( 'auth_page_register' ) );
+            $url = home_url( '/register' );
             break;
         case 'forgot-password':
-            $url = get_permalink( kanda_get_theme_option( 'auth_page_forgot' ) );
+            $url = home_url( '/forgot' );
             break;
         case 'reset-password':
-            $url = get_permalink( kanda_get_theme_option( 'auth_page_reset' ) );
+            $url = home_url( '/reset' );
             break;
         case 'profile':
-            $url = get_permalink( kanda_get_theme_option( 'user_page_profile' ) );
+            $url = home_url( '/profile' );
             break;
         default:
             $url = false;
     }
 
-    return $url ? ( $url . $params ) : $url;
+    if( $url && ! empty( $params ) ) {
+        $url .= '/' . implode( '/', $params );
+    }
+    return $url;
 }
 
 /**

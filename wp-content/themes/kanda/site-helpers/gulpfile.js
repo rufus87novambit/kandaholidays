@@ -89,9 +89,10 @@ gulp.task('css-back', function () {
         '../assets/css/form.css',
         '../assets/css/back-base.css',
         '../assets/css/back.css',
-        '../assets/css/responsive.css'
+        '../assets/css/responsive.css',
+        'node_modules/cropper/dist/cropper.css'
     ])
-        .pipe(cleancss({ specialComments : 0 } ))
+        .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
         .pipe(gulp.dest('../css/'))
 });
@@ -100,7 +101,7 @@ gulp.task('css-back', function () {
  * Watch for back css changes
  */
 gulp.task('css-back-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/rating/*'], ['css-back']);
+    gulp.watch(['../assets/css/*', '../assets/css/rating/*', '../icons/style.css'], ['css-back']);
 });
 
 /**
@@ -110,6 +111,7 @@ gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
         /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
+        'node_modules/cropper/dist/cropper.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         '../assets/js/back.js'
     ])
@@ -143,7 +145,7 @@ gulp.task('back-build', ['css-back','js-back']);
  */
 gulp.task('css-admin', function () {
     gulp.src([
-        '../icon-fonts/style.css',
+        '../icons/style.css',
         '../assets/css/admin/admin.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
@@ -155,7 +157,7 @@ gulp.task('css-admin', function () {
  * Watch for admin css changes
  */
 gulp.task('css-admin-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/admin/*'], ['css-admin']);
+    gulp.watch(['../assets/css/*', '../assets/css/admin/*', '../icons/style.css'], ['css-admin']);
 });
 
 /**

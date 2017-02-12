@@ -27,65 +27,36 @@ class Auth_Controller extends Base_Controller {
 
         add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->login' ); } );
 
-        $this->request = array(
-            'success' => false,
-            'message' => false,
-            'fields'  => array(
-                'username' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg'   => ''
-                ),
-                'password' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg'   => ''
-                ),
-                'remember' => array(
-                    'value' => 1
-                )
-            ),
-        );
         if( isset( $_POST['kanda_login'] ) ) {
 
-            $nonce = ( isset( $_POST['kanda_nonce'] ) && $_POST['kanda_nonce'] ) ? $_POST['kanda_nonce'] : '';
-            if( wp_verify_nonce( $nonce, 'kanda_login' ) ) {
-                $username = isset( $_POST['username'] ) ? sanitize_text_field( $_POST['username'] ) : '';
-                $password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
-                $remember = isset( $_POST['remember'] ) ? (bool)$_POST['password'] : false;
+            $security = isset( $_POST['security'] ) ? $_POST['security'] : '';
 
-                $has_error = false;
+            if( wp_verify_nonce( $security, 'kanda_security_login' ) ) {
+
+                $is_valid = true;
+                $errors = array();
                 $validation_rules = Kanda_Config::get( 'validation->front->form_login' );
 
-                $this->request['fields']['username']['value'] = $username;
-                if( ! $username ) {
-                    $has_error = true;
-                    $this->request['fields']['username'] = array_merge(
-                        $this->request['fields']['username'],
-                        array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
-                    );
-                } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $username ) ) {
-                    $has_error = true;
-                    $this->request['fields']['username'] = array_merge(
-                        $this->request['fields']['username'],
-                        array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
-                    );
+                $this->username = isset( $_POST['username'] ) ? sanitize_text_field( $_POST['username'] ) : '';
+                if( ! $this->username ) {
+                    $is_valid = false;
+                    $errors['username'] = $validation_rules['username']['required'];
+                } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $this->username ) ) {
+                    $is_valid = false;
+                    $errors['username'] = $validation_rules['username']['alphanumeric'];
                 }
 
-                $this->request['fields']['password']['value'] = $password;
-                if( ! $password ) {
-                    $has_error = true;
-                    $this->request['fields']['password'] = array_merge(
-                        $this->request['fields']['password'],
-                        array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
-                    );
+                $this->password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
+                if( ! $this->password ) {
+                    $is_valid = false;
+                    $errors['password'] = $validation_rules['password']['required'];
                 }
 
-                $this->request['fields']['remember']['value'] = (int)$remember;
+                $this->remember = isset( $_POST['remember'] ) ? (bool)$_POST['password'] : 1;
 
-                if( ! $has_error ) {
+                if( $is_valid ) {
 
-                    $user = get_user_by( 'login', $username );
+                    $user = get_user_by( 'login', $this->username );
                     if( $user ) {
 
                         $is_activated = true;
@@ -96,15 +67,14 @@ class Auth_Controller extends Base_Controller {
                         if( $is_activated ) {
 
                             $user = wp_signon(array(
-                                'user_login' => $username,
-                                'user_password' => $password,
-                                'remember' => $remember
+                                'user_login'    => $this->username,
+                                'user_password' => $this->password,
+                                'remember'      => $this->remember
                             ));
 
-                            if (is_wp_error($user)) {
-                                $this->request['message'] = esc_html__('Invalid username / password', 'kanda');
-                                $this->request['fields']['username']['valid'] = false;
-                                $this->request['fields']['password']['valid'] = false;
+                            if ( is_wp_error( $user ) ) {
+                                $errors['username'] = $errors['password'] = '';
+                                $this->set_notification( 'danger', esc_html__('Invalid username / password', 'kanda') );
                             } else {
 
                                 do_action( 'kanda/after_user_login', $user );
@@ -113,18 +83,22 @@ class Auth_Controller extends Base_Controller {
                             }
 
                         } else {
-                            $this->request['success'] = true;
-                            $this->request['message'] = __( 'Your account is inactive. You will get an email once it is activated.', 'kanda' );
+                            $this->set_notification( 'warning', __( 'Your account is inactive. You will get an email once it is activated.', 'kanda' ) );
                         }
                     } else {
-                        $this->request['fields']['username'][ 'valid' ] = false;
-                        $this->request['fields']['username'][ 'msg' ] = esc_html__( 'Invalid username', 'kanda' );
+                        $is_valid = false;
+                        $errors['username'] = esc_html__( 'Invalid username', 'kanda' );
                     }
                 }
+                $this->errors = $errors;
             } else {
-                $this->request['message'] = esc_html__( 'Invalid request', 'kanda' );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
             }
 
+        } else {
+            $this->username = '';
+            $this->password = '';
+            $this->remember = 1;
         }
 
         $this->view = 'login';
@@ -136,92 +110,6 @@ class Auth_Controller extends Base_Controller {
     public function register() {
 
         add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->register' ); } );
-
-        $this->request = array(
-            'success' => false,
-            'message' => false,
-            'fields'  => array(
-                'personal' => array(
-                    'username' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'email' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'password' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'confirm_password' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'first_name' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'last_name' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'mobile' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'position' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                ),
-                'company' => array(
-                    'name' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'license' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'address' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'city' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'country' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'phone' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    ),
-                    'website' => array(
-                        'value' => '',
-                        'valid' => true,
-                        'msg'   => ''
-                    )
-                ),
-            ),
-        );
 
         if( isset( $_POST['kanda_register'] ) ) {
 
@@ -434,56 +322,41 @@ class Auth_Controller extends Base_Controller {
         $this->deny_user_access();
 
         add_filter('nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->forgot_password' ); });
+        $this->show_form = true;
 
-        $this->request = array(
-            'success' => false,
-            'message' => false,
-            'fields' => array(
-                'username_email' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg' => ''
-                )
-            ),
-        );
         if ( isset( $_POST['kanda_forgot'] ) ) {
 
-            $nonce = (isset($_POST['kanda_nonce']) && $_POST['kanda_nonce']) ? $_POST['kanda_nonce'] : '';
-            if (wp_verify_nonce($nonce, 'kanda_forgot')) {
-                $username_email = isset($_POST['username_email'] ) ? sanitize_text_field( $_POST['username_email'] ) : '';
+            $security = isset( $_POST['security'] ) ? $_POST['security'] : '';
 
-                $has_error = false;
+            if ( wp_verify_nonce($security, 'kanda_security_forgot') ) {
+
+                $is_valid = true;
+                $errors = array();
                 $validation_rules = Kanda_Config::get( 'validation->front->form_forgot_password' );
 
-                $this->request['fields']['username_email']['value'] = $username_email;
-                if( ! $username_email ) {
-                    $has_error = true;
-                    $this->request['fields']['username_email'] = array_merge(
-                        $this->request['fields']['username_email'],
-                        array( 'valid' => false, 'msg' => $validation_rules['username_email']['required'] )
-                    );
+                $this->username_email = isset( $_POST['username_email'] ) ? sanitize_text_field( $_POST['username_email'] ) : '';
+                if( ! $this->username_email ) {
+                    $is_valid = false;
+                    $errors['username_email'] = $validation_rules['username_email']['required'];
                 }
 
-                if( ! $has_error ) {
-                    $is_email = filter_var( $username_email, FILTER_VALIDATE_EMAIL );
+                if( $is_valid ) {
 
-                    if( $is_email ) {
-                        $user = get_user_by( 'email', $username_email );
-                    } else {
-                        $user = get_user_by( 'login', $username_email );
-                    }
+                    $is_email = filter_var( $this->username_email, FILTER_VALIDATE_EMAIL );
+
+                    $user = get_user_by( ( $is_email ? 'email' : 'login' ), $this->username_email );
 
                     if( ! $user ) {
-                        $this->request['fields']['username_email'] = array_merge(
-                            $this->request['fields']['username_email'],
-                            array( 'valid' => false, 'msg' => esc_html__( 'User not found', 'kanda' ) )
-                        );
-                    } else {
+                        $is_valid = false;
+                        $errors['username_email'] = esc_html__( 'User not found', 'kanda' );
+                    }
 
-                        add_filter('nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); });
+                    if( $is_valid ) {
+
+                        add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); } );
 
                         $reset_password_token = generate_random_string( 20 );
-                        $password_reset_url = home_url( '/reset/' . wp_create_nonce( 'kanda_reset_password' ) . '/' . $reset_password_token );
+                        $password_reset_url = kanda_url_to( 'reset-password', array( wp_create_nonce( 'kanda_security_reset' ), $reset_password_token ) );
 
                         update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
 
@@ -493,21 +366,27 @@ class Auth_Controller extends Base_Controller {
                         $variables = array( '{{RESET_URL}}' => sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ) );
 
                         if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
-                            $this->request['success'] = true;
-                            $this->request['message'] = esc_html__( 'An email with instructions is sent to your email address.', 'kanda' );
-                            $this->request['fields']['username_email']['value'] = '';
+                            $this->set_notification( 'success', esc_html__( 'An email with instructions is sent to your email address.', 'kanda' ) );
+                            $this->username_email = '';
+                            $this->show_form = false;
 
                             do_action( 'kanda/after_forgot_password', $user );
 
                         } else {
-                            $this->request['message'] = esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' );
+                            $this->set_notification( 'danger', esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' ) );
                             kanda_logger()->log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
                         }
 
                     }
                 }
+
+                $this->errors = $errors;
+            } else {
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
             }
 
+        } else {
+            $this->username_email = '';
         }
 
         $this->view = 'forgot';
@@ -522,79 +401,41 @@ class Auth_Controller extends Base_Controller {
 
         add_filter('nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->forgot_password' ); });
 
-        $this->request = array(
-            'success' => false,
-            'message' => false,
-            'has_error' => true,
-            'fields' => array(
-                'user_id' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg'   => ''
-                ),
-                'password' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg' => ''
-                ),
-                'confirm_password' => array(
-                    'value' => '',
-                    'valid' => true,
-                    'msg' => ''
-                )
-            ),
-        );
-        if (isset($_POST['kanda_reset'])) {
+        if ( isset( $_POST['kanda_reset'] ) ) {
 
-            $nonce = (isset($_POST['kanda_nonce']) && $_POST['kanda_nonce']) ? $_POST['kanda_nonce'] : '';
+            $security = isset($_POST['security']) ? $_POST['security'] : '';
 
-            if ( wp_verify_nonce($nonce, 'kanda_reset') ) {
-                $password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
-                $confirm_password = isset( $_POST['confirm_password'] ) ? sanitize_text_field( $_POST['confirm_password'] ) : '';
-                $user_id = isset( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
+            if ( wp_verify_nonce($security, 'kanda_security_reset') ) {
 
-                $has_error = false;
+                $is_valid = true;
+                $errors = array();
 
                 $validation_rules = Kanda_Config::get( 'validation->front->form_reset_password' );
                 $validation_data = Kanda_Config::get( 'validation->front->data' );
 
-                $this->request['fields']['password']['value'] = $password;
-                if( ! $password ) {
-                    $has_error = true;
-                    $this->request['fields']['password'] = array_merge(
-                        $this->request['fields']['password'],
-                        array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
-                    );
-                } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
-                    $has_error = true;
-                    $this->request['fields']['password'] = array_merge(
-                        $this->request['fields']['password'],
-                        array( 'valid' => false, 'msg' => $validation_rules['password']['rangelength'] )
-                    );
+                $this->password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
+                if( ! $this->password ) {
+                    $is_valid = false;
+                    $errors[ 'password' ] = $validation_rules['password']['required'];
+                } elseif( ! filter_var( strlen( $this->password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
+                    $is_valid = false;
+                    $errors[ 'password' ] = $validation_rules['password']['rangelength'];
                 }
 
-                $this->request['fields']['confirm_password']['value'] = $confirm_password;
-                if( ! $confirm_password ) {
-                    $has_error = true;
-                    $this->request['fields']['confirm_password'] = array_merge(
-                        $this->request['fields']['confirm_password'],
-                        array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['required'] )
-                    );
-                } elseif( $password && ( $confirm_password != $password ) ) {
-                    $has_error = true;
-                    $this->request['fields']['confirm_password'] = array_merge(
-                        $this->request['fields']['confirm_password'],
-                        array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['equalTo'] )
-                    );
+                $this->confirm_password = isset( $_POST['confirm_password'] ) ? sanitize_text_field( $_POST['confirm_password'] ) : '';
+                if( ! $this->confirm_password ) {
+                    $is_valid = false;
+                    $errors[ 'confirm_password' ] = $validation_rules['confirm_password']['required'];
+                } elseif( $this->password && ( $this->confirm_password != $this->password ) ) {
+                    $is_valid = false;
+                    $errors[ 'confirm_password' ] = $validation_rules['confirm_password']['equalTo'];
                 }
 
-                $this->request['fields']['user_id']['value'] = $user_id;
-                $this->request['has_error'] = false;
+                $this->user_id = isset( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
 
-                if( ! $has_error ) {
+                if( $is_valid ) {
 
-                    // do something
-                    $user_id = wp_update_user( array( 'ID' => $user_id, 'user_pass' => $password ) );
+                    $user_id = wp_update_user( array( 'ID' => $this->user_id, 'user_pass' => $this->password ) );
                     if( ! is_wp_error( $user_id ) ) {
 
                         delete_user_meta( $user_id, 'forgot_password_token' );
@@ -602,7 +443,7 @@ class Auth_Controller extends Base_Controller {
                         $user = new WP_User( $user_id );
                         $user = wp_signon(array(
                             'user_login'    => $user->user_login,
-                            'user_password' => $password,
+                            'user_password' => $this->password,
                             'remember'      => true
                         ));
 
@@ -611,10 +452,14 @@ class Auth_Controller extends Base_Controller {
                         kanda_to( 'home' );
 
                     } else {
-                        $this->request['message'] = esc_html__( 'Error reseting password. Please try again.', 'kanda' );
+                        $this->set_notification( 'danger', esc_html__( 'Error reseting password. Please try again.', 'kanda' ) );
                     }
 
                 }
+
+                $this->errors = $errors;
+            } else {
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
             }
 
         } else {
@@ -623,17 +468,16 @@ class Auth_Controller extends Base_Controller {
 
             $args = wp_parse_args( $args, array( 'ksecurity' => '' ) );
 
-            if( wp_verify_nonce( $args['ksecurity'], 'kanda_reset_password' ) ) {
+            if( wp_verify_nonce( $args['ksecurity'], 'kanda_security_reset' ) ) {
 
                 $users = get_users( array( 'meta_key' => 'forgot_password_token', 'meta_value' => $args['key'] ) );
 
                 if( ! empty( $users ) ) {
-                    $this->request['has_error'] = false;
-                    $this->request['fields']['user_id']['value'] = $users[0]->ID;
+                    $this->user_id = $users[0]->ID;
+                } else {
+                    $this->show_404();
                 }
 
-            } elseif( $args['key'] ) {
-                $this->request['message'] = __( 'Invalid or outdated token', 'kanda' );
             } else {
                 $this->show_404();
             }

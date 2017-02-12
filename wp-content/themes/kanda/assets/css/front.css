@@ -89,13 +89,13 @@ header.page-header .logo img {
     margin-bottom: 20px;
     border-bottom: 2px solid #fff;
 }
-.form .message {
+.form .alert {
     margin-bottom: 10px;
 }
-.form .message.message-error {
+.form .alert.alert-danger {
     color: #d9534f;
 }
-.form .message.message-success {
+.form .alert.alert-success {
     color: #40e200;
 }
 .form .column {

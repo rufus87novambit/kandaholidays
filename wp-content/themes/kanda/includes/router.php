@@ -77,7 +77,7 @@ function kanda_add_rewrite_rule() {
         ),
         array(
             'regex' => 'reset(\/([a-zA-Z0-9]*)\/([a-zA-Z0-9]+)(\/)?([a-zA-Z0-9]+)?)?',
-            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&ksecurity=$matches[1]&key=$matches[2]&unwanted=$matches[4]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
+            'query' => sprintf( 'index.php?page_id=%1$d&controller=%2$s&action=%3$s&ksecurity=$matches[2]&key=$matches[3]&unwanted=$matches[4]', (int)kanda_get_theme_option( 'auth_page_reset' ), 'auth', 'reset' ),
             'after' => 'top'
         ),
         /******************************************** /end Auth Controller ********************************************/

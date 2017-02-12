@@ -14,25 +14,27 @@ $form_links = array(
                 <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
             <?php } ?>
 
+            <?php kanda_show_notification( $this->notification ); ?>
+
             <form id="form_login" method="post">
 
                 <div class="row clearfix">
                     <label for="username"><?php esc_html_e( 'Username', 'kanda' ); ?>:</label>
 
-                    <?php $has_error = ! $this->request['fields']['username']['valid']; ?>
+                    <?php $has_error = isset( $this->errors['username'] ); ?>
                     <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                        <input id="username" name="username" type="text" value="<?php echo $this->request['fields']['username']['value']; ?>" />
-                        <div class="help-block"><?php echo $this->request['fields']['username']['msg']; ?></div>
+                        <input id="username" name="username" type="text" value="<?php echo $this->username; ?>" />
+                        <div class="help-block"><?php echo $this->errors['username']; ?></div>
                     </div>
                 </div>
 
                 <div class="row clearfix">
                     <label for="password"><?php esc_html_e( 'Password', 'kanda' ); ?>:</label>
 
-                    <?php $has_error = ! $this->request['fields']['password']['valid']; ?>
+                    <?php $has_error = isset( $this->errors['password'] ); ?>
                     <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                        <input id="password" name="password" type="password" value="<?php echo $this->request['fields']['password']['value']; ?>" />
-                        <div class="help-block"><?php echo $this->request['fields']['password']['msg']; ?></div>
+                        <input id="password" name="password" type="password" value="<?php echo $this->password; ?>" />
+                        <div class="help-block"><?php echo $this->errors['password']; ?></div>
                     </div>
                 </div>
 
@@ -40,13 +42,13 @@ $form_links = array(
                     <label class="hidden-xss">&nbsp;</label>
                     <div class="input-holder">
                         <input type="hidden" name="remember" value="0" />
-                        <input type="checkbox" name="remember" value="1" <?php checked( $this->request['fields']['remember']['value'], 1 ); ?> /><span><?php esc_html_e( 'Remember', 'kanda' ); ?></span>
+                        <input type="checkbox" name="remember" value="1" <?php checked( $this->remember, 1 ); ?> /><span><?php esc_html_e( 'Remember', 'kanda' ); ?></span>
                     </div>
                 </div>
                 <div class="row clearfix">
                     <label class="hidden-xss">&nbsp;</label>
                     <div class="input-holder">
-                        <?php wp_nonce_field( 'kanda_login', 'kanda_nonce' ); ?>
+                        <?php wp_nonce_field( 'kanda_security_login', 'security' ); ?>
                         <input type="submit" class="btn" name="kanda_login" value="<?php esc_html_e( 'Login', 'kanda' ); ?>" />
                     </div>
                 </div>

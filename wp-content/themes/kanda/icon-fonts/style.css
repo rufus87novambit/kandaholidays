@@ -57,6 +57,12 @@
 .icon-info:before {
   content: "\ea08";
 }
+.icon-bin:before {
+  content: "\e9ac";
+}
+.icon-edit:before {
+  content: "\e90b";
+}
 .icon-currency-gbp:before {
   content: "\e909";
 }
@@ -77,5 +83,8 @@
 }
 .icon-shopping-bag:before {
   content: "\e903";
+}
+.icon-upload:before {
+  content: "\e90a";
 }
 
