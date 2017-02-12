@@ -101,24 +101,36 @@
             </div>
             <div class="col-sm-6">
 
-                <div class="form-group row clearfix">
+                <?php $has_error = isset( $this->errors[ 'company_address' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-4"><?php esc_html_e( 'Address', 'kanda' ); ?>:</label>
                     <div class="col-sm-8">
                         <input type="text" name="company_address" class="form-control" value="<?php echo $this->company_address; ?>">
+                        <?php if( $has_error && $this->errors[ 'company_address' ] ) { ?>
+                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'company_address' ]; ?></small></div>
+                        <?php } ?>
                     </div>
                 </div>
 
-                <div class="form-group row clearfix">
+                <?php $has_error = isset( $this->errors[ 'company_city' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-4"><?php esc_html_e( 'City', 'kanda' ); ?>:</label>
                     <div class="col-sm-8">
                         <input type="text" name="company_city" class="form-control" value="<?php echo $this->company_city; ?>">
+                        <?php if( $has_error && $this->errors[ 'company_city' ] ) { ?>
+                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'company_city' ]; ?></small></div>
+                        <?php } ?>
                     </div>
                 </div>
 
-                <div class="form-group row clearfix">
+                <?php $has_error = isset( $this->errors[ 'company_country' ] ); ?>
+                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
                     <label class="form-label col-sm-4"><?php esc_html_e( 'Country', 'kanda' ); ?>:</label>
                     <div class="col-sm-8">
                         <input type="text" name="company_country" class="form-control" value="<?php echo $this->company_country; ?>">
+                        <?php if( $has_error && $this->errors[ 'company_country' ] ) { ?>
+                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'company_country' ]; ?></small></div>
+                        <?php } ?>
                     </div>
                 </div>
 
