@@ -235,3 +235,25 @@ button.popup-close{
 .white-popup-block .popup-close {
     color: var(--text-color);
 }
+
+/*table*/
+.table{
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+.thead{
+    display:table-header-group;
+}
+.tfoot{
+    display:table-footer-group;
+}
+.tbody {
+    display: table-row-group;
+}
+.tr{
+    display:table-row;
+}
+.th,.td{
+    display:table-cell;
+}
