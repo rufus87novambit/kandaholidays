@@ -422,6 +422,86 @@
 </div>
 
 
+
+<!-- Table (User list) -->
+<br><br>
+
+<h2 class="page-title">User list</h2>
+<div class="table-wrap">
+    <div class="users-table table">
+        <header class="thead">
+            <div class="th">Delete</div>
+            <div class="th">Username</div>
+            <div class="th">Display Name</div>
+            <div class="th">Rate Type</div>
+            <div class="th">Company</div>
+            <div class="th">Last Sign In</div>
+        </header>
+        <div class="tbody">
+            <div class="tr">
+                <div class="td">
+                    <label class="ctrl-field -chbox">
+                        <input type='checkbox' class="ctrl-inp" name="">
+                        <span class="ctrl-btn"></span>
+                    </label>
+                </div>
+                <div class="td">
+                    <a href="" class="link">admin1</a>
+                </div>
+                <div class="td">barev</div>
+                <div class="td">Potencial</div>
+                <div class="td">Kandaclub</div>
+                <div class="td">25 Jan, 2017</div>
+            </div>
+            <div class="tr">
+                <div class="td">
+                    <label class="ctrl-field -chbox">
+                        <input type='checkbox' class="ctrl-inp" name="" >
+                        <span class="ctrl-btn"></span>
+                    </label>
+                </div>
+                <div class="td">
+                    <a href="" class="link">Merrytour</a>
+                </div>
+                <div class="td">barev</div>
+                <div class="td">Potencial</div>
+                <div class="td">Merry Tour LLC</div>
+                <div class="td">25 Jan, 2017</div>
+            </div>
+            <div class="tr">
+                <div class="td">
+                    <label class="ctrl-field -chbox">
+                        <input type='checkbox' class="ctrl-inp" name="">
+                        <span class="ctrl-btn"></span>
+                    </label>
+                </div>
+                <div class="td">
+                    <a href="" class="link">admin1</a>
+                </div>
+                <div class="td">barev</div>
+                <div class="td">Potencial</div>
+                <div class="td">Kandaclub</div>
+                <div class="td">25 Jan, 2017</div>
+            </div>
+            <div class="tr">
+                <div class="td">
+                    <label class="ctrl-field -chbox">
+                        <input type='checkbox' class="ctrl-inp" name="">
+                        <span class="ctrl-btn"></span>
+                    </label>
+                </div>
+                <div class="td">
+                    <a href="" class="link">Merrytour</a>
+                </div>
+                <div class="td">barev</div>
+                <div class="td">Potencial</div>
+                <div class="td">Merry Tour LLC</div>
+                <div class="td">25 Jan, 2017</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Profile -->
 <br><br>
 
