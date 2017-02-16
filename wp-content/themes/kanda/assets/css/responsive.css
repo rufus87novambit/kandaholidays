@@ -91,11 +91,16 @@
 		background:none;
 	}
 
-	.calc-btn{
-		margin:20px 10px 0 0;
-	}
+
 
 	/*end menu*/
+	.table-wrap{
+		overflow:auto;
+	}
+	.users-table{
+		min-width:600px;
+		font-size:13px;
+	}
 
 }
 
