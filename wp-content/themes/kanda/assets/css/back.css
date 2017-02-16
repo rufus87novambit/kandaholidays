@@ -18,7 +18,7 @@ body {
     border-top: 5px solid #fff;
 }
 /*********************** Header ***********************/
-header {
+.header {
     position: relative;
     background: var(--brand-primary);
     padding: 1.25rem;
@@ -28,15 +28,15 @@ header {
     color: #fff;
 }
 
-header a {
+.header a {
     color: #ececec;
 }
 
-header .back-logo {
+.header .back-logo {
     width: 250px;
     float: left;
 }
-header .back-logo img {
+.header .back-logo img {
     margin-top: 3px;
 }
 /*********************** /end Header ***********************/
@@ -194,4 +194,8 @@ header .back-logo img {
     box-shadow: 0 1px 6px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.24);
 }
 
-
+/*Users List*/
+.users-table .th:first-child,
+.users-table .tr .td:first-child{
+    width:10%;
+}
