@@ -70,6 +70,8 @@ function kanda_setup_theme() {
         'main_nav'      => esc_html__( 'Main Menu', 'kanda' ),
     ) );
 
+    add_image_size( 'user-avatar', 150, 150, true );
+
     /**
      * This theme styles the visual editor to resemble the theme style,
      * specifically font, colors, icons, and column width.

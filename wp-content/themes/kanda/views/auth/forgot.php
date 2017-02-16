@@ -11,7 +11,7 @@ $form_links = array(
 
             <h1 class="page-title"><?php esc_html_e( 'Forgot Password', 'kanda' ); ?></h1>
 
-            <?php kanda_show_notification( $this->notification ); ?>
+            <?php kanda_show_notification(); ?>
 
             <?php if( $this->show_form ) { ?>
             <p class="instructions"><?php esc_html_e( 'To reset your password please enter your username or email and click \'Submit\' button.', 'kanda' ); ?></p>

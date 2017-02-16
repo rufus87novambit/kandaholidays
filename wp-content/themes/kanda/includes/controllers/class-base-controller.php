@@ -33,12 +33,6 @@ class Base_Controller {
     protected $title;
 
     /**
-     * Holds notification data for user
-     * @var array
-     */
-    protected $notification = array();
-
-    /**
      * Current view to render
      * @var
      */
@@ -64,6 +58,7 @@ class Base_Controller {
         $this->has_content = true;
         add_filter( 'the_title', array( $this, 'change_title' ), 10, 2 );
         add_filter( 'the_content', array( $this, 'render' ), 10, 1 );
+        kanda_start_session();
     }
 
     /**
@@ -102,8 +97,10 @@ class Base_Controller {
      * @param string $message
      */
     protected function set_notification( $type, $message = '' ) {
-        $this->notification['type'] = $type;
-        $this->notification['message'] = $message;
+        $_SESSION[ 'kanda_notification' ] = array(
+            'type' => $type,
+            'message' => $message
+        );
     }
 
     /**

@@ -1,40 +1,32 @@
-<?php kanda_show_notification( $this->notification ); ?>
+<?php kanda_show_notification(); ?>
 <form class="form-block form-inline" enctype="multipart/form-data" method="post">
     <fieldset class="fieldset sep-btm">
         <legend><?php esc_html_e( 'GENERAL', 'kanda' ); ?></legend>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group row clearfix">
-                    <label class="form-label col-sm-4"><?php esc_html_e( 'Username', 'kanda' ); ?>:</label>
-                    <div class="col-sm-8">
+                    <label class="form-label col-sm-12"><?php esc_html_e( 'Username', 'kanda' ); ?>:</label>
+                    <div class="col-sm-12">
                         <input type="text" class="form-control" value="<?php echo $this->user_login; ?>" readonly disabled>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-sm-4">
                 <div class="form-group row clearfix">
-                    <label class="form-label col-sm-4"><?php esc_html_e( 'Company Name', 'kanda' ); ?>:</label>
-                    <div class="col-sm-8">
+                    <label class="form-label col-sm-12"><?php esc_html_e( 'Company Name', 'kanda' ); ?>:</label>
+                    <div class="col-sm-12">
                         <input type="text" class="form-control" value="<?php echo $this->company_name; ?>" readonly disabled>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-sm-4">
                 <div class="form-group row clearfix">
-                    <label class="form-label col-sm-4"><?php esc_html_e( 'License ID', 'kanda' ); ?>:</label>
-                    <div class="col-sm-8">
+                    <label class="form-label col-sm-12"><?php esc_html_e( 'License ID', 'kanda' ); ?>:</label>
+                    <div class="col-sm-12">
                         <input type="text" class="form-control" value="<?php echo $this->company_license; ?>" readonly disabled>
                     </div>
-                </div>
-            </div>
-            <div class="col-sm-6 text-center">
-                <div class="avatar-wrapper text-left">
-                    <div class="avatar-actions-overlay">
-                        <div class="avatar-actions vert-center text-center">
-                            <a href="#" class="action upload"><i class="icon icon-upload"></i></a>
-                            <?php if( kanda_get_user_meta( get_current_user_id(), 'avatar' ) ) { ?>
-                            <a href="#" class="action edit"><i class="icon icon-edit"></i></a>
-                            <a href="#" class="action bin"><i class="icon icon-bin"></i></a>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <?php echo kanda_get_user_avatar(); ?>
                 </div>
             </div>
         </div>
@@ -158,56 +150,9 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="fieldset sep-btm">
-        <legend><?php esc_html_e( 'CHANGE PASSWORD', 'kanda' ); ?></legend>
-        <div class="row">
-            <div class="col-sm-4">
-
-                <?php $has_error = isset( $this->errors[ 'old_password' ] ); ?>
-                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
-                    <label class="form-label col-sm-12"><?php esc_html_e( 'Old password', 'kanda' ); ?>:</label>
-                    <div class="col-sm-12">
-                        <input type="password" name="old_password" class="form-control" value="<?php echo $this->old_password; ?>">
-                        <?php if( $has_error && $this->errors[ 'old_password' ] ) { ?>
-                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'old_password' ]; ?></small></div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-sm-4">
-
-                <?php $has_error = isset( $this->errors[ 'new_password' ] ); ?>
-                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
-                    <label class="form-label col-sm-12"><?php esc_html_e( 'New password', 'kanda' ); ?>:</label>
-                    <div class="col-sm-12">
-                        <input type="password" name="new_password" class="form-control" value="<?php echo $this->new_password; ?>">
-                        <?php if( $has_error && $this->errors[ 'new_password' ] ) { ?>
-                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'new_password' ]; ?></small></div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-sm-4">
-
-                <?php $has_error = isset( $this->errors[ 'confirm_password' ] ); ?>
-                <div class="form-group row clearfix <?php echo $has_error ? 'has-error' : ''; ?>">
-                    <label class="form-label col-sm-12"><?php esc_html_e( 'Confirm password', 'kanda' ); ?>:</label>
-                    <div class="col-sm-12">
-                        <input type="password" name="confirm_password" class="form-control" value="<?php echo $this->confirm_password; ?>">
-                        <?php if( $has_error && $this->errors[ 'confirm_password' ] ) { ?>
-                            <div class="form-control-feedback"><small><?php echo $this->errors[ 'confirm_password' ]; ?></small></div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </fieldset>
     <div class="text-right">
         <?php wp_nonce_field( 'kanda_save_profile', 'security' ); ?>
         <button type="submit" class="btn -primary" name="kanda_save"><?php _e( 'Update', 'kanda' ); ?></button>
-        <a role="button" href="<?php echo kanda_url_to( 'profile' ); ?>" class="btn -secondary"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
+        <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" class="btn -secondary"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>

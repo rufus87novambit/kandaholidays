@@ -93,8 +93,8 @@ function kanda_add_rewrite_rule() {
         /******************************************** 3. Profiles Controller ********************************************/
 
         array(
-            'regex' => 'profile/edit(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
+            'regex' => 'profile\/edit(\/)?([a-zA-Z0-9]*)?(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&sub-action=$matches[2]&unwanted=$matches[4]', 172, 'profiles', 'edit' ),
             'after' => 'top'
         ),
         array(
@@ -124,6 +124,7 @@ function kanda_query_vars( $public_query_vars ) {
         'ksecurity',
         'hsid',
         'kp',
+        'sub-action',
         'unwanted'
         // other variables should go here
     ) );

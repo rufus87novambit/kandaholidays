@@ -13,7 +13,7 @@ $form_links = array(
             <?php if( $this->request['has_error'] ) { ?>
                 <p class="instructions"><?php echo $this->request['message']; ?></p>
             <?php } else { ?>
-                <?php kanda_show_notification( $this->notification ); ?>
+                <?php kanda_show_notification(); ?>
 
                 <form id="form_reset_password" method="post">
 

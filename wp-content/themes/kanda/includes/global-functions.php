@@ -29,6 +29,15 @@ function kanda_deny_guest_access() {
 }
 
 /**
+ * Start session if it is not started
+ */
+function kanda_start_session() {
+    if (session_id() == '' || session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
+/**
  * Generate a random string
  *
  * @param int $length
@@ -48,15 +57,16 @@ function generate_random_string( $length = 10 ) {
  * Get user avatar image
  *
  * @param bool|false $user_id
- * @param string $class
+ * @param string $size
+ * @param array $atts
  * @return string
  */
-function kanda_get_user_avatar( $user_id = false, $atts = array() ) {
+function kanda_get_user_avatar( $user_id = false, $size = 'user-avatar', $atts = array() ) {
     if( ! $user_id ) {
         $user_id = get_current_user_id();
     }
 
-    $avatar = kanda_get_user_avatar_url( $user_id );
+    $avatar = kanda_get_user_avatar_url( $user_id, $size );
     $company_name = kanda_get_user_meta( $user_id, 'company_name' );
     $img_atts = '';
 
@@ -71,18 +81,52 @@ function kanda_get_user_avatar( $user_id = false, $atts = array() ) {
  * Get user avatar url
  *
  * @param bool|false $user_id
- * @return mixed|null
+ * @param string $size
+ * @return mixed
  */
-function kanda_get_user_avatar_url( $user_id = false ) {
+function kanda_get_user_avatar_url( $user_id = false, $size = 'user-avatar' ) {
+
     if( ! $user_id ) {
         $user_id = get_current_user_id();
     }
-    $avatar = kanda_get_user_meta( $user_id, 'avatar' );
-    if( ! $avatar ) {
-        $avatar = kanda_get_theme_option( 'other_default_avatar' );
+
+    static $avatars;
+    $avatars = $avatars ? $avatars : array();
+
+    if( ! isset( $avatars[ $user_id ][ $size ] ) ) {
+        $avatar_id = kanda_get_user_avatar_id( $user_id );
+        if ( $avatar_id ) {
+            list( $url ) = wp_get_attachment_image_src( $avatar_id, $size );
+        } else {
+            $url = kanda_get_theme_option('other_default_avatar');
+        }
+        $avatars[ $user_id ][ $size ] = $url;
     }
 
-    return $avatar;
+    return $avatars[ $user_id ][ $size ];
+}
+
+function kanda_get_user_avatar_id( $user_id = false ) {
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+
+    $avatar_id = kanda_get_user_meta($user_id, 'avatar');
+    if ( $avatar_id && ('publish' == get_post_status( $avatar_id ) ) ) {
+        return $avatar_id;
+    }
+    return false;
+
+}
+
+function kanda_user_has_avatar( $user_id = false ) {
+
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+
+    return (bool) kanda_get_user_avatar_id( $user_id );
+
 }
 
 /**
@@ -211,7 +255,12 @@ function kanda_get_page_template_variables( $type = false ) {
  *
  * @param $notification
  */
-function kanda_show_notification( $notification ) {
+function kanda_show_notification( $notification = array() ) {
+    if( empty( $notification ) ) {
+        $notification = isset( $_SESSION['kanda_notification'] ) ? (array)$_SESSION['kanda_notification'] : array();
+        $_SESSION['kanda_notification'] = array();
+    }
+
     if( isset( $notification['type'] ) && $notification['type'] && isset( $notification['message'] ) && $notification['message'] ) {
         switch ($notification['type']) {
             case 'success':
@@ -252,8 +301,9 @@ function kanda_get_sidebars() {
  * Redirect to
  *
  * @param $name
+ * @param array $params
  */
-function kanda_to( $name ) {
+function kanda_to( $name, $params = array() ) {
     if( $name == '404' ) {
         global $wp_query;
 
@@ -262,7 +312,7 @@ function kanda_to( $name ) {
         get_template_part( '404' );
         exit();
     }
-    $url = kanda_url_to( $name );
+    $url = kanda_url_to( $name, $params );
     if( $url ) {
         wp_redirect( $url ); exit();
     }
@@ -370,10 +420,10 @@ function &kanda_get_cached_users() {
  * @param string $key
  * @return mixed|null
  */
-function kanda_get_user_meta( $user_id, $key = '' ) {
+function kanda_get_user_meta( $user_id, $key = '', $force_update = false ) {
 
     $cached_users = &kanda_get_cached_users();
-    if( ! isset( $cached_users[ $user_id ] ) ) {
+    if( ! isset( $cached_users[ $user_id ] ) || $force_update ) {
 
         $cached_users[ $user_id ] = isset( $cached_users[ $user_id ] ) ? $cached_users[ $user_id ] : array();
 
@@ -435,4 +485,62 @@ function kanda_get_term_meta( $term_id, $key = '' ) {
     }
 
     return isset( $cached_terms[ $term_id ][ $key ] ) ? maybe_unserialize( $cached_terms[ $term_id ][ $key ] ) : null;
+}
+
+/**
+ * Upload a file
+ *
+ * @param $key
+ * @param int $parent_post_id
+ * @return array
+ */
+function kanda_upload_file( $key, $parent_post_id = 0 ) {
+
+    if ( ! function_exists( 'wp_handle_upload' ) ) {
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+    }
+
+    $upload = wp_handle_upload( $_FILES[ $key ], array( 'test_form' => false ) );
+
+    $is_valid = true;
+    $attach_id = 0;
+    $message = '';
+    if ( $upload && ! isset( $upload['error'] ) ) {
+
+        /* Check the type of file. We'll use this as the 'post_mime_type'. */
+        $filetype = wp_check_filetype( basename( $upload['file'] ), null );
+
+        /* Get the path to the upload directory. */
+        $wp_upload_dir = wp_upload_dir();
+
+        /* Prepare an array of post data for the attachment. */
+        $attachment = array(
+            'guid'           => $wp_upload_dir['url'] . '/' . basename( $upload['file'] ),
+            'post_mime_type' => $filetype['type'],
+            'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $upload['file'] ) ),
+            'post_content'   => '',
+            'post_status'    => 'inherit'
+        );
+
+        /* Insert the attachment. */
+        $attach_id = wp_insert_attachment( $attachment, $upload['file'], 0, true );
+
+        if( $attach_id ) {
+            /* Make sure that this file is included, as wp_generate_attachment_metadata() depends on it. */
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+            /* Generate the metadata for the attachment, and update the database record. */
+            $attach_data = wp_generate_attachment_metadata($attach_id, $upload['file']);
+            $is_valid = wp_update_attachment_metadata($attach_id, $attach_data);
+        } else {
+            $is_valid = false;
+            $message = $attach_id->get_error_message();
+        }
+
+    } else {
+        $is_valid = false;
+        $message = $upload['error'];
+    }
+
+    return $is_valid ? array( 'is_valid' => $is_valid, 'attachment_id' => $attach_id ) : array( 'is_valid' => $is_valid, 'message' => $message );
 }

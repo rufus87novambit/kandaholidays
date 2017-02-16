@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Kanda_Fields {
 
-    private $active;
+    public $active;
     private $plugin = 'advanced-custom-fields-pro/acf.php';
 
     /**

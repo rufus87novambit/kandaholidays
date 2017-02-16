@@ -14,7 +14,7 @@ $form_links = array(
                 <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
             <?php } ?>
 
-            <?php kanda_show_notification( $this->notification ); ?>
+            <?php kanda_show_notification(); ?>
 
             <form id="form_login" method="post">
 

@@ -32,6 +32,22 @@ class Profiles_Controller extends Base_Controller {
      */
     public function edit( $args ) {
 
+        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
+        if( method_exists( $this, $action ) ) {
+            $this->$action( $args );
+        } else {
+            $this->show_404();
+        }
+
+    }
+
+    /**
+     * Edit general options
+     *
+     * @param $args
+     */
+    public function edit_profile( $args ) {
+
         if( isset( $_POST['kanda_save'] ) ) {
 
             $user = wp_get_current_user();
@@ -93,56 +109,6 @@ class Profiles_Controller extends Base_Controller {
                     $errors['company_website'] = esc_html__( 'Invalid URL', 'kanda' );
                 }
 
-                $this->new_password = isset( $_POST['new_password'] ) ? $_POST['new_password'] : '';
-                $this->confirm_password = isset( $_POST['confirm_password'] ) ? $_POST['confirm_password'] : '';
-                if( $this->new_password || $this->confirm_password ) {
-
-                    $is_current_password_valid = true;
-                    $this->old_password = isset( $_POST['old_password'] ) ? $_POST['old_password'] : '';
-
-                    if( ! $this->old_password ) {
-                        $is_current_password_valid = false;
-                        $is_valid = false;
-                        $errors['old_password'] = esc_html__( 'Required', 'kanda' );
-                    } else {
-                        $user = wp_get_current_user();
-                        if( ! wp_check_password( $this->old_password, $user->user_pass, $user->ID ) ) {
-                            $is_current_password_valid = false;
-                            $is_valid = false;
-                            $errors['old_password'] = esc_html__( 'Required', 'kanda' );
-                        }
-                    }
-
-                    if( $is_current_password_valid ) {
-                        $validation_data = Kanda_Config::get( 'validation->front->data' );
-                        $validation_rules = Kanda_Config::get( 'validation->front->form_register' );
-
-                        if( ! $this->new_password ) {
-                            $is_valid = false;
-                            $errors['new_password'] =  esc_html__( 'Required', 'kanda' );
-                        } elseif( $this->new_password == $this->old_password ) {
-                            $is_valid = false;
-                            $errors['new_password'] =  esc_html__( 'Current and new passwords are the same', 'kanda' );
-                        } elseif( ! filter_var( strlen( $this->new_password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
-                            $is_valid = false;
-                            $errors['new_password'] = strtr( $validation_rules['password']['rangelength'], array( '{0}' => $validation_data['password_min_length'], '{1}' => $validation_data['password_max_length'] ) );
-                        }
-
-                        if( ! $this->confirm_password ) {
-                            $is_valid = false;
-                            $errors['confirm_password'] =  esc_html__( 'Required', 'kanda' );
-                        } elseif( $this->new_password && ( $this->new_password != $this->confirm_password ) ) {
-                            $is_valid = false;
-                            $match_message = esc_html__( 'Passwords does not match', 'kanda' );
-                            $errors['confirm_password'] = $match_message;
-                            if( ! isset( $errors['new_password'] ) ) {
-                                $errors['new_password'] = $match_message;
-                            }
-
-                        }
-                    }
-                }
-
                 $this->company_website = isset( $_POST['company_website'] ) ? $_POST['company_website'] : '';
                 if( $this->company_website && ! preg_match( '/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/', $this->company_website ) ) {
                     $is_valid = false;
@@ -150,17 +116,14 @@ class Profiles_Controller extends Base_Controller {
                 }
 
                 if( $is_valid ) {
-                    $userdata = array(
+
+                    $user_id = wp_update_user( array(
                         'ID' => get_current_user_id(),
                         'user_email' => $this->user_email,
                         'first_name' => $this->first_name,
                         'last_name'  => $this->last_name,
                         'user_url'   => $this->company_website
-                    );
-                    if( $this->new_password ) {
-                        $userdata[ 'user_pass' ] = $this->new_password;
-                    }
-                    $user_id = wp_update_user( $userdata );
+                    ) );
 
                     if( is_wp_error( $user_id ) ) {
                         $this->set_notification( 'danger', esc_html__( 'Error updating. Please try again.', 'kanda' ) );
@@ -173,7 +136,7 @@ class Profiles_Controller extends Base_Controller {
                         update_user_meta( $user_id, 'company_phone', $this->company_phone );
 
                         $this->set_notification( 'success', esc_html__( 'Profile successfully updated', 'kanda' ) );
-                        $this->old_password = $this->new_password = $this->confirm_password = '';
+                        kanda_to( 'profile', array( 'edit' ) );
                     }
                 } else {
                     $this->errors = $errors;
@@ -203,8 +166,237 @@ class Profiles_Controller extends Base_Controller {
         }
 
         $this->title = esc_html__( 'Edit profile', 'kanda' );
-        $this->view = 'edit';
+        $this->view = 'edit-general';
 
     }
+
+    /**
+     * Edit password
+     *
+     * @param $args
+     */
+    public function edit_password( $args ) {
+
+        if( isset( $_POST['kanda_save'] ) ) {
+
+            $security = isset($_POST['security']) ? $_POST['security'] : '';
+            if (wp_verify_nonce($security, 'kanda_save_password')) {
+
+                $is_valid = true;
+                $is_current_password_valid = true;
+                $user = wp_get_current_user();
+                $errors = array();
+
+                $this->old_password = isset( $_POST['old_password'] ) ? $_POST['old_password'] : '';
+                if( ! $this->old_password ) {
+                    $is_current_password_valid = false;
+                    $is_valid = false;
+                    $errors['old_password'] = esc_html__( 'Required', 'kanda' );
+                } else {
+                    if( ! wp_check_password( $this->old_password, $user->user_pass, $user->ID ) ) {
+                        $is_current_password_valid = false;
+                        $is_valid = false;
+                        $errors['old_password'] = esc_html__( 'Invalid password', 'kanda' );
+                    }
+                }
+
+                $this->new_password = isset( $_POST['new_password'] ) ? $_POST['new_password'] : '';
+                $this->confirm_password = isset( $_POST['confirm_password'] ) ? $_POST['confirm_password'] : '';
+
+                if( $is_current_password_valid ) {
+                    $validation_data = Kanda_Config::get( 'validation->front->data' );
+                    $validation_rules = Kanda_Config::get( 'validation->front->form_register' );
+
+                    if( ! $this->new_password ) {
+                        $is_valid = false;
+                        $errors['new_password'] =  esc_html__( 'Required', 'kanda' );
+                    } elseif( $this->new_password == $this->old_password ) {
+                        $is_valid = false;
+                        $errors['new_password'] =  esc_html__( 'Current and new passwords are the same', 'kanda' );
+                    } elseif( ! filter_var( strlen( $this->new_password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
+                        $is_valid = false;
+                        $errors['new_password'] = strtr( $validation_rules['password']['rangelength'], array( '{0}' => $validation_data['password_min_length'], '{1}' => $validation_data['password_max_length'] ) );
+                    }
+
+                    if( ! $this->confirm_password ) {
+                        $is_valid = false;
+                        $errors['confirm_password'] =  esc_html__( 'Required', 'kanda' );
+                    } elseif( $this->new_password && ( $this->new_password != $this->confirm_password ) ) {
+                        $is_valid = false;
+                        $match_message = esc_html__( 'Passwords does not match', 'kanda' );
+                        $errors['confirm_password'] = $match_message;
+                        if( ! isset( $errors['new_password'] ) ) {
+                            $errors['new_password'] = $match_message;
+                        }
+
+                    }
+                }
+
+                if( $is_valid ) {
+                    $userdata = array(
+                        'ID'            => $user->ID,
+                        'user_pass'     => $this->new_password
+                    );
+                    $user_id = wp_update_user( $userdata );
+
+                    if( is_wp_error( $user_id ) ) {
+                        $this->set_notification( 'danger', esc_html__( 'Error updating. Please try again.', 'kanda' ) );
+                    } else {
+                        $this->set_notification( 'success', esc_html__( 'Password successfully updated.', 'kanda' ) );
+                        kanda_to( 'profile', array( 'edit', 'password' ) );
+                    }
+                } else {
+                    $this->errors = $errors;
+                    $this->set_notification( 'danger', esc_html__( 'Validation errors occurred. Please fix invalid fields.', 'kanda' ) );
+                }
+
+            }
+        } else {
+            $this->old_password = '';
+            $this->new_password = '';
+            $this->confirm_password = '';
+        }
+
+        $this->title = esc_html__( 'Change password', 'kanda' );
+        $this->view = 'edit-password';
+
+    }
+
+
+    /**
+     * Enqueue scripts for edit photo action
+     */
+    public function edit_photo_enqueue_scripts() {
+
+        wp_enqueue_script( 'plupload-all' );
+        wp_localize_script( 'back', 'avatar_uploader_config', array(
+            'runtimes'            => 'html5,silverlight,flash,html4',
+            'browse_button'       => 'avatar-upload-browse',
+            'container'           => 'avatar-upload-ui',
+            'drop_element'        => 'avatar-upload-ui',
+            'ajaxurl' 			  => admin_url('admin-ajax.php'),
+            'file_data_name'      => 'avatar',
+            'multiple_queues'     => true,
+            'max_file_size'       => '5mb',
+            'url'                 => admin_url( 'admin-ajax.php' ),
+            'flash_swf_url'       => includes_url( 'js/plupload/plupload.flash.swf' ),
+            'silverlight_xap_url' => includes_url( 'js/plupload/plupload.silverlight.xap' ),
+            'filters'             => array(
+                array(
+                    'title'      => esc_html__( 'Allowed Files', 'kanda' ),
+                    'extensions' => 'jpg,jpeg,jpe,gif,png,bmp'
+                )
+            ),
+            'multipart'           => true,
+            'urlstream_upload'    => true,
+            'multi_selection'     => false,
+            'multipart_params'    => array(
+                'security'     => wp_create_nonce( 'kanda-upload-avatar' ),
+                'action'       => 'kanda_upload_avatar',
+            ),
+        ) );
+    }
+
+    /**
+     * Add hooks to edit photo action
+     */
+    private function edit_photo_add_hooks() {
+        add_action( 'wp_enqueue_scripts', array( $this, 'edit_photo_enqueue_scripts' ), 11 );
+    }
+
+    /**
+     * Delete user avatar
+     * @return bool
+     */
+    private function delete_avatar( $user_id = false ) {
+        if( ! $user_id ) {
+            $user_id = get_current_user_id();
+        }
+        $avatar_id = kanda_get_user_avatar_id( $user_id );
+
+        $status = false;
+        if( $avatar_id ) {
+            $status = (bool)wp_delete_attachment( $avatar_id, true );
+            if($status) {
+                delete_user_meta( $user_id, 'avatar' );
+                delete_user_meta( $user_id, 'avatar_coordinates' );
+            }
+        }
+        return $status;
+    }
+
+    /**
+     * Edit profile photo
+     *
+     * @param $args
+     */
+    public function edit_photo( $args ) {
+
+        $this->edit_photo_add_hooks();
+
+        if( isset( $_POST[ 'kanda-delete-avatar' ] ) ) {
+            $security = isset( $_POST['avatar-delete-security'] ) ? $_POST['avatar-delete-security'] : '';
+            if( wp_verify_nonce( $security, 'kanda-delete-avatar' ) ) {
+                $status = $this->delete_avatar();
+                if( $status ) {
+                    $this->set_notification( 'success', esc_html__( 'Image successfully deleted', 'kanda' ) );
+                    kanda_to( 'profile', array( 'edit', 'photo' ) );
+                } else {
+                    $this->set_notification( 'danger', esc_html__( 'Error deleting image', 'kanda' ) );
+                }
+            } else {
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
+            }
+        } elseif( isset( $_POST['kanda-save-avatar'] ) ) {
+            $security = isset( $_POST['avatar-save-security'] ) ? $_POST['avatar-save-security'] : '';
+            if( wp_verify_nonce( $security, 'kanda-save-avatar' ) ) {
+                $coordinates = isset( $_POST['coordinates'] ) ? $_POST['coordinates'] : json_encode( array() );
+                $coordinates = json_decode( stripslashes( $coordinates ), true );
+
+                $avatar_id = kanda_get_user_avatar_id();
+                $attachment = get_attached_file( kanda_get_user_avatar_id() );
+                $attachment_data = wp_get_attachment_metadata( $avatar_id );
+
+                $status = false;
+                if ( !empty($attachment_data['sizes']['user-avatar']) && ( $avatar_file = str_replace( basename( $attachment ), $attachment_data['sizes']['user-avatar']['file'], $attachment ) ) && file_exists( $avatar_file ) ) {
+                    $image_editor = wp_get_image_editor( $attachment );
+
+                    $crop = $image_editor->crop( $coordinates['x'], $coordinates['y'], $coordinates['width'], $coordinates['height'], 150, 150 );
+                    if( $crop ) {
+                        $avatar = $image_editor->save( $avatar_file );
+                        if( ! is_wp_error( $avatar ) ) {
+                            $status = true;
+                        } else {
+                            kanda_logger()->log( $avatar->get_error_message() );
+                        }
+                    } else {
+                        kanda_logger()->log( $crop->get_error_message() );
+                    }
+                }
+
+                if( $status ) {
+                    $this->set_notification( 'success', esc_html__( 'Image successfully saved', 'kanda' ) );
+                    update_user_meta( get_current_user_id(), 'avatar_coordinates', json_encode( $coordinates ) );
+                    kanda_to( 'profile', array( 'edit', 'photo' ) );
+                } else {
+                    $this->set_notification( 'danger', esc_html__( 'Error saving data. Please try again' ) );
+                    $this->coordinates = json_encode( $coordinates );
+                }
+
+            } else {
+                $this->set_notification( 'danger', esc_html__( 'Error saving. Please try again', 'kanda' ) );
+            }
+        } else {
+            $coordinates = kanda_get_user_meta( get_current_user_id(), 'avatar_coordinates' );
+            $coordinates = $coordinates ? $coordinates : json_encode( array() );
+        }
+
+        $this->coordinates = str_replace( '"', '\'', $coordinates );
+        $this->title = esc_html__( 'Edit photo', 'kanda' );
+        $this->view = 'edit-photo';
+
+    }
+
+
 
 }

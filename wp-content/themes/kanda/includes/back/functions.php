@@ -11,6 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Add ajax functions
+ */
+require_once( KANDA_BACK_PATH . 'ajax.php' );
+
+/**
  * Add back css files
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
