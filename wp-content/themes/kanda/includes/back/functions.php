@@ -17,6 +17,7 @@ add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
     wp_enqueue_script( 'jquery-ui-datepicker' );
     wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', array( 'jquery' ), null, true );
+    wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
 }
 
 /**
@@ -28,6 +29,16 @@ function kanda_enqueue_styles(){
     wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
 }
 
+/**
+ * Get localize array for js
+ *
+ * @return array
+ */
+function kanda_get_back_localize() {
+    return array(
+        'theme_url' => KANDA_THEME_URL
+    );
+}
 // search request example
 //add_action('init', 'search_request', 11);
 function search_request() {
