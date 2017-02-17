@@ -59,6 +59,7 @@
 .agency-logo .sub-menu {
     left: auto;
     right: 0;
+    min-width: 170px;
 }
 .agency-logo .sub-menu::before {
     width: 0;
@@ -91,6 +92,7 @@
     padding: 0 10px;
     text-decoration: none;
     color: #3d4795;
+    display: block;
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;

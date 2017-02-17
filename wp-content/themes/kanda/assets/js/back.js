@@ -188,14 +188,14 @@
             if( response.success ) {
                 var _uploader = $( '#' + avatar_uploader_config.container),
                     _cropper = $( '#cropper'),
-                    _cropper_image = $( '#cropper-avatar' ),
-                    _preview_image = $( '#preview-avatar' ),
+                    _cropper_image = 'cropper-avatar',
+                    _preview_image = 'preview-avatar',
                     _delete_avatar = $( '#avatar-delete' );
 
                 $( '#' + file.id ).remove();
 
-                _cropper_image.attr( 'src', response.data.full_url );
-                _preview_image.attr( 'src', response.data.thumb_url );
+                $( '#' + _cropper_image ).attr( 'src', response.data.full_url );
+                $( '#' + _preview_image ).attr( 'src', response.data.thumb_url );
 
                 _uploader.remove();
                 _cropper.removeClass( 'hidden' );
@@ -214,58 +214,29 @@
     if( $( '#cropper-avatar').length > 0 ) {
 
         /**
-         * Set canvas functionality
-         *
-         * @param $object
-         * @param $preview
-         */
-        function set_preview_canvas( $object, $preview ) {
-            var cropped_canvas = $object.cropper('getCroppedCanvas', {
-                    width   : 151,
-                    height  : 151
-                }),
-                coordinates = $object.cropper( 'getData', true );
-
-            $preview.attr( 'src', cropped_canvas.toDataURL() );
-            $( '#coordinates').val( JSON.stringify( coordinates ) );
-        }
-
-        /**
          * Initialize cropper
          *
          * @param $object
          * @param $preview
          * @param $data
          */
-        function init_cropper( $object, $preview, $data ) {
-            var first_init = true;
-            $object.cropper({
+        function init_cropper( $image, $preview ) {
+            var cropper = new Cropper( document.getElementById( $image ), {
                 aspectRatio: 1,
                 zoomable : false,
-                autoCropArea : 0.7,
+                autoCropArea : 0.8,
+                responsive : true,
                 minCropBoxWidth : 151,
                 minCropBoxHeight : 151,
-                built: function(e) {
-                    if( $data ) {
-                        var $data_object = $.parseJSON( $data.replace(/'/g , '"') );
-                        if (!$.isEmptyObject( $data_object ) ) {
-                            $object.cropper('setData', $data_object );
-                        }
-                    }
-                },
+                preview: '.avatar-wrapper',
                 crop: function(e) {
-                    if( ! first_init ) {
-                        set_preview_canvas($object, $preview);
-                    } else {
-                        first_init = false;
-                    }
+                    $( '#coordinates').val( JSON.stringify( cropper.getData( true ) ) );
                 }
-            });
-
-        }
+            } );
+            }
 
         if( $( '#cropper.has-avatar').length ) {
-            init_cropper($('#cropper-avatar'), $('#preview-avatar'), $('#coordinates').val());
+            init_cropper( 'cropper-avatar', 'preview-avatar' );
         }
     }
     /***************************************** /end Avatar functionality *****************************************/

@@ -7,7 +7,7 @@
             <div class="col-sm-3 text-center">
                 <div class="avatar-box">
                     <div class="avatar-wrapper text-center">
-                        <?php echo kanda_get_user_avatar( false, 'user-avatar', array( 'id' => 'preview-avatar' ) ); ?>
+                        <?php echo kanda_get_user_avatar( false, 'user-avatar' ); ?>
                     </div>
                     <div class="<?php echo $has_avatar ? '' : 'hidden'; ?>" id="avatar-delete" method="post">
                         <input type="hidden" name="avatar-delete-security" value="<?php echo wp_create_nonce( 'kanda-delete-avatar' ); ?>" />
@@ -33,7 +33,7 @@
         </div>
     </fieldset>
     <div class="text-right">
-        <input type="hidden" name="coordinates" value="<?php echo $this->coordinates; ?>" id="coordinates" />
+        <input type="hidden" name="coordinates" id="coordinates" />
         <?php wp_nonce_field( 'kanda-save-avatar', 'avatar-save-security' ); ?>
         <button type="submit" class="btn -primary" name="kanda-save-avatar"><?php _e( 'Save', 'kanda' ); ?></button>
         <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" class="btn -danger"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>

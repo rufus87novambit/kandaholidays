@@ -90,7 +90,8 @@ gulp.task('css-back', function () {
         '../assets/css/back-base.css',
         '../assets/css/back.css',
         '../assets/css/responsive.css',
-        'node_modules/cropper/dist/cropper.css'
+        //'node_modules/cropper/dist/cropper.css'
+        'node_modules/cropperjs/dist/cropper.min.css'
     ])
         .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
@@ -111,7 +112,8 @@ gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
         /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
-        'node_modules/cropper/dist/cropper.js',
+        //'node_modules/cropper/dist/cropper.js',
+        'node_modules/cropperjs/dist/cropper.min.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         '../assets/js/back.js'
     ])

@@ -376,22 +376,16 @@ class Profiles_Controller extends Base_Controller {
 
                 if( $status ) {
                     $this->set_notification( 'success', esc_html__( 'Image successfully saved', 'kanda' ) );
-                    update_user_meta( get_current_user_id(), 'avatar_coordinates', json_encode( $coordinates ) );
                     kanda_to( 'profile', array( 'edit', 'photo' ) );
                 } else {
                     $this->set_notification( 'danger', esc_html__( 'Error saving data. Please try again' ) );
-                    $this->coordinates = json_encode( $coordinates );
                 }
 
             } else {
                 $this->set_notification( 'danger', esc_html__( 'Error saving. Please try again', 'kanda' ) );
             }
-        } else {
-            $coordinates = kanda_get_user_meta( get_current_user_id(), 'avatar_coordinates' );
-            $coordinates = $coordinates ? $coordinates : json_encode( array() );
         }
 
-        $this->coordinates = str_replace( '"', '\'', $coordinates );
         $this->title = esc_html__( 'Edit photo', 'kanda' );
         $this->view = 'edit-photo';
 
