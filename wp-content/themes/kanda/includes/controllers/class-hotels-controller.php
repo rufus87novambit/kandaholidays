@@ -22,6 +22,10 @@ class Hotels_Controller extends Base_Controller {
      */
     public function index( $args ) {
 
+        if( isset( $_POST['kanda_search'] ) ) {
+            echo '<pre>'; var_dump($_POST); die;
+        }
+
         $this->view = 'index';
 
     }

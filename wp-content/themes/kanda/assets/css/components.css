@@ -14,6 +14,7 @@
     background-color: #fff;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
     padding:25px 20px;
+    margin-bottom: 1rem;
 }
 
 
@@ -203,12 +204,16 @@
     z-index: 1045;
 
     width:90%;
+    height: 90%;
 }
 .popup-block{
     position: relative;
     padding: 2rem 1.5rem 1rem 1.5rem;
     max-width: 650px;
-    margin: 1.5rem auto;
+    /*margin: 1.5rem auto;*/
+    margin: auto;
+    max-height: 100%;
+    overflow: auto;
 }
 .white-popup-block {
     background: #fff;
@@ -247,6 +252,9 @@ button.popup-close{
 
 .white-popup-block .popup-close {
     color: var(--text-color);
+}
+body.popup-open {
+    overflow: hidden;
 }
 body.popup-open .popup-overlay,
 body.popup-open .popup-wrap.open {

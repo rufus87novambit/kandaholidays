@@ -79,6 +79,7 @@ gulp.task('front-build', ['css-front','js-front']);
  */
 gulp.task('css-back', function () {
     gulp.src([
+        '../assets/css/jquery-ui.css',
         'node_modules/jquery-ui-dist/jquery-ui.min.css',
         '../assets/css/reset.css',
         '../assets/css/grid.css',
@@ -90,8 +91,7 @@ gulp.task('css-back', function () {
         '../assets/css/back-base.css',
         '../assets/css/back.css',
         '../assets/css/responsive.css',
-        //'node_modules/cropper/dist/cropper.css'
-        'node_modules/cropperjs/dist/cropper.min.css'
+        'node_modules/cropperjs/dist/cropper.css'
     ])
         .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
@@ -111,14 +111,13 @@ gulp.task('css-back-watch', function() {
 gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
-        /*'node_modules/jquery-bar-rating/dist/jquery.barrating.min.js',*/
-        //'node_modules/cropper/dist/cropper.js',
-        'node_modules/cropperjs/dist/cropper.min.js',
+        '../assets/js/plugins/jquery.barrating.js',
+        'node_modules/cropperjs/dist/cropper.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 

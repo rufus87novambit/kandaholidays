@@ -1,24 +1,5 @@
 (function($) {
 
-
-   /* $('#hotel-rating').barrating({
-        theme: 'kanda-stars',
-        initialRating: '',
-        allowEmpty : true,
-        emptyValue : '',
-        deselectable: true,
-        hoverState: false,
-        showValues: true,
-        onSelect: function( value, text, event ) {
-            var _helper = $( this.$elem.data( 'text-holder' )),
-                _value = ( value && text ) ? $(text).text() : _helper.data( 'default' );
-            _helper.html( _value );
-        }
-    });*/
-
-
-
-
     //menu toggle
     $('#menuBtn').on( 'click', function(){
         $('body').toggleClass('menu-opened');
@@ -33,6 +14,19 @@
 
     /************************************************ Helpers **************************************************/
     /**
+     * Rating
+     */
+    $('.rating').barrating({
+        theme: 'kanda-stars',
+        initialRating: '',
+        allowEmpty : true,
+        emptyValue : '',
+        deselectable: true,
+        hoverState: false,
+        showValues: true,
+    });
+
+    /**
      * Custom Select
      */
     if($('.custom-select').length > 0) {
@@ -44,13 +38,130 @@
      */
     if( $( '.datepicker' ).length > 0 ) {
         $( '.datepicker' ).datepicker({
-            showOn: 'button',
-            buttonImage: kanda.theme_url + 'images/back/calendar.gif',
-            buttonImageOnly: true,
-            buttonText: 'Select date'
+            showOn: 'focus',
+            minDate: new Date()
         });
     }
 
+    /**
+     * Checkin / Checkout datepickers
+     */
+    if( $('.datepicker-checkin').length > 0 && $('.datepicker-checkout').length > 0 ) {
+
+        var checkin = new Date();
+        var checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
+
+        /**
+         * Get date in milliseconds
+         * @returns {number}
+         */
+        function get_day_in_milliseconds( $days ) {
+            return $days * 24 * 60 * 60 * 1000;
+        }
+
+        /**
+         * Calculate nights count
+         * @param $first
+         * @param $second
+         * @returns {number}
+         */
+        function calculate_nights_count( $first, $second ) {
+            return Math.round( Math.abs( ( $first.getTime() - $second.getTime() ) / get_day_in_milliseconds( 1 ) ) );
+        }
+
+        /**
+         * Checkin functionality
+         */
+        $( '.datepicker-checkin' ).datepicker({
+            showOn: 'focus',
+            dateFormat: 'dd MM, yy',
+            minDate: checkin,
+            onSelect: function(){
+                checkin = new Date( this.value );
+                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
+
+                $( '.datepicker-checkout').datepicker( 'option', 'minDate', checkout );
+                checkout = new Date( $( '.datepicker-checkout').datepicker( 'getDate' ) );
+                $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
+            }
+        }).datepicker( 'setDate', checkin );
+
+        /**
+         * Checkout functionality
+         */
+        $( '.datepicker-checkout' ).datepicker({
+            showOn: 'focus',
+            dateFormat: 'dd MM, yy',
+            minDate: checkout,
+            onSelect: function(){
+                checkin = $( '.datepicker-checkin' ).datepicker( 'getDate' );
+                checkout = new Date( this.value );
+
+                $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
+            }
+        }).datepicker( 'setDate', checkout );
+
+        /**
+         * Nights count functionality
+         */
+        $( '#nights_count').on( 'change keyup', function(){
+            checkin = $( '.datepicker-checkin' ).datepicker( 'getDate' );
+            if( checkin ) {
+                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
+            }
+            $( '.datepicker-checkout' ).datepicker( 'setDate', checkout );
+        } );
+    }
+
+    if( $( '#rooms_count').length > 0 ) {
+        $( '#rooms_count' ).on( 'change', function(){
+            var count = $(this).val(),
+                clone = null,
+                existing_count = $('.occupants').length;
+
+            if( count > existing_count ) {
+                for( var i = 0; i < ( count - existing_count ); i++ ) {
+                    var block_index = existing_count + i + 1;
+                    clone = $( '.occupants-cloneable' ).clone( true );
+
+                    clone
+                        .data( 'index', block_index )
+                        .removeClass( 'occupants-cloneable' )
+                        .find( '.children-age-box').addClass('hidden')
+                            .find('.children-ages').empty().end().end()
+                        .find('legend span').text( block_index ).end()
+                        .find('input, select').each( function(){
+                            this.name = this.name.replace('[1]', '[' + block_index + ']');
+                        }).end()
+                        .find( 'span.customSelect').remove().end()
+                        .find( 'select.hasCustomSelect' ).removeAttr( 'style' )
+
+                    clone.insertAfter( $('.occupants:last') );
+                    $('.occupants:last .custom-select').customSelect();
+                }
+            } else if( count < existing_count ) {
+                $('.occupants').slice( count - existing_count).remove();
+            }
+        } );
+
+        $('.children-presence').on( 'change', function(){
+            var value = $(this).val(),
+                wrap = $(this).closest( '.occupants'),
+                block_index = wrap.data('index'),
+                children_box = wrap.find( '.children-age-box'),
+                append_box = children_box.find( '.children-ages' );
+
+            append_box.empty();
+            for( var i = 0; i < value; i++ ) {
+                append_box.append('<input type="number" name="room_occupants[' + block_index + '][children_age][]" class="form-control" value="0" min="1" max="12">');
+            }
+            if( value > 0 ) {
+                children_box.removeClass('hidden');
+            } else {
+                children_box.addClass('hidden');
+            }
+        } );
+    }
     /**
      * Slider
      */

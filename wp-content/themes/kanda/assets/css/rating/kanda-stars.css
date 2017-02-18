@@ -30,32 +30,18 @@
     width: 100px;
 }
 .br-theme-kanda-stars .br-widget a:after {
-    content: '\e9d7';
+    content: '\e90e';
 }
 .br-theme-kanda-stars .br-widget a:hover .helper {
     display: block;
 }
 .br-theme-kanda-stars .br-widget a.br-active:after,
 .br-theme-kanda-stars .br-widget a.br-selected:after {
-    content: '\e9d9';
+    content: '\e90f';
 }
 .br-theme-kanda-stars .br-widget .br-current-rating {
     display: none;
 }
 .br-theme-kanda-stars .br-readonly a {
     cursor: default;
-}
-
-
-
-.hotel-rating-wrapper select {
-    display: none;
-}
-.hotel-rating-wrapper .br-wrapper,
-.hotel-rating-wrapper .selected-text {
-    float: left;
-}
-.hotel-rating-wrapper .selected-text {
-    margin-left: 20px;
-    padding: 2px 0;
 }

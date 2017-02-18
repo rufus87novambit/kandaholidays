@@ -177,18 +177,18 @@ textarea.form-control{
 }
 
 /*date field*/
-.calendar-field{
-    position:relative;
-    padding-right:40px;
-}
-.calendar-field img{
-    position:absolute;
-    right:10px;
-    top:50%;
-    -webkit-transform:translateY(-50%);
-    -moz-transform:translateY(-50%);
-    transform:translateY(-50%);
-}
+/*.calendar-field{*/
+    /*position:relative;*/
+    /*padding-right:40px;*/
+/*}*/
+/*.calendar-field img{*/
+    /*position:absolute;*/
+    /*right:10px;*/
+    /*top:50%;*/
+    /*-webkit-transform:translateY(-50%);*/
+    /*-moz-transform:translateY(-50%);*/
+    /*transform:translateY(-50%);*/
+/*}*/
 
 .info-form .form-label{
     color:var(--brand-info);

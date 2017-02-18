@@ -2,7 +2,7 @@
     <form class="form-block" method="post">
         <fieldset class="fieldset sep-btm">
             <legend><?php esc_html_e( 'SELECT DESTINATION', 'kanda' ); ?></legend>
-            <ul class="block-sm-3">
+            <ul class="block-sm-3 clearfix">
                 <li>
                     <label class="ctrl-field -rbtn">
                         <input type='radio' class="ctrl-inp" name="city" value="AUH" checked>
@@ -54,24 +54,26 @@
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Hotel Name', 'kanda' ); ?></label>
                         <div class="col-lg-7">
-                            <input type="text" class="form-control">
+                            <input type="text" name="hotel_name" class="form-control">
                         </div>
                     </div>
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Rating', 'kanda' ); ?></label>
                         <div class="select-wrap col-lg-7">
-                            <select class="custom-select" name="name[]">
-                                <option class="placeholder" selected disabled>1</option>
-                                <option>value1</option>
-                                <option>value2</option>
-                                <option>value3</option>
+                            <select class="rating" name="hotel_rating">
+                                <option value=""></option>
+                                <option value="budget"></option>
+                                <option value="budget"></option>
+                                <option value="standard" selected></option>
+                                <option value="superior"></option>
+                                <option value="luxury"></option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Hotels In Request', 'kanda' ); ?></label>
                         <div class="select-wrap col-lg-7">
-                            <select class="custom-select" name="name[]">
+                            <select class="custom-select" name="hotels_in_request">
                                 <option value="N"><?php esc_html_e( 'Available Hotels', 'kanda' ); ?></option>
                                 <option value="Y" selected="selected"><?php esc_html_e( 'On Request Hotels', 'kanda' ); ?></option>
                             </select>
@@ -351,19 +353,19 @@
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Check In date', 'kanda' ); ?></label>
                         <div class="calendar-field col-lg-7">
-                            <input type="text" class="form-control datepicker">
+                            <input type="text" name="check_in" class="form-control datepicker-checkin">
                         </div>
                     </div>
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Check Out date', 'kanda' ); ?></label>
                         <div class="calendar-field col-lg-7">
-                            <input type="text" class="form-control datepicker">
+                            <input type="text" name="check_out" class="form-control datepicker-checkout">
                         </div>
                     </div>
                     <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Number Of Nights', 'kanda' ); ?></label>
                         <div class="select-wrap col-lg-7">
-                            <input type="number" class="form-control -sm" min="1" value="1">
+                            <input id="nights_count" name="nights_count" type="number" class="form-control -sm" min="1" value="1">
                         </div>
                     </div>
                 </div>
@@ -372,51 +374,67 @@
 
         <fieldset class="fieldset row clearfix">
             <div class="col-sm-6">
-                <legend>SELECT YOUR ROOM/S</legend>
+                <legend><?php esc_html_e( 'SELECT YOUR ROOM/S', 'kanda' ); ?></legend>
                 <div class="form-group row clearfix">
-                    <label class="form-label col-lg-5">How Many Rooms Do You Require?</label>
+                    <label class="form-label col-lg-5"><?php esc_html_e( 'How Many Rooms Do You Require?', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="name[]">
-                            <option class="placeholder" selected disabled>1</option>
-                            <option>value1</option>
-                            <option>value2</option>
-                            <option>value3</option>
+                        <select class="custom-select" name="rooms_count" id="rooms_count">
+                            <option selected="selected">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
                         </select>
                     </div>
                 </div>
             </div>
         </fieldset>
-        <fieldset class="fieldset clearfix">
-            <div class="box col-sm-7 col-lg-6">
-                <legend>ROOM 1 OCCUPANTS</legend>
-                <div class="form-group row clearfix">
-                    <label class="form-label col-lg-5">Adults:</label>
-                    <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="name[]">
-                            <option class="placeholder" selected disabled>1</option>
-                            <option>value1</option>
-                            <option>value2</option>
-                            <option>value3</option>
-                        </select>
+        <fieldset class="fieldset row">
+            <div class="col-sm-6 occupants occupants-cloneable" data-index="1">
+                <div class="box">
+                    <legend><?php printf( __( 'ROOM <span>%d</span> OCCUPANTS', 'kanda' ), 1 ); ?></legend>
+                    <div class="form-group row clearfix">
+                        <label class="form-label col-lg-5"><?php esc_html_e( 'Adults', 'kanda' ); ?>:</label>
+                        <div class="select-wrap col-lg-7">
+                            <select class="custom-select" name="room_occupants[1][adults]">
+                                <option value="1"><?php esc_html_e( '1 Adult - Single', 'kanda' ); ?></option>
+                                <option value="2"><?php esc_html_e( '2 Adults - Double', 'kanda' ); ?></option>
+                                <option value="3"><?php esc_html_e( '3 Adults - Triple', 'kanda' ); ?></option>
+                                <option value="4"><?php esc_html_e( '4 Adults - Quad', 'kanda' ); ?></option>
+                                <option value="5"><?php esc_html_e( '5 Adults', 'kanda' ); ?></option>
+                                <option value="6"><?php esc_html_e( '6 Adults', 'kanda' ); ?></option>
+                                <option value="7"><?php esc_html_e( '7 Adults', 'kanda' ); ?></option>
+                                <option value="8"><?php esc_html_e( '8 Adults', 'kanda' ); ?></option>
+                                <option value="9"><?php esc_html_e( '9 Adults', 'kanda' ); ?></option>
+                                <option value="10"><?php esc_html_e( '10 Adults', 'kanda' ); ?></option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row clearfix">
-                    <label class="form-label col-lg-5">Children:</label>
-                    <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="name[]">
-                            <option class="placeholder" selected disabled>1</option>
-                            <option>value1</option>
-                            <option>value2</option>
-                            <option>value3</option>
-                        </select>
+                    <div class="form-group row clearfix">
+                        <label class="form-label col-lg-5"><?php esc_html_e( 'Children', 'kanda' ); ?>:</label>
+                        <div class="select-wrap col-lg-7">
+                            <select class="custom-select children-presence" name="room_occupants[1][children]">
+                                <option value="0"><?php esc_html_e( 'Without children', 'kanda' ); ?></option>
+                                <option value="1"><?php esc_html_e( '1 Child', 'kanda' ); ?></option>
+                                <option value="2"><?php esc_html_e( '2 Children', 'kanda' ); ?></option>
+                                <option value="3"><?php esc_html_e( '3 Children', 'kanda' ); ?></option>
+                                <option value="4"><?php esc_html_e( '4 Children', 'kanda' ); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row clearfix text-center children-age-box hidden">
                         <small class="form-text text-muted">Please Specify Ages Of Children</small>
+                        <div class="children-ages"></div>
                     </div>
                 </div>
             </div>
+
         </fieldset>
 
         <footer class="form-footer clearfix">
-            <input type="submit" value="Search hotel" class="btn -primary pull-right">
+            <input type="submit" name="kanda_search" value="Search hotel" class="btn -primary pull-right">
         </footer>
     </form>
 </div>

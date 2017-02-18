@@ -59,8 +59,8 @@
                         <div class="sub-menu">
                             <ul>
                                 <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit profile', 'kanda' ); ?></a></li>
-                                <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a></li>
-                                <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'photo' ) ); ?>"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit avatar', 'kanda' ); ?></a></li>
+                                <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a></li>
+                                <li><a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'photo' ) ); ?>"><i class="icon icon-image"></i> <?php esc_html_e( 'Edit avatar', 'kanda' ); ?></a></li>
                                 <li><a href="#"><i class="icon icon-cog"></i> <?php esc_html_e( 'Settings', 'kanda' ); ?></a></li>
                                 <li><a href="<?php echo wp_logout_url( esc_url( site_url( '/' ) ) ); ?>"><i class="icon icon-exit"></i> <?php esc_html_e( 'Logout', 'kanda' ); ?></a></li>
                             </ul>
