@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <?php wp_head(); ?>
 </head>
-
-<<<<<<< HEAD
 <body <?php body_class(); ?>>
 <div class="back-case">
     <header class="header clearfix">
@@ -19,13 +17,16 @@
             <span class="burger-icon"></span>
         </button><!-- .menu-btn -->
 
-        <?php wp_nav_menu( array(
-            'theme_location' => 'main_nav',
-            'container' => 'nav',
-            'container_class' => 'head-nav',
-            'container_id' => '',
-            'menu_class' => 'main-menu',
-        ) ); ?>
+       <!-- <nav class="head-nav">
+            <?php wp_nav_menu( array(
+                'theme_location' => 'main_nav',
+                'menu_class' => 'main-menu',
+                'container' => 'ul',
+                // 'container_class' => 'head-nav',
+                'container_id' => '',
+
+            ) ); ?>
+        </nav>-->
 
 
         <nav class="head-nav">
