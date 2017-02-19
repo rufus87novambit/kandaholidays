@@ -158,10 +158,54 @@ class Kanda_Config {
                         'equalTo' => __( 'Does not match', 'kanda' )
                     )
                 ),
+            ),
+            'back' => array(
+                'data' => array(
+                    'username_min_length' => 6,
+                    'username_max_length' => 25,
+                    'password_min_length' => 8,
+                    'password_max_length' => 50
+                ),
+                'form_edit_profile' => array(
+                    // key => input_id
+                    'user_email' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'email'    => esc_html__( 'Invalid email', 'kanda' )
+                    ),
+                    'first_name' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'last_name' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'mobile' => array(
+                        'phone_number' => esc_html__( 'Invalid mobile number', 'kanda' )
+                    ),
+                    'company_phone' => array(
+                        'phone_number' => esc_html__( 'Invalid phone number', 'kanda' )
+                    ),
+                    'company_website' => array(
+                        'url' => esc_html__( 'Invalid URL', 'kanda' )
+                    )
+                ),
+                'form_edit_password' => array(
+                    'old_password' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'new_password' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'rangelength' => esc_html__( 'Password must be between {0} and {1} characters in length', 'kanda' )
+                    ),
+                    'confirm_password' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'equalTo' => __( 'Does not match', 'kanda' )
+                    ),
+                )
             )
         );
         self::$controller_map = array(
             'auth'      => 'login|register|forgot|reset',
+            'profile'   => 'edit',
             'hotels'    => 'index'
         );
     }

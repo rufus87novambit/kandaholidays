@@ -30,15 +30,32 @@ class Profiles_Controller extends Base_Controller {
      * Profile edit
      * @param $args
      */
-    public function edit( $args ) {
+//    public function edit( $args ) {
+//
+//        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
+//        if( method_exists( $this, $action ) ) {
+//            $this->$action( $args );
+//        } else {
+//            $this->show_404();
+//        }
+//
+//    }
 
-        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
-        if( method_exists( $this, $action ) ) {
-            $this->$action( $args );
-        } else {
-            $this->show_404();
-        }
+    /************************************************** Edit Profile **************************************************/
+    /**
+     * Specific hooks for edit profile
+     */
+    private function edit_profile_add_hooks() {
+        add_action( 'wp_enqueue_scripts', array( $this, 'edit_profile_enqueue_scripts' ), 11 );
+    }
 
+    /**
+     * Add specific data for edit profile
+     */
+    public function edit_profile_enqueue_scripts() {
+        wp_localize_script( 'back', 'edit_profile', array(
+            'validation' => Kanda_Config::get( 'validation->back->form_edit_profile' )
+        ));
     }
 
     /**
@@ -46,7 +63,9 @@ class Profiles_Controller extends Base_Controller {
      *
      * @param $args
      */
-    public function edit_profile( $args ) {
+    public function edit( $args ) {
+
+        $this->edit_profile_add_hooks();
 
         if( isset( $_POST['kanda_save'] ) ) {
 
@@ -63,30 +82,33 @@ class Profiles_Controller extends Base_Controller {
                 $is_valid = true;
                 $errors = array();
 
+                $validation_rules = Kanda_Config::get( 'validation->back->form_edit_profile' );
+                $validation_data = Kanda_Config::get( 'validation->back->data' );
+
                 $this->user_email = isset( $_POST['user_email'] ) ? $_POST['user_email'] : '';
                 if( ! $this->user_email ) {
                     $is_valid = false;
-                    $errors[ 'user_email' ] = esc_html__( 'Required', 'kanda' );
+                    $errors[ 'user_email' ] = $validation_rules['user_email']['required'];
                 } elseif( ! filter_var( $this->user_email, FILTER_VALIDATE_EMAIL ) ) {
-                    $errors[ 'user_email' ] = esc_html__( 'Invalid email address', 'kanda' );
+                    $errors[ 'user_email' ] = $validation_rules['user_email']['email'];
                 }
 
                 $this->first_name = isset( $_POST['first_name'] ) ? $_POST['first_name'] : '';
                 if( ! $this->first_name ) {
                     $is_valid = false;
-                    $errors[ 'first_name' ] = esc_html__( 'Required', 'kanda' );
+                    $errors[ 'first_name' ] = $validation_rules['first_name']['required'];
                 }
 
                 $this->last_name = isset( $_POST['last_name'] ) ? $_POST['last_name'] : '';
                 if( ! $this->last_name ) {
                     $is_valid = false;
-                    $errors[ 'last_name' ] = esc_html__( 'Required', 'kanda' );
+                    $errors[ 'last_name' ] = $validation_rules['last_name']['required'];
                 }
 
                 $this->mobile = isset( $_POST['mobile'] ) ? $_POST['mobile'] : '';
                 if( $this->mobile && !( preg_match( '/^[^:]*\d{9,}$/', $this->mobile ) ) ) {
                     $is_valid = false;
-                    $errors[ 'mobile' ] = esc_html__( 'Invalid mobile number', 'kanda' );
+                    $errors[ 'mobile' ] = $validation_rules['mobile']['phone_number'];
                 }
 
                 $this->position = isset( $_POST['position'] ) ? $_POST['position'] : '';
@@ -100,19 +122,13 @@ class Profiles_Controller extends Base_Controller {
                 $this->company_phone = isset( $_POST['company_phone'] ) ? $_POST['company_phone'] : '';
                 if( $this->company_phone && !( preg_match( '/^[^:]*\d{9,}$/', $this->company_phone ) ) ) {
                     $is_valid = false;
-                    $errors[ 'company_phone' ] = esc_html__( 'Invalid phone number', 'kanda' );
-                }
-
-                $this->company_website = isset( $_POST['website'] ) ? $_POST['website'] : '';
-                if( $this->company_website && ( filter_var( $this->company_website, FILTER_VALIDATE_URL) === false ) ) {
-                    $is_valid = false;
-                    $errors['company_website'] = esc_html__( 'Invalid URL', 'kanda' );
+                    $errors[ 'company_phone' ] = $validation_rules['company_phone']['phone_number'];
                 }
 
                 $this->company_website = isset( $_POST['company_website'] ) ? $_POST['company_website'] : '';
                 if( $this->company_website && ! preg_match( '/\b(?:(?:https?):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/', $this->company_website ) ) {
                     $is_valid = false;
-                    $errors['company_website'] =  esc_html__( 'Invalid URL', 'kanda' );
+                    $errors['company_website'] = $validation_rules['company_website']['websiteRegex'];
                 }
 
                 if( $is_valid ) {
@@ -169,13 +185,33 @@ class Profiles_Controller extends Base_Controller {
         $this->view = 'edit-general';
 
     }
+    /************************************************ /end Edit Profile ***********************************************/
 
+    /************************************************** Edit Password *************************************************/
+    /**
+     * Specific hooks for edit password
+     */
+    private function edit_password_add_hooks() {
+        add_action( 'wp_enqueue_scripts', array( $this, 'edit_password_enqueue_scripts' ), 11 );
+    }
+
+    /**
+     * Add specific data for edit password
+     */
+    public function edit_password_enqueue_scripts() {
+        wp_localize_script( 'back', 'edit_password', array(
+            'validation' => Kanda_Config::get( 'validation->back->form_edit_password' ),
+            'validation_data' => Kanda_Config::get( 'validation->back->data' ),
+        ));
+    }
     /**
      * Edit password
      *
      * @param $args
      */
-    public function edit_password( $args ) {
+    public function password( $args ) {
+
+        $this->edit_password_add_hooks();
 
         if( isset( $_POST['kanda_save'] ) ) {
 
@@ -261,7 +297,7 @@ class Profiles_Controller extends Base_Controller {
         $this->view = 'edit-password';
 
     }
-
+    /*********************************************** /end Edit Password ***********************************************/
 
     /**
      * Enqueue scripts for edit photo action
@@ -330,7 +366,7 @@ class Profiles_Controller extends Base_Controller {
      *
      * @param $args
      */
-    public function edit_photo( $args ) {
+    public function photo( $args ) {
 
         $this->edit_photo_add_hooks();
 

@@ -6,6 +6,7 @@
     <?php wp_head(); ?>
 </head>
 
+<<<<<<< HEAD
 <body <?php body_class(); ?>>
 <div class="back-case">
     <header class="header clearfix">
@@ -17,6 +18,16 @@
         <button class="menu-btn" id="menuBtn">
             <span class="burger-icon"></span>
         </button><!-- .menu-btn -->
+
+        <?php wp_nav_menu( array(
+            'theme_location' => 'main_nav',
+            'container' => 'nav',
+            'container_class' => 'head-nav',
+            'container_id' => '',
+            'menu_class' => 'main-menu',
+        ) ); ?>
+
+
         <nav class="head-nav">
             <ul class="main-menu">
                 <li class="menu-item-has-children">
@@ -57,7 +68,6 @@
                 </li>
             </ul>
         </nav>
-
         <div class="head-side">
             <div class="currency">
                 <a href="#"><i class="icon icon-currency-usd"></i></a>

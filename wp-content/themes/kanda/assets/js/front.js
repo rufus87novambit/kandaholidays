@@ -27,11 +27,11 @@
                     if( this.element( element ) ) {
                         $( element).removeClass('error')
                             .parents( '.input-holder' ).removeClass( 'has-error' )
-                            .find( '.help-block').text( '' );
+                            .find( '.help-block').html( '' );
                     }
                 },
                 errorPlacement : function( error, element ) {
-                    element.siblings( '.help-block').text( error.text() );
+                    element.siblings( '.help-block').html( error.text() );
                     element.parents('.input-holder').addClass( 'has-error' );
                 }
             };
