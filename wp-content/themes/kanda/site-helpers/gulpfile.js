@@ -112,12 +112,13 @@ gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
         '../assets/js/plugins/jquery.barrating.js',
+        'node_modules/jquery-validation/dist/jquery.validate.js',
         'node_modules/cropperjs/dist/cropper.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest('../js/'))
 });
 

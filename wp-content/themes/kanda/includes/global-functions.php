@@ -278,7 +278,7 @@ function kanda_show_notification( $notification = array() ) {
             default:
                 $icon = '';
         }
-        printf('<div class="alert alert-%1$s" role="alert">%2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
+        printf('<div class="flash-message alert alert-%1$s" role="alert">%2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
     }
 }
 

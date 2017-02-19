@@ -1,8 +1,14 @@
 <?php kanda_show_notification(); ?>
+
+<div class="secondary-menu">
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a>
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a>
+    <a href="javascript:void(0);" rel="button" class="btn -warning -sm"><i class="icon icon-image"></i> <?php esc_html_e( 'Change avatar', 'kanda' ); ?></a>
+</div>
+
 <form class="form-block form-inline" enctype="multipart/form-data" method="post">
     <?php $has_avatar = kanda_user_has_avatar(); ?>
     <fieldset class="fieldset sep-btm">
-        <legend><?php esc_html_e( 'GENERAL', 'kanda' ); ?></legend>
         <div class="row">
             <div class="col-sm-3 text-center">
                 <div class="avatar-box">
@@ -23,7 +29,9 @@
 
                 <div id="uploader" class="<?php echo $has_avatar ? 'hidden' : ''; ?>">
                     <div id="avatar-upload-ui" class="text-center">
-                        <button class="btn -info -sm" id="avatar-upload-browse"><?php esc_html_e( 'Browse', 'kanda' ); ?></button>
+                        <div><?php esc_html_e( 'Drag and drop files here', 'kanda' ); ?></div>
+                        <div><?php esc_html_e( 'or', 'kanda' ); ?></div>
+                        <button class="btn -info" id="avatar-upload-browse"><?php esc_html_e( 'Select', 'kanda' ); ?></button>
                     </div>
                     <div id="avatar-upload-helper">
                         <div id="filelist"></div>

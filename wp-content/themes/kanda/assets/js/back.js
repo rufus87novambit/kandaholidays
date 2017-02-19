@@ -33,6 +33,15 @@
         $(".custom-select").customSelect();
     }
 
+    //if( $('.flash-message').length > 0 ) {
+    //    var flash_message_timeout = setTimeout( function(){
+    //        $('.flash-message').addClass( 'shown' );
+    //        setTimeout( function(){
+    //            $('.flash-message').remove()
+    //        }, 500 );
+    //    } , 5000);
+    //}
+
     /**
      * Date picker
      */
@@ -113,6 +122,9 @@
         } );
     }
 
+    /**
+     * Rooms count functionslity
+     */
     if( $( '#rooms_count').length > 0 ) {
         $( '#rooms_count' ).on( 'change', function(){
             var count = $(this).val(),
@@ -351,4 +363,143 @@
         }
     }
     /***************************************** /end Avatar functionality *****************************************/
+
+    /*********************************************** Form Validation *********************************************/
+    var kanda_back_form_validation_default_args = {
+        onfocusout: function( element ) {
+            if( this.element( element ) ) {
+                $( element ).removeClass('error')
+                    .parents( '.form-group' ).removeClass( 'has-error' )
+                    .find( '.form-control-feedback').html( '' );
+            }
+        },
+        errorPlacement : function( error, element ) {
+            element.siblings( '.form-control-feedback').html( '<small>' + error.text() + '</small>' );
+            element.parents('.form-group').addClass( 'has-error' );
+        }
+    };
+
+    /**
+     * loginRegex validation
+     */
+    $.validator.addMethod( 'loginRegex' , function( value, element ) {
+        return /^[a-z0-9\_\-]+$/i.test( value );
+    } );
+
+    /**
+     * Phone number validation
+     */
+    $.validator.addMethod( 'phone_number', function( value, element ) {
+        var regex_result = /^[\+:]*\d{9,}$/.test( value );
+        if( $( element).hasClass( 'optional' ) ) {
+            return value ? regex_result : true;
+        }
+        return regex_result;
+    } );
+
+    /************************************************ Edit profile ***********************************************/
+
+    /**
+     * Edit profile general
+     */
+    if( $('#form_edit_profile').length > 0 ) {
+        var kanda_back_form_edit_profile = $('#form_edit_profile'),
+            kanda_back_form_edit_profile_validation_args = {
+            rules : {
+                user_email : {
+                    required : true,
+                    email : true
+                },
+                first_name : {
+                    required : true
+                },
+                last_name : {
+                    required : true
+                },
+                mobile : {
+                    phone_number : true
+                },
+                company_phone : {
+                    phone_number : true
+                }
+            },
+            messages : {
+                user_email : {
+                    required : edit_profile.validation.user_email.required,
+                    email : edit_profile.validation.user_email.email
+                },
+                first_name : {
+                    required : edit_profile.validation.first_name.required,
+                },
+                last_name : {
+                    required : edit_profile.validation.last_name.required,
+                },
+                mobile : {
+                    phone_number : edit_profile.validation.mobile.phone_number,
+                },
+                company_phone : {
+                    phone_number : edit_profile.validation.company_phone.phone_number,
+                }
+            }
+        };
+
+        kanda_back_form_edit_profile_validation_args = Object.assign(
+            kanda_back_form_validation_default_args,
+            kanda_back_form_edit_profile_validation_args
+        );
+
+        kanda_back_form_edit_profile.validate( kanda_back_form_edit_profile_validation_args );
+
+        kanda_back_form_edit_profile.on( 'submit', function() {
+            if ( ! $( this ).valid() ) {
+                return false;
+            }
+        } );
+    }
+
+    if( $('#form_edit_password').length > 0 ) {
+        var kanda_back_form_edit_password = $('#form_edit_password'),
+            kanda_back_form_edit_password_validation_args = {
+                rules : {
+                    old_password : {
+                        required : true
+                    },
+                    new_password : {
+                        required : true,
+                        rangelength : [ edit_password.validation_data.password_min_length, edit_password.validation_data.password_max_length ]
+                    },
+                    confirm_password : {
+                        required : true,
+                        equalTo : '#new_password'
+                    }
+                },
+                messages : {
+                    old_password : {
+                        required : edit_password.validation.old_password.required
+                    },
+                    new_password : {
+                        required : edit_password.validation.new_password.required,
+                        rangelength : edit_password.validation.new_password.rangelength,
+                    },
+                    confirm_password : {
+                        required : edit_password.validation.confirm_password.required,
+                        equalTo : edit_password.validation.confirm_password.equalTo,
+                    }
+                }
+            };
+
+        kanda_back_form_edit_password_validation_args = Object.assign(
+            kanda_back_form_validation_default_args,
+            kanda_back_form_edit_password_validation_args
+        );
+
+        kanda_back_form_edit_password.validate( kanda_back_form_edit_password_validation_args );
+
+        kanda_back_form_edit_password.on( 'submit', function() {
+            if ( ! $( this ).valid() ) {
+                return false;
+            }
+        } );
+    }
+    /********************************************** /end Edit profile ********************************************/
 })(jQuery);
