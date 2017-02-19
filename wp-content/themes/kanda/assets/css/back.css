@@ -182,7 +182,11 @@ body {
     left: 0;
     top: 0;
     z-index: 1;
-    background: var(--brand-success-border);
+    background: var(--brand-success);
+    transition: width .2s;
+}
+#filelist .file.has-error .progress {
+    background: var(--brand-danger);
 }
 
 /**

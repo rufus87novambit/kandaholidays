@@ -290,6 +290,7 @@
 
         /* a file was added in the queue */
         avatar_uploader.bind( 'FilesAdded', function( up, files ) {
+            $('#filelist').empty();
             $.each( files, function( i, file ) {
                 $('#filelist').append(
                     '<div class="file" id="' + file.id + '"><div class="filename"><b>' + file.name + '</b> (<span>' + plupload.formatSize(0) + '</span>/' + plupload.formatSize(file.size) + ') ' + '</div><div class="progress"></div></div>'
@@ -327,7 +328,8 @@
                 init_cropper( _cropper_image, _preview_image );
 
             } else {
-                $( '#' + file.id ).addClass( 'upload-error' ).append('<div class="error-msg help-block">' + response.data.message + '</div>');
+                $( '#' + file.id + " .progress").remove();
+                $( '#' + file.id ).addClass( 'has-error' ).append('<div class="form-control-feedback"><small>' + response.data.message + '</small></div>');
             }
         });
 
