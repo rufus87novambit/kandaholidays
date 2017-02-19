@@ -41,10 +41,14 @@ body {
 /*********************** /end Header ***********************/
 
 /*********************** Profile logo ***********************/
+.head-side{
+    float:right;
+    margin:10px 0 0 10px;
+}
 .agency-logo {
-    float: right;
+    display:inline-block;
+    vertical-align: middle;
     position: relative;
-    padding: 10px;
 }
 .agency-logo .avatar {
     text-decoration: none;
@@ -61,19 +65,21 @@ body {
 }
 .agency-logo img {
     border-radius: 50%;
-    max-width: 65px;
+    max-width: 4rem;
     border: 2px solid #ececec;
     background-color: var(--bg-color);
 }
 /*********************** /end Profile logo ***********************/
 .currency {
-    float: right;
+    display:inline-block;
+    vertical-align: middle;
     position: relative;
     color: #3d4795;
-    margin-top: 20px;
+    margin-right:0.5rem;
 }
 .currency a {
-    font-size: 30px;
+    font-size: 2rem;
+    line-height:0;
 }
 .currency .sub-menu {
     left: -52px;

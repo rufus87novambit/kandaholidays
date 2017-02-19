@@ -7,7 +7,7 @@
     });
 
     //sub menu toggle
-    $('.touchevents .sub-toggler').on( 'click', function(){
+    $('.sub-toggler').on( 'click', function(){
         $(this).parent().toggleClass('active');
         return false;
     });
