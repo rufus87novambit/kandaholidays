@@ -264,7 +264,7 @@ function kanda_show_notification( $notification = array() ) {
     if( isset( $notification['type'] ) && $notification['type'] && isset( $notification['message'] ) && $notification['message'] ) {
         switch ($notification['type']) {
             case 'success':
-                $icon = '<i class=icon icon-checkmark"></i>';
+                $icon = '<i class="icon icon-checkmark"></i>';
                 break;
             case 'info':
                 $icon = '<i class="icon icon-info"></i>';

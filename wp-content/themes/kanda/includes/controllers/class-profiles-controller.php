@@ -30,16 +30,16 @@ class Profiles_Controller extends Base_Controller {
      * Profile edit
      * @param $args
      */
-    public function edit( $args ) {
-
-        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
-        if( method_exists( $this, $action ) ) {
-            $this->$action( $args );
-        } else {
-            $this->show_404();
-        }
-
-    }
+//    public function edit( $args ) {
+//
+//        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
+//        if( method_exists( $this, $action ) ) {
+//            $this->$action( $args );
+//        } else {
+//            $this->show_404();
+//        }
+//
+//    }
 
     /************************************************** Edit Profile **************************************************/
     /**
@@ -63,7 +63,7 @@ class Profiles_Controller extends Base_Controller {
      *
      * @param $args
      */
-    public function edit_profile( $args ) {
+    public function edit( $args ) {
 
         $this->edit_profile_add_hooks();
 
@@ -209,7 +209,7 @@ class Profiles_Controller extends Base_Controller {
      *
      * @param $args
      */
-    public function edit_password( $args ) {
+    public function password( $args ) {
 
         $this->edit_password_add_hooks();
 
@@ -366,7 +366,7 @@ class Profiles_Controller extends Base_Controller {
      *
      * @param $args
      */
-    public function edit_photo( $args ) {
+    public function photo( $args ) {
 
         $this->edit_photo_add_hooks();
 

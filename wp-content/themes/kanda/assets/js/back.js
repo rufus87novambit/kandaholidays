@@ -399,6 +399,14 @@
         return regex_result;
     } );
 
+    $.validator.addMethod( 'phone_number', function( value, element ) {
+        var regex_result = /^[\+:]*\d{9,}$/.test( value );
+        if( $( element).hasClass( 'optional' ) ) {
+            return value ? regex_result : true;
+        }
+        return regex_result;
+    } );
+
     /************************************************ Edit profile ***********************************************/
 
     /**
@@ -423,6 +431,9 @@
                 },
                 company_phone : {
                     phone_number : true
+                },
+                company_website: {
+                    url : true
                 }
             },
             messages : {
@@ -441,6 +452,9 @@
                 },
                 company_phone : {
                     phone_number : edit_profile.validation.company_phone.phone_number,
+                },
+                company_website: {
+                    url : edit_profile.validation.company_website.url,
                 }
             }
         };

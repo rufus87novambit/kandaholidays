@@ -93,13 +93,28 @@ function kanda_add_rewrite_rule() {
         /******************************************** 3. Profiles Controller ********************************************/
 
         array(
-            'regex' => 'profile\/edit(\/)?([a-zA-Z0-9]*)?(\/)?([a-zA-Z0-9]*)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&sub-action=$matches[2]&unwanted=$matches[4]', 172, 'profiles', 'edit' ),
+            'regex' => 'profile\/edit\/general(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'user_page_profile' ), 'profiles', 'edit' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'profile\/edit\/password(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'user_page_profile' ), 'profiles', 'password' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'profile\/edit\/photo(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'user_page_profile' ), 'profiles', 'photo' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'profile\/edit(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'user_page_profile' ), 'profiles', 'edit' ),
             'after' => 'top'
         ),
         array(
             'regex' => 'profile(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'view' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
             'after' => 'top'
         ),
         /******************************************** /end Hotels Controller ********************************************/
@@ -124,7 +139,6 @@ function kanda_query_vars( $public_query_vars ) {
         'ksecurity',
         'hsid',
         'kp',
-        'sub-action',
         'unwanted'
         // other variables should go here
     ) );

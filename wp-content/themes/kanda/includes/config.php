@@ -185,7 +185,7 @@ class Kanda_Config {
                         'phone_number' => esc_html__( 'Invalid phone number', 'kanda' )
                     ),
                     'company_website' => array(
-                        'websiteRegex' => esc_html__( 'Invalid URL', 'kanda' )
+                        'url' => esc_html__( 'Invalid URL', 'kanda' )
                     )
                 ),
                 'form_edit_password' => array(
