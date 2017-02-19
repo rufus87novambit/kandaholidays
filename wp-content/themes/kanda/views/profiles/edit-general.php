@@ -139,7 +139,7 @@
     </fieldset>
     <div class="text-right">
         <?php wp_nonce_field( 'kanda_save_profile', 'security' ); ?>
-        <button type="submit" class="btn -primary" name="kanda_save"><?php _e( 'Update', 'kanda' ); ?></button>
+        <button type="submit" class="btn -primary" name="kanda_save"><?php _e( 'Save', 'kanda' ); ?></button>
         <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" class="btn -danger"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>
