@@ -14,45 +14,13 @@
                             <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
                         </a>
                     </h1>
-                    <nav class="main-menu">
-                        <ul>
-                            <li class="menu-item-has-children">
-                                <a href="#">Hotels</a>
-                                <ul class="sub-menu">
-                                    <li><a href="#">Sub Item 1</a></li>
-                                    <li><a href="#">Sub Item 2</a></li>
-                                    <li><a href="#">Sub Item 3</a></li>
-                                    <li><a href="#">Sub Item 4</a></li>
-                                    <li><a href="#">Sub Item 5</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">Special</a>
-                            </li>
-                            <li>
-                                <a href="#">Transfers</a>
-                            </li>
-                            <li>
-                                <a href="#">Tours</a>
-                            </li>
-                            <li class="menu-item-has-children">
-                                <a href="#">Visa services</a>
-                                <ul class="sub-menu">
-                                    <li><a href="#">Sub Item 1</a></li>
-                                    <li><a href="#">Sub Item 2</a></li>
-                                    <li><a href="#">Sub Item 3</a></li>
-                                    <li><a href="#">Sub Item 4</a></li>
-                                    <li><a href="#">Sub Item 5</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">Group bookings</a>
-                            </li>
-                            <li>
-                                <a href="#">Top Destinations</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <?php wp_nav_menu( array(
+                        'theme_location' => 'main_nav',
+                        'container' => 'nav',
+                        'container_class' => 'main-menu',
+                        'container_id' => '',
+                        'menu_class' => '',
+                    ) ); ?>
 
                     <div class="agency-logo">
                         <a href="<?php echo kanda_url_to( 'profile' ); ?>" class="avatar"><?php echo kanda_get_user_avatar( false, 'user-avatar', array('class' => 'user-avatar', 'data-default' => kanda_get_user_avatar_url() ) ); ?></a>

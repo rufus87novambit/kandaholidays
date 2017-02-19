@@ -241,7 +241,169 @@
                 <br><br>
 
 
+                <!-- Table (User list) -->
+                <br><br>
 
+                <h2 class="page-title">User list</h2>
+                <div class="table-wrap">
+                    <div class="users-table table">
+                        <header class="thead">
+                            <div class="th">Delete</div>
+                            <div class="th">Username</div>
+                            <div class="th">Display Name</div>
+                            <div class="th">Rate Type</div>
+                            <div class="th">Company</div>
+                            <div class="th">Last Sign In</div>
+                        </header>
+                        <div class="tbody">
+                            <div class="tr">
+                                <div class="td">
+                                    <label class="ctrl-field -chbox">
+                                        <input type='checkbox' class="ctrl-inp" name="">
+                                        <span class="ctrl-btn"></span>
+                                    </label>
+                                </div>
+                                <div class="td">
+                                    <a href="" class="link">admin1</a>
+                                </div>
+                                <div class="td">barev</div>
+                                <div class="td">Potencial</div>
+                                <div class="td">Kandaclub</div>
+                                <div class="td">25 Jan, 2017</div>
+                            </div>
+                            <div class="tr">
+                                <div class="td">
+                                    <label class="ctrl-field -chbox">
+                                        <input type='checkbox' class="ctrl-inp" name="" >
+                                        <span class="ctrl-btn"></span>
+                                    </label>
+                                </div>
+                                <div class="td">
+                                    <a href="" class="link">Merrytour</a>
+                                </div>
+                                <div class="td">barev</div>
+                                <div class="td">Potencial</div>
+                                <div class="td">Merry Tour LLC</div>
+                                <div class="td">25 Jan, 2017</div>
+                            </div>
+                            <div class="tr">
+                                <div class="td">
+                                    <label class="ctrl-field -chbox">
+                                        <input type='checkbox' class="ctrl-inp" name="">
+                                        <span class="ctrl-btn"></span>
+                                    </label>
+                                </div>
+                                <div class="td">
+                                    <a href="" class="link">admin1</a>
+                                </div>
+                                <div class="td">barev</div>
+                                <div class="td">Potencial</div>
+                                <div class="td">Kandaclub</div>
+                                <div class="td">25 Jan, 2017</div>
+                            </div>
+                            <div class="tr">
+                                <div class="td">
+                                    <label class="ctrl-field -chbox">
+                                        <input type='checkbox' class="ctrl-inp" name="">
+                                        <span class="ctrl-btn"></span>
+                                    </label>
+                                </div>
+                                <div class="td">
+                                    <a href="" class="link">Merrytour</a>
+                                </div>
+                                <div class="td">barev</div>
+                                <div class="td">Potencial</div>
+                                <div class="td">Merry Tour LLC</div>
+                                <div class="td">25 Jan, 2017</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <br><br>
+
+                <h2 class="page-title">Profile Detail</h2>
+                <form class="form-block info-form">
+                    <fieldset class="fieldset">
+                        <div class="form-group row">
+                            <label class="form-label col-xs-4 col-lg-3">Company</label>
+                            <div class="col-xs-7 col-lg-5">
+                                <p>KANDA Travel Club</p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="form-label col-xs-4 col-lg-3">Last Name</label>
+                            <div class="col-xs-7 col-lg-5">
+                                <p>Kandaryan</p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="form-label col-sm-4 col-xl-3">Email</label>
+                            <div class="col-sm-7 col-xl-5">
+                                <input type="email" class="form-control" value="test@gmail.com">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="form-label col-sm-4 col-xl-3">Old Password</label>
+                            <div class="col-sm-7 col-xl-5">
+                                <input type="password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="form-label col-sm-4 col-xl-3">New Password</label>
+                            <div class="col-sm-7 col-xl-5">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <footer class="form-footer clearfix">
+                        <input type="submit" value="Update" class="btn -primary pull-right">
+                    </footer>
+                </form>
+
+                <br><br><br><br>
+                <!-- Media list -->
+                <ul class="articles-list">
+                    <li>
+                        <h3 class="article-title"><a href="#">Lorem ipsum</a></h3>
+                        <div class="row">
+                            <div class="article-obj col-sm-4">
+                                <a href="single_news.html">
+                                    <img src="http://www.kandaholidays.com/images/jordan.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="article-body col-sm-8">
+                                <div class="editor-content">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec venenatis ex a turpis viverra mollis.
+                                    Curabitur vitae augue scelerisque, fermentum risus vitae.
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec venenatis ex a turpis viverra mollis.
+                                    Curabitur vitae augue scelerisque, fermentum risus vitae.
+                                </div>
+                                <a href="#" download class="btn -info pull-right clearfix">Download</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <h3 class="article-title"><a href="#">Lorem ipsum</a></h3>
+                        <div class="row">
+                            <div class="article-obj col-sm-4">
+                                <a href="single_news.html">
+                                    <img src="http://www.kandaholidays.com/images/jordan.jpg" alt="">
+                                </a>
+                            </div>
+                            <div class="article-body col-sm-8">
+                                <div class="editor-content">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec venenatis ex a turpis viverra mollis.
+                                    Curabitur vitae augue scelerisque, fermentum risus vitae.
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                </div>
+                                <a href="#" download class="btn -info pull-right clearfix">Download</a>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
 
             </div>
 
