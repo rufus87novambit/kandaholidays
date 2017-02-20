@@ -17,19 +17,19 @@
             <span class="burger-icon"></span>
         </button><!-- .menu-btn -->
 
-       <!-- <nav class="head-nav">
+        <nav class="head-nav">
             <?php wp_nav_menu( array(
                 'theme_location' => 'main_nav',
                 'menu_class' => 'main-menu',
                 'container' => 'ul',
-                // 'container_class' => 'head-nav',
+                'container_class' => 'head-nav',
                 'container_id' => '',
 
             ) ); ?>
-        </nav>-->
+        </nav>
 
 
-        <nav class="head-nav">
+       <!-- <nav class="head-nav">
             <ul class="main-menu">
                 <li class="menu-item-has-children">
                     <a href="#">Hotels</a>
@@ -68,7 +68,7 @@
                     <a href="#">Top Destinations</a>
                 </li>
             </ul>
-        </nav>
+        </nav>-->
         <div class="head-side">
             <div class="currency">
                 <a href="#"><i class="icon icon-currency-usd"></i></a>

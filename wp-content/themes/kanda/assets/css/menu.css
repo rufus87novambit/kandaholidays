@@ -25,8 +25,7 @@
     border-top: 5px solid #ececec;
     position: absolute;
     right: 0;
-    top: 50%;
-    margin-top: -3px;
+    top: 9px;
 }
 .main-menu > li > a {
     color: #ececec;
@@ -77,8 +76,10 @@
     right: 42px;
     margin-right: -8px;
 }
-.agency-logo:hover .sub-menu,
+
+/*.no-touchevents*/
 .main-menu > li:hover > .sub-menu,
+.agency-logo:hover .sub-menu,
 .currency.opened .sub-menu {
     opacity: 1;
     visibility: visible;
