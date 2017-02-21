@@ -48,6 +48,13 @@ class Kanda_Config {
     private static $controller_map;
 
     /**
+     * Holds active providers
+     *
+     * @var array
+     */
+    public static $providers = array();
+
+    /**
      * Get configuration value
      *
      * @param string $property

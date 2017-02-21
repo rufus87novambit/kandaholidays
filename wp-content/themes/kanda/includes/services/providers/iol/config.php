@@ -1,14 +1,37 @@
 <?php
 
+/**
+ * IOL configuration
+ *
+ * Class IOL_Config
+ */
 class IOL_Config {
 
-    private static $id = 1;
+    /**
+     * Provider ID
+     * @var string
+     */
+    private static $id = 'iol';
+
+    /**
+     * Provider name
+     * @var string
+     */
+    private static $name = 'IOL';
+
+    /**
+     * Provider mode test | live
+     * @var string
+     */
+
+    private static $mode = 'test';
+
     /**
      * Access details
      *
      * @var array
      */
-    private static $url = array(
+    private static $access = array(
         'test' => array(
             'code'      => 'IOLWSDEV',
             'password'  => 'webservices',
@@ -36,9 +59,13 @@ class IOL_Config {
      * @var array
      */
     private static $cache_timeout = array(
-        'search' => 15 * MINUTE_IN_SECONDS
+        'search' => 3 * HOUR_IN_SECONDS,
     );
 
+    /**
+     * Request args
+     * @var array
+     */
     private static $request_args = array(
         'timeout' => 300,
         'sslverify' => false,
@@ -53,25 +80,41 @@ class IOL_Config {
      * Get configuration value
      *
      * @param string $property
-     * @param bool|false $sub_1
-     * @param bool|false $sub_2
-     * @param bool|false $sub_3
+     * @param string $delimiter
      * @return null
      */
-    static function get( $property = '', $sub_1 = false, $sub_2 = false, $sub_3 = false ) {
+    public static function get( $property = '', $delimiter = '->' ) {
+        try {
+            $value = self::_get( $property, $delimiter );
+        } catch( Exception $e ) {
+            echo $e->getMessage(); die;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get configuration value
+     *
+     * @param string $property
+     * @param string $delimiter
+     * @return null
+     * @throws Exception
+     */
+    private static function _get( $property = '', $delimiter = '->' ) {
         if( ! $property ) {
             return null;
         }
 
-        $value = self::${$property};
-        if( $sub_1 ) {
-            $value = $value[ $sub_1 ];
-            if( $sub_2 ) {
-                $value = $value[ $sub_2 ];
-                if( $sub_3 ) {
-                    $value = $value[ $sub_3 ];
-                }
+        $property = explode( $delimiter, $property );
+        $key = array_shift( $property );
+
+        $value = self::${$key};
+        foreach( $property as $p ) {
+            if( ! array_key_exists( $p, $value ) ) {
+                throw new Exception( sprintf( "Cannot find property \"%s\"", $p ) );
             }
+            $value = $value[ $p ];
         }
 
         return $value;

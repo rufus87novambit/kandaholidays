@@ -9,13 +9,7 @@ if( ! class_exists( 'IOL_Helper' ) ) {
 
     class IOL_Helper {
 
-        static function get_instance() {
-            static $instance;
-            if ( $instance == null) {
-                $instance = new self();
-            }
-            return $instance;
-        }
+        private static $eol = "\n";
 
         /**
          * Convert multidimensional array to xml
@@ -23,17 +17,17 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param $array
          * @return string
          */
-        public function array_to_xml( $array ) {
+        public static function array_to_xml( $array ) {
             $xml = '';
             foreach( $array as $key => $value ) {
 
                 $close_prefix = '';
-                $key = $this->convert_xml_key( $key );
+                $key = self::convert_xml_key( $key );
 
-                $xml .= IOL_EOL . sprintf( '<%s>', $key );
+                $xml .= self::$eol . sprintf( '<%s>', $key );
                 if( is_array( $value ) ) {
-                    $xml .= $this->array_to_xml( $value );
-                    $close_prefix = IOL_EOL;
+                    $xml .= self::array_to_xml( $value );
+                    $close_prefix = self::$eol;
                 } else {
                     $xml .= is_bool( $value ) ? ( $value ? 'Y' : 'N' ) : $value;
                 }
@@ -48,7 +42,7 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param $key
          * @return mixed
          */
-        public function convert_xml_key( $key ) {
+        public static function convert_xml_key( $key ) {
             $key = strtr( $key, array( '-' => ' ', '_' => ' ' ) );
             return str_replace( ' ', '', ucwords( $key ) );
         }
@@ -60,13 +54,12 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param $xml
          * @return mixed
          */
-        public function prepend_xml_header( $type, $xml ) {
+        public static function replace_xml_header( $type, $xml ) {
             return str_replace(
                 sprintf( '<%s>', $type ),
-                sprintf( '
-                    <?xml version="1.0" encoding="utf-16"?>
-                    <%s xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                    ',
+                sprintf(
+                    '<?xml version="1.0" encoding="utf-16"?>
+                        <%s xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">',
                     $type
                 ),
                 $xml
@@ -80,7 +73,7 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param bool|false $format
          * @return bool|string
          */
-        public function convert_date( $date, $format = false ) {
+        public static function convert_date( $date, $format = false ) {
             if( ! $format ) {
                 $format = get_option( 'date_format' );
             }
@@ -98,15 +91,30 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param int $case
          * @return array
          */
-        public function array_change_key_case_recursive( $array = array(), $case = CASE_LOWER ) {
+        public static function array_change_key_case_recursive( $array = array(), $case = CASE_LOWER ) {
             return array_map(
                 function( $item ) use ( $case ) {
                     if( is_array( $item ) ) {
-                        $item = $this->array_change_key_case_recursive($item, $case);
+                        $item = self::array_change_key_case_recursive($item, $case);
                     }
                     return $item;
                 },
                 array_change_key_case( $array, $case ) );
+        }
+
+        /**
+         * Convert xml to readable format
+         *
+         * @param $xml
+         * @return array
+         */
+        public static function convert_xml_to_readable( $xml ) {
+            $xml = preg_replace('/(<\?xml[^?]+?)utf-16/i', '$1utf-8', $xml );
+            $xml = simplexml_load_string( $xml );
+
+            $xml = json_decode( json_encode( $xml ), true );
+
+            return self::array_change_key_case_recursive( $xml );
         }
 
     }

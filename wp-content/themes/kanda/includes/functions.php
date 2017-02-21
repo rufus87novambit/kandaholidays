@@ -61,6 +61,11 @@ require_once( KANDA_INCLUDES_PATH . 'cron.php' );
 require_once( KANDA_INCLUDES_PATH . 'theme-functions.php' );
 
 /**
+ * Include theme services functions
+ */
+require_once( KANDA_SERVICES_PATH . 'services-functions.php' );
+
+/**
  * Include functions based on user authentication status
  */
 if( is_user_logged_in() ) {
