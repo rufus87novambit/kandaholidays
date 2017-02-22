@@ -162,7 +162,8 @@
     border-bottom:solid 1px var(--border-color);
 }
 /*Popup*/
-.popup-overlay{
+.popup-overlay,
+.popup-loading {
     position:fixed;
     z-index: 1042;
     left:0;
@@ -256,16 +257,23 @@ button.popup-close{
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+.loading-content {
+    width: 100%;
+}
 
 .white-popup-block .popup-close {
     color: var(--text-color);
 }
-body.popup-open {
+body.popup-open,
+body.loading {
     overflow: hidden;
 }
 body.popup-open .popup-overlay,
 body.popup-open .popup-wrap.open {
     display:block;
+}
+body.loading .popup-loading {
+    display: block;
 }
 .popup-buttons {
     padding-top: 1rem;

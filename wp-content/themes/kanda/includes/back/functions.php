@@ -41,42 +41,6 @@ function kanda_enqueue_styles(){
  */
 function kanda_get_back_localize() {
     return array(
-        'theme_url' => KANDA_THEME_URL
+        'ajaxurl' => admin_url( 'admin-ajax.php' )
     );
-}
-// search request example
-//add_action('init', 'search_request', 11);
-function search_request() {
-
-    if( ! defined( 'IOL_LOADED' ) ) return;
-
-    $criteria = array(
-        'search-criteria' => array(
-            'room-configuration' => array(
-                'room' => array(
-                    'adults' => 2,
-                    'child' => array(
-                        'age' => 16
-                    ),
-                    'room-configuration-id' => 1
-                )
-            ),
-            'start-date' => Kanda_IOL_module()->helper->convert_date('15/03/2017', 'd/m/Y'),
-            'end-date' => Kanda_IOL_module()->helper->convert_date('18/03/2017', 'd/m/Y'),
-            'city' => 'DXB',
-            'hotel-name' => 'ATLANTIS',
-            'include-on-request' => true,
-            'optional-supplement-y-n' => true,
-            'cancellation-policy' => false,
-            'include-hotel-data' => false,
-            'include-rate-details' => false
-        )
-    );
-
-    $args = array(
-        'cache_lifetime' => Kanda_IOL_Config::get('cache_timeout', 'search')
-    );
-
-    $response = Kanda_IOL_module()->hotels->search($criteria, $args);
-    echo '<pre>'; var_dump( $response ); die;
 }

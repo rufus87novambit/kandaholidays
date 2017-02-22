@@ -17,58 +17,14 @@
             <span class="burger-icon"></span>
         </button><!-- .menu-btn -->
 
-        <nav class="head-nav">
-            <?php wp_nav_menu( array(
-                'theme_location' => 'main_nav',
-                'menu_class' => 'main-menu',
-                'container' => 'ul',
-                'container_class' => 'head-nav',
-                'container_id' => '',
+        <?php wp_nav_menu( array(
+            'theme_location' => 'main_nav',
+            'menu_class' => 'main-menu',
+            'container' => 'nav',
+            'container_class' => 'head-nav',
+            'container_id' => '',
+        ) ); ?>
 
-            ) ); ?>
-        </nav>
-
-
-       <!-- <nav class="head-nav">
-            <ul class="main-menu">
-                <li class="menu-item-has-children">
-                    <a href="#">Hotels</a>
-                    <span class="sub-toggler"></span>
-                    <ul class="sub-menu">
-                        <li><a href="#">Sub Item 1</a></li>
-                        <li><a href="#">Sub Item 2</a></li>
-                        <li><a href="#">Sub Item 3</a></li>
-                        <li><a href="#">Sub Item 4</a></li>
-                        <li><a href="#">Sub Item 5</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Special</a>
-                </li>
-                <li>
-                    <a href="#">Transfers</a>
-                </li>
-                <li>
-                    <a href="#">Tours</a>
-                </li>
-                <li class="menu-item-has-children">
-                    <a href="#">Visa services</a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Sub Item 1</a></li>
-                        <li><a href="#">Sub Item 2</a></li>
-                        <li><a href="#">Sub Item 3</a></li>
-                        <li><a href="#">Sub Item 4</a></li>
-                        <li><a href="#">Sub Item 5</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Group bookings</a>
-                </li>
-                <li>
-                    <a href="#">Top Destinations</a>
-                </li>
-            </ul>
-        </nav>-->
         <div class="head-side">
             <div class="currency">
                 <a href="#"><i class="icon icon-currency-usd"></i></a>

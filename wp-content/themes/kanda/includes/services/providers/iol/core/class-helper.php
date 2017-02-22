@@ -9,31 +9,32 @@ if( ! class_exists( 'IOL_Helper' ) ) {
 
     class IOL_Helper {
 
-        private static $eol = "\n";
+        /**
+         * Convert multidimensional array key to uppercase / lowercase
+         *
+         * @param array $array
+         * @param int $case
+         * @return array
+         */
+        public static function array_change_key_case_recursive( $array = array(), $case = CASE_LOWER ) {
+            return array_map(
+                function( $item ) use ( $case ) {
+                    if( is_array( $item ) ) {
+                        $item = self::array_change_key_case_recursive($item, $case);
+                    }
+                    return $item;
+                },
+                array_change_key_case( $array, $case ) );
+        }
 
         /**
-         * Convert multidimensional array to xml
+         * Change XML encoding to recognizable one
          *
-         * @param $array
-         * @return string
+         * @param SimpleXMLElement $xml
+         * @return mixed
          */
-        public static function array_to_xml( $array ) {
-            $xml = '';
-            foreach( $array as $key => $value ) {
-
-                $close_prefix = '';
-                $key = self::convert_xml_key( $key );
-
-                $xml .= self::$eol . sprintf( '<%s>', $key );
-                if( is_array( $value ) ) {
-                    $xml .= self::array_to_xml( $value );
-                    $close_prefix = self::$eol;
-                } else {
-                    $xml .= is_bool( $value ) ? ( $value ? 'Y' : 'N' ) : $value;
-                }
-                $xml .= sprintf( '%1$s</%2$s>', $close_prefix, $key );
-            }
-            return $xml;
+        public static function set_xml_encoding( SimpleXMLElement $xml ) {
+            return str_replace('<?xml version="1.0"?>', '<?xml version="1.0" encoding="utf-16" ?>', $xml->asXML() );
         }
 
         /**
@@ -42,28 +43,32 @@ if( ! class_exists( 'IOL_Helper' ) ) {
          * @param $key
          * @return mixed
          */
-        public static function convert_xml_key( $key ) {
+        public static function parse_xml_key( $key ) {
             $key = strtr( $key, array( '-' => ' ', '_' => ' ' ) );
             return str_replace( ' ', '', ucwords( $key ) );
         }
 
         /**
-         * Prepend XML header
+         * Get basic XML
          *
          * @param $type
-         * @param $xml
-         * @return mixed
+         * @param $password
+         * @param $code
+         * @param $token
+         * @return SimpleXMLElement
          */
-        public static function replace_xml_header( $type, $xml ) {
-            return str_replace(
-                sprintf( '<%s>', $type ),
-                sprintf(
-                    '<?xml version="1.0" encoding="utf-16"?>
-                        <%s xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">',
-                    $type
-                ),
-                $xml
-            );
+        public static function get_basic_xml( $type, $password, $code, $token ) {
+            $xml = new SimpleXMLElement( '<' . self::parse_xml_key( $type ) . ' />' );
+
+            $xml->addAttribute( 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema' );
+            $xml->addAttribute( 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance' );
+
+            $profile = $xml->addChild( self::parse_xml_key( 'profile' ) );
+            $profile->addChild( self::parse_xml_key( 'password' ), $password );
+            $profile->addChild( self::parse_xml_key( 'code' ), $code );
+            $profile->addChild( self::parse_xml_key( 'token-number' ), $token );
+
+            return $xml;
         }
 
         /**
@@ -85,24 +90,6 @@ if( ! class_exists( 'IOL_Helper' ) ) {
         }
 
         /**
-         * Convert multidimensional array key to uppercase / lowercase
-         *
-         * @param array $array
-         * @param int $case
-         * @return array
-         */
-        public static function array_change_key_case_recursive( $array = array(), $case = CASE_LOWER ) {
-            return array_map(
-                function( $item ) use ( $case ) {
-                    if( is_array( $item ) ) {
-                        $item = self::array_change_key_case_recursive($item, $case);
-                    }
-                    return $item;
-                },
-                array_change_key_case( $array, $case ) );
-        }
-
-        /**
          * Convert xml to readable format
          *
          * @param $xml
@@ -115,6 +102,16 @@ if( ! class_exists( 'IOL_Helper' ) ) {
             $xml = json_decode( json_encode( $xml ), true );
 
             return self::array_change_key_case_recursive( $xml );
+        }
+
+        /**
+         *Covert boolean to recognizable string
+         *
+         * @param $value
+         * @return bool
+         */
+        public static function bool_to_string( $value ) {
+            return$value ? 'Y' : 'N';;
         }
 
     }

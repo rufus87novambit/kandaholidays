@@ -165,7 +165,7 @@
 
             append_box.empty();
             for( var i = 0; i < value; i++ ) {
-                append_box.append('<input type="number" name="room_occupants[' + block_index + '][children_age][]" class="form-control" value="0" min="1" max="12">');
+                append_box.append('<input type="number" name="room_occupants[' + block_index + '][child][age][' + i + ']" class="form-control" value="0" min="1" max="12">');
             }
             if( value > 0 ) {
                 children_box.removeClass('hidden');
@@ -399,14 +399,6 @@
         return regex_result;
     } );
 
-    $.validator.addMethod( 'phone_number', function( value, element ) {
-        var regex_result = /^[\+:]*\d{9,}$/.test( value );
-        if( $( element).hasClass( 'optional' ) ) {
-            return value ? regex_result : true;
-        }
-        return regex_result;
-    } );
-
     /************************************************ Edit profile ***********************************************/
 
     /**
@@ -473,6 +465,9 @@
         } );
     }
 
+    /**
+     * Edit password
+     */
     if( $('#form_edit_password').length > 0 ) {
         var kanda_back_form_edit_password = $('#form_edit_password'),
             kanda_back_form_edit_password_validation_args = {
@@ -518,4 +513,30 @@
         } );
     }
     /********************************************** /end Edit profile ********************************************/
+
+    console.log( kanda );
+
+    /************************************************ Search hotels **********************************************/
+    if( $('#hotel_search_form').length > 0 ) {
+
+        //$('#hotel_search_form').on( 'submit', function(){
+        //
+        //    // todo check validity
+        //    var is_valid = true;
+        //    if( is_valid ) {
+        //        $.ajax({
+        //            url         : kanda.ajaxurl,
+        //            type        : 'POST',
+        //            dataType    : 'JSON'
+        //            data        : {
+        //                action      : 'kanda_hotels_search',
+        //                security    : 'asdasd'
+        //            }
+        //        });
+        //    }
+        //
+        //} );
+
+    }
+    /********************************************** /end Search hotels *******************************************/
 })(jQuery);

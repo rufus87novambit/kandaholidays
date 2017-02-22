@@ -61,6 +61,7 @@ if( ! class_exists( 'IOL' ) ) {
          */
         public function init() {
             require_once($this->core . 'class-helper.php');
+            require_once($this->core . 'class-cache.php');
             require_once($this->core . 'class-request.php');
         }
 

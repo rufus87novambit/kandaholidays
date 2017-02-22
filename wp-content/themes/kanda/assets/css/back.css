@@ -13,7 +13,6 @@ body {
     font-size: 14px;
     line-height: 1.5;
     background: var(--bg-color) url(../images/back/world_map.png) no-repeat center 150px;
-    box-shadow: 0 5px 19px var(--brand-primary);
     border-top: 5px solid #fff;
 }
 /*********************** Header ***********************/

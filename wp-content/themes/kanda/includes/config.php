@@ -207,6 +207,14 @@ class Kanda_Config {
                         'required' => esc_html__( 'Required', 'kanda' ),
                         'equalTo' => __( 'Does not match', 'kanda' )
                     ),
+                ),
+                'form_hotel_search' => array(
+                    'checkin' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'checkout' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    )
                 )
             )
         );
