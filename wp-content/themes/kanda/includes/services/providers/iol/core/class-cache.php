@@ -5,70 +5,68 @@ if ( ! defined( 'ABSPATH' ) ) {
     die('No direct script access allowed');
 }
 
-class IOL_Request_Cache extends Kanda_Request_Cache {
+class IOL_Search_Cache extends Kanda_Service_Cache {
 
     /**
-     * Insert cache data
+     * Insert response
      *
-     * @param $hash
-     * @param $request
-     * @param $response
-     * @param $provider
+     * @param Kanda_Service_Response $response
      */
-    protected static function _insert( $hash, $request, $response, $provider ) {
+    private function _insert( Kanda_Service_Response $response ) {
 
         global $wpdb;
 
-        $search_table = self::get_search_table_name();
+        $search_table = $this->get_search_table();
+        $result_table = $this->get_search_results_table();
+
         $date = current_time( 'mysql' );
+        $request = $response->get_request();
+        $request_id = $this->get_request_id( $request );
+
+        /** Delete old requests */
+        $this->_delete_died_requests();
+
+        /** insert request */
         $wpdb->insert(
             $search_table,
             array(
-                'hash'          => $hash,
+                'id'            => $request_id,
                 'created_at'    => $date,
-                'provider'      => $provider,
-                'request'       => addslashes( json_encode( $request ) ),
-                'response'      => addslashes( json_encode(
-                    array(
-                        'code'      => $response->get_code(),
-                        'message'   => $response->get_message()
-                    )
-                ) )
+                'provider'      => IOL_Config::get( 'id' ),
+                'request'       => $this->array_to_savable_format( $request ),
+                'status_code'   => $response->get_code(),
+                'message'       => $response->get_message()
             ),
             array(
                 '%s',
                 '%s',
                 '%s',
                 '%s',
+                '%d',
                 '%s'
             )
         );
 
-        $response_data = $response->get_data();
-        if( isset( $response_data[ 'hotels' ][ 'hotel' ] ) ) {
+        /** Delete old requests data */
+        $this->_delete_died_results();
 
-            $search_results_table = self::get_search_results_table_name();
+        /** insert response data */
+        $values = array();
+        $data = $response->get_data();
 
-            $wpdb->delete(
-                $search_results_table,
-                array( 'hash' => $hash ),
-                array( '%s' )
-            );
+        if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
 
-            $values = array();
-
-            foreach ( (array)$response_data[ 'hotels' ][ 'hotel' ] as $hotel ) {
+            foreach ($data['hotels']['hotel'] as $hotel) {
                 $values[] = sprintf(
                     '(\'%1$s\', \'%2$s\', \'%3$s\')',
                     $date,
-                    $hash,
-                    addslashes( json_encode( $hotel ) )
+                    $request_id,
+                    $this->array_to_savable_format( $hotel )
                 );
             }
-
-            if (!empty($values)) {
+            if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$search_results_table}` ( `created_at`, `hash`, `hotel` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }
@@ -78,104 +76,158 @@ class IOL_Request_Cache extends Kanda_Request_Cache {
     }
 
     /**
-     * Update cache data
+     * Update response
      *
-     * @param $hash
-     * @param $request
-     * @param $response
-     * @param $provider
+     * @param Kanda_Service_Response $response
      */
-    protected static function _update( $hash, $request, $response, $provider ) {
+    private function _update( Kanda_Service_Response $response ) {
 
         global $wpdb;
 
-        $search_table = self::get_search_table_name();
+        $search_table = $this->get_search_table();
+        $result_table = $this->get_search_results_table();
+
         $date = current_time( 'mysql' );
+        $request = $response->get_request();
+        $request_id = $this->get_request_id( $request );
+
+        /** insert request */
         $wpdb->update(
             $search_table,
             array(
                 'created_at'    => $date,
-                'provider'      => $provider,
-                'request'       => addslashes( json_encode( $request ) ),
-                'response'      => addslashes( json_encode(
-                    array(
-                        'code'      => $response->get_code(),
-                        'message'   => $response->get_message()
-                    )
-                ) )
+                'status_code'   => $response->get_code(),
+                'message'       => $response->get_message()
             ),
             array(
-                'hash' => $hash
+                'id' => $request_id,
             ),
             array(
                 '%s',
                 '%s',
                 '%s',
-                '%s'
             ),
             array(
                 '%s'
             )
         );
 
-        $response_data = $response->get_data();
-        if( isset( $response_data[ 'hotels' ][ 'hotel' ] ) ) {
+        /** Delete old requests data */
+        $this->_delete_died_results();
 
-            $search_results_table = self::get_search_results_table_name();
+        /** insert response data */
+        $values = array();
+        $data = $response->get_data();
 
-            $wpdb->delete(
-                $search_results_table,
-                array('hash' => $hash),
-                array('%s')
-            );
+        if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
 
-            $values = array();
-            foreach ( $response_data[ 'hotels' ][ 'hotel' ] as $hotel ) {
+            foreach ($data['hotels']['hotel'] as $hotel) {
                 $values[] = sprintf(
                     '(\'%1$s\', \'%2$s\', \'%3$s\')',
                     $date,
-                    $hash,
-                    addslashes( json_encode( $hotel ) )
+                    $request_id,
+                    $this->array_to_savable_format( $hotel )
                 );
             }
-            if (!empty($values)) {
+            if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$search_results_table}` ( `created_at`, `hash`, `hotel` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }
 
         }
+    }
+
+    /**
+     * Delete old requests
+     */
+    private function _delete_died_requests() {
+        global $wpdb;
+
+        $search_table = $this->get_search_table();
+        $deadtime = date( 'Y-m-d H:i:s', ( strtotime( current_time( 'mysql' ) ) - IOL_Config::get( 'cache_timeout->search' ) ) );
+
+        $query = "DELETE FROM {$search_table} WHERE `created_at` < '{$deadtime}'";
+        $wpdb->query( $query );
+    }
+
+    /**
+     * Delete old requests data
+     */
+    private function _delete_died_results() {
+        global $wpdb;
+
+        $result_table = $this->get_search_results_table();
+        $deadtime = date( 'Y-m-d H:i:s', ( strtotime( current_time( 'mysql' ) ) - IOL_Config::get( 'cache_timeout->search' ) ) );
+
+        $query = "DELETE FROM {$result_table} WHERE `created_at` < '{$deadtime}'";
+        $wpdb->query( $query );
     }
 
     /**
      * Cache response
      *
-     * @param Kanda_Response $response
-     * @param array $request
-     * @param string $provider
-     * @param bool|false $return_row
-     * @return Kanda_Response
+     * @param Kanda_Service_Response $response
+     * @param insert | update
      */
-    public static function cache( Kanda_Response $response, $request = array(), $provider = '', $return_row = false ) {
+    public function cache( Kanda_Service_Response $response, $type ) {
+        switch( $type ) {
+            case 'insert':
+                $this->_insert( $response );
+                break;
+            case 'update':
+                $this->_update( $response );
+        }
+    }
 
-        $hash = Kanda_Request_Helper::get_request_hash( $request );
+    /**
+     * Check if request info is alive
+     *
+     * @param $date
+     * @return bool
+     */
+    public function is_alive( $date ) {
+        return strtotime( current_time( 'mysql' ) ) >= ( strtotime( $date ) - IOL_Config::get('cache_timeout->search') );
+    }
 
-        try {
-            $cache = self::get_by( 'hash', $hash, true );
-        } catch ( Exception $e ) {
-            $cache = false;
+    /**
+     * Get request data by hash
+     *
+     * @param $request
+     * @return array|null|object|void
+     */
+    public function get( $request ) {
+        global $wpdb;
+        $table = $this->get_search_table();
+        $id = is_string( $request ) ? $request : $this->get_request_id( $request );
+
+        $query = "SELECT * FROM `{$table}` WHERE `id` = '{$id}'";
+        return $wpdb->get_row( $query );
+    }
+
+    /**
+     * Get data by request
+     *
+     * @param $request
+     * @param int $page
+     * @param int $per_page
+     * @return array|null|object
+     */
+    public function get_data( $request, $page, $per_page ) {
+        global $wpdb;
+        $table = $this->get_search_results_table();
+
+        $request_id = is_string( $request ) ? $request : $this->get_request_id( $request );
+
+        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}'";
+        if( $page && $page > 0 ) {
+            $offset = ( $page - 1 ) * $per_page;
+
+            $query .= " LIMIT {$offset},{$per_page}";
         }
 
-        if( $cache ) {
-            self::_update( $hash, $request, $response, $provider );
-        } else {
-            self::_insert( $hash, $request, $response, $provider );
-        }
-
-        if( $return_row ) {
-            return $response;
-        }
+        return $wpdb->get_results( $query );
     }
 
 }

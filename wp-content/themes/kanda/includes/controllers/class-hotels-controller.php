@@ -61,79 +61,12 @@ class Hotels_Controller extends Base_Controller {
 
                 if( true ) {
 
-                    $request = provider_iol()->request();
-
-                    $xml = $request->get_basic_xml( 'hotel-search-request' );
-
-                    $search_criteria = $xml->addChild(
-                        IOL_Helper::parse_xml_key( 'search-criteria' )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'start-date' ),
-                        IOL_Helper::convert_date( $this->checkin_date, 'd F, Y' )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'end-date' ),
-                        IOL_Helper::convert_date( $this->checkout_date, 'd F, Y' )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'city' ),
-                        strtoupper( $this->city )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'include-on-request' ),
-                        IOL_Helper::bool_to_string( true )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'include-hotel-data' ),
-                        IOL_Helper::bool_to_string( true )
-                    );
-
-                    $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'include-rate-details' ),
-                        IOL_Helper::bool_to_string( false )
-                    );
-
-                    $room_configuration = $search_criteria->addChild(
-                        IOL_Helper::parse_xml_key( 'room-configuration' )
-                    );
-
-                    for( $i = 1; $i <= $this->rooms_count; $i++ ) {
-                        $room = $room_configuration->addChild(
-                            IOL_Helper::parse_xml_key( 'room' )
-                        );
-
-                        $room->addChild(
-                            IOL_Helper::parse_xml_key( 'adults' ),
-                            intval( $this->room_occupants[ $i ][ 'adults' ] )
-                        );
-
-                        if( (bool)$this->room_occupants[ $i ][ 'child' ] ) {
-                            foreach( $this->room_occupants[ $i ][ 'child' ][ 'age' ] as $age ) {
-                                $child = $room->addChild(
-                                    IOL_Helper::parse_xml_key( 'child' )
-                                );
-
-                                $child->addChild(
-                                    IOL_Helper::parse_xml_key( 'age' ),
-                                    intval( $age )
-                                );
-                            }
-                        }
-                    }
-
-                    $xml = IOL_Helper::set_xml_encoding( $xml );
-
                     $args = array_diff_key( $_POST, array_flip( array( 'security', 'kanda_search' ) ) );
 
-                    $response = $request->search_hotels( $xml, $args );
+                    $response = provider_iol()->hotels()->search( $args );
+
                     echo '<pre>'; var_dump(
-                        $response->valid(),
+                        $response->is_valid(),
                         $response->get_code(),
                         $response->get_message(),
                         $response->get_data()
@@ -149,6 +82,10 @@ class Hotels_Controller extends Base_Controller {
 
         $this->view = 'index';
 
+    }
+
+    public function results( $args ) {
+        $this->view = 'search-results';
     }
 
 }

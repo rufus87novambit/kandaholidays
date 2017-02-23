@@ -5,13 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     die('No direct script access allowed');
 }
 
-if( ! class_exists( 'IOL' ) ) {
+if( ! class_exists( 'IOL_Provider' ) ) {
 
-    final class IOL {
-
-        public $path;
-
-        public $core;
+    final class IOL_Provider extends Kanda_Service_Provider {
 
         /**
          * Singleton.
@@ -28,10 +24,12 @@ if( ! class_exists( 'IOL' ) ) {
          * Constructor
          */
         public function __construct() {
+            parent::__construct();
+
             $this->path = trailingslashit(__DIR__);
             $this->core = trailingslashit($this->path . 'core');
 
-            require_once($this->path . 'config.php');
+            $this->load_dependant( $this->path, 'config' );
 
             $this->hooks();
         }
@@ -51,27 +49,30 @@ if( ! class_exists( 'IOL' ) ) {
          * @return array
          */
         public function register( $providers ) {
-            return array_merge($providers, array(
-                IOL_Config::get( 'id' ) => IOL_Config::get( 'name' )
-            ));
+            $this->id = IOL_Config::get( 'id' );
+            $this->name = IOL_Config::get( 'name' );
+            $this->public_name = esc_html__( 'UAE', 'kanda' );
+
+            return parent::register( $providers );
         }
 
         /**
          * Wake up
          */
         public function init() {
-            require_once($this->core . 'class-helper.php');
-            require_once($this->core . 'class-cache.php');
-            require_once($this->core . 'class-request.php');
+            $this->load_dependant( $this->core, 'class-helper', 'IOL_Helper' );
+            $this->load_dependant( $this->core, 'class-cache', 'IOL_Search_Cache' );
+            $this->load_dependant( $this->core, 'class-request', 'IOL_Request' );
         }
 
         /**
-         * Get request instance
-         *
-         * @return IOL_Request
+         * Get hotels instance
+         * @return IOL_Hotels
          */
-        public function request() {
-            return new IOL_Request();
+        public function hotels() {
+            $this->load_dependant( $this->core, 'class-hotels', 'IOL_Hotels' );
+
+            return new IOL_Hotels();
         }
 
     }
@@ -80,7 +81,7 @@ if( ! class_exists( 'IOL' ) ) {
      * Get class instance
      */
     function provider_iol() {
-        return IOL::get_instance();
+        return IOL_Provider::get_instance();
     }
 
     provider_iol();
