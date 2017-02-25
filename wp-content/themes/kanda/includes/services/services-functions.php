@@ -1,25 +1,43 @@
 <?php
 
+if( ! defined( 'KANDA_SERVICES_CORE_PATH' ) ) {
+    define( 'KANDA_SERVICES_CORE_PATH', trailingslashit( KANDA_SERVICES_PATH . 'core' ) );
+}
+
+if( ! defined( 'KANDA_SERVICES_PROVIDERS_PATH' ) ) {
+    define( 'KANDA_SERVICES_PROVIDERS_PATH', trailingslashit( KANDA_SERVICES_PATH . 'providers' ) );
+}
+
+/***************************************** Load Service Provider Core Files *****************************************/
 /**
- * Include Request Helper
+ * Include Service Provider
  */
-require_once( trailingslashit( KANDA_SERVICES_PATH . 'core' ) . 'class-kanda-request-helper.php' );
+require_once( KANDA_SERVICES_CORE_PATH . 'class-kanda-service-provider.php' );
 
 /**
  * Include Request Response
  */
-require_once( trailingslashit( KANDA_SERVICES_PATH . 'core' ) . 'class-kanda-request-response.php' );
+require_once( KANDA_SERVICES_CORE_PATH . 'class-kanda-service-cache.php' );
 
 /**
  * Include Request Cache
  */
-require_once( trailingslashit( KANDA_SERVICES_PATH . 'core' ) . 'class-kanda-request-cache.php' );
+require_once( KANDA_SERVICES_CORE_PATH . 'class-kanda-service-response.php' );
+
+/************************************** /end Load Service Provider Core Files ***************************************/
 
 /**
  * Include IOL
  */
-require_once( trailingslashit( trailingslashit( KANDA_SERVICES_PATH . 'providers' ) . 'iol' ) . 'functions.php' );
+require_once( trailingslashit( KANDA_SERVICES_PROVIDERS_PATH . 'iol' ) . 'loader.php' );
 
+
+/**
+ * Register providers
+ */
 Kanda_Config::$providers = apply_filters( 'kanda/providers', array() );
 
+/**
+ * Providers wake up hook
+ */
 do_action( 'kanda/providers/init' );

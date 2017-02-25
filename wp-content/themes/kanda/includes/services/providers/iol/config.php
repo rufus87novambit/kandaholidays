@@ -1,4 +1,8 @@
 <?php
+// Prevent direct script access.
+if ( ! defined( 'ABSPATH' ) ) {
+    die('No direct script access allowed');
+}
 
 /**
  * IOL configuration
@@ -63,6 +67,14 @@ class IOL_Config {
     );
 
     /**
+     * MySQL LIMIT
+     * @var array
+     */
+    private static $sql_limit = array(
+        'search' => 10
+    );
+
+    /**
      * Request args
      * @var array
      */
@@ -73,7 +85,7 @@ class IOL_Config {
             'Content-Type: application/x-www-form-urlencoded',
             'Accept:text/xml'
         ),
-        'body' => array()
+        'body' => array(),
     );
 
     /**
