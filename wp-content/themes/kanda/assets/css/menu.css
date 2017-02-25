@@ -231,6 +231,10 @@
    /* .main-menu li:hover{
         background:#2a4f61;
     }*/
+    .main-menu > li.menu-item-has-children::before {
+        right:-5px;
+        top:17px;
+    }
     .main-menu ul.sub-menu{
         display:none;
         position: static;

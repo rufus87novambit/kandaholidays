@@ -225,6 +225,7 @@
                     <br>
                     <div class="box clearfix">
                         <div class="alert alert-success" role="alert">
+                            <button class="alert-close-btn icon-cross2"></button>
                             <strong>Well done!</strong> You successfully read this important alert message.
                         </div>
                         <div class="alert alert-info" role="alert">
