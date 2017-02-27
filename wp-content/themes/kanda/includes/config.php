@@ -85,7 +85,7 @@ class Kanda_Config {
         self::$cookie_lifetime = array(
             'authentication'    => array(
                 'administrator' => 1 * DAY_IN_SECONDS,
-                'agency'        => 1 * HOUR_IN_SECONDS
+                'agency'        => 1 * DAY_IN_SECONDS
             ),
             'login'             => 10 * MINUTE_IN_SECONDS,
             'register'          => 10 * MINUTE_IN_SECONDS,

@@ -94,6 +94,7 @@ gulp.task('css-back', function () {
         'node_modules/cropperjs/dist/cropper.css',
         'node_modules/slick-carousel/slick/slick.css',
         '../assets/css/slick-theme.css',
+        '../assets/css/magnific-popup.css'
     ])
         .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
@@ -119,6 +120,7 @@ gulp.task('js-back', function () {
         'node_modules/cropperjs/dist/cropper.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
         'node_modules/slick-carousel/slick/slick.js',
+        'node_modules/magnific-popup/dist/jquery.magnific-popup.min.js',
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))

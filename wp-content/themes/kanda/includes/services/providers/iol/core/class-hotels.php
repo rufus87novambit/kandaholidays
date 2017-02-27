@@ -35,22 +35,12 @@ class IOL_Hotels {
      * @param $args
      * @return mixed|SimpleXMLElement
      */
-    private function generate_xml( $args ) {
+    private function generate_search_xml( $args ) {
 
-        $xml = $this->request_instance->get_basic_xml( 'hotel-search-request' );
+        $xml = $this->request_instance->get_basic_xml( 'hotel_search_request' );
 
         $search_criteria = $xml->addChild(
-            IOL_Helper::parse_xml_key( 'search-criteria' )
-        );
-
-        $search_criteria->addChild(
-            IOL_Helper::parse_xml_key( 'start-date' ),
-            IOL_Helper::convert_date( $args['check_in'], 'd F, Y' )
-        );
-
-        $search_criteria->addChild(
-            IOL_Helper::parse_xml_key( 'end-date' ),
-            IOL_Helper::convert_date( $args['check_out'], 'd F, Y' )
+            IOL_Helper::parse_xml_key( 'search_criteria' )
         );
 
         $search_criteria->addChild(
@@ -58,19 +48,41 @@ class IOL_Hotels {
             strtoupper( $args['city'] )
         );
 
+        if( isset( $args['hotel_name'] ) && $args['hotel_name'] ) {
+            $search_criteria->addChild(
+                IOL_Helper::parse_xml_key('hotel_name'),
+                trim( $args['hotel_name'] )
+            );
+        }
+
+        if( isset( $args['star_rating'] ) && $args['star_rating'] ) {
+            $star_rating_configuration = $search_criteria->addChild(
+                IOL_Helper::parse_xml_key( 'star_rating_configuration' )
+            );
+            $star_rating_configuration->addChild(
+                IOL_Helper::parse_xml_key('star_rating'),
+                intval( $args['star_rating'] )
+            );
+        }
+
         $search_criteria->addChild(
-            IOL_Helper::parse_xml_key( 'include-on-request' ),
-            IOL_Helper::bool_to_string( true )
+            IOL_Helper::parse_xml_key( 'include_on_request' ),
+            IOL_Helper::bool_to_string( (bool)$args['include_on_request'] )
         );
 
         $search_criteria->addChild(
-            IOL_Helper::parse_xml_key( 'include-hotel-data' ),
-            IOL_Helper::bool_to_string( true )
+            IOL_Helper::parse_xml_key( 'nationality' ),
+            $args['nationality']
         );
 
         $search_criteria->addChild(
-            IOL_Helper::parse_xml_key( 'include-rate-details' ),
-            IOL_Helper::bool_to_string( false )
+            IOL_Helper::parse_xml_key( 'start_date' ),
+            IOL_Helper::convert_date( $args['start_date'], 'd F, Y' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'end_date' ),
+            IOL_Helper::convert_date( $args['end_date'], 'd F, Y' )
         );
 
         $room_configuration = $search_criteria->addChild(
@@ -101,9 +113,17 @@ class IOL_Hotels {
             }
         }
 
-        $xml = IOL_Helper::set_xml_encoding( $xml );
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'include_hotel_data' ),
+            IOL_Helper::bool_to_string( true )
+        );
 
-        return $xml;
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'include-rate-details' ),
+            IOL_Helper::bool_to_string( true )
+        );
+
+        return $xml->asXML();
     }
 
     /**
@@ -133,17 +153,18 @@ class IOL_Hotels {
                 $response
                     ->set_code($cached->status_code)
                     ->set_request($args)
+                    ->set_request_id( $cached->id )
                     ->set_data($response_data);
             }
             // outdated / need to update
             else {
                 $args = unserialize( $cached->request );
-                $xml = $this->generate_xml( $args );
+                $xml = $this->generate_search_xml( $args );
 
                 $response = $this->request_instance->process( $xml, $args );
 
                 if( $response->is_valid() ) {
-                    $cache_instance->cache( $response, 'update' );
+                    $request_id = $cache_instance->cache( $response, 'update' );
 
                     $data = $response->get_data();
                     if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
@@ -154,18 +175,21 @@ class IOL_Hotels {
                         $data = array();
                     }
 
-                    $response->set_data( $data );
+                    $response
+                        ->set_request_id( $request_id )
+                        ->set_data( $data );
                 }
             }
 
         }
         // new request statement
         else {
-            $xml = $this->generate_xml( $args );
+            $xml = $this->generate_search_xml( $args );
+
             $response = $this->request_instance->process( $xml, $args );
 
             if( $response->is_valid() ) {
-                $cache_instance->cache( $response, 'insert' );
+                $request_id = $cache_instance->cache( $response, 'insert' );
 
                 $data = $response->get_data();
                 if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
@@ -176,7 +200,9 @@ class IOL_Hotels {
                     $data = array();
                 }
 
-                $response->set_data( $data );
+                $response
+                    ->set_request_id( $request_id )
+                    ->set_data( $data );
             }
         }
 
@@ -197,7 +223,7 @@ class IOL_Hotels {
 
         if( $cached ) {
             $args = unserialize( $cached->request );
-            $response = $this->search_hotels( $args, $page );
+            $response = $this->search( $args, $page );
         } else {
             $response = new Kanda_Service_Response();
 
@@ -208,6 +234,126 @@ class IOL_Hotels {
 
         return $response;
 
+    }
+
+    /**
+     * Generate hotel details XML
+     *
+     * @param $args
+     * @return mixed|SimpleXMLElement
+     */
+    private function generate_hotel_details_xml( $args ) {
+        $xml = $this->request_instance->get_basic_xml( 'hotel_details_request' );
+
+        $search_criteria = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'search_criteria' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'hotel_code' ),
+            $args['hotel_code']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'start_date' ),
+            IOL_Helper::convert_date( $args['start_date'], 'd F, Y' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'end_date' ),
+            IOL_Helper::convert_date( $args['end_date'], 'd F, Y' )
+        );
+
+        return $xml->asXML();
+    }
+
+    /**
+     * Get hotel details
+     *
+     * @param $code
+     * @param $start_date
+     * @param $end_date
+     * @return Kanda_Service_Response
+     */
+    public function hotel_details( $code, $start_date, $end_date ) {
+        $args = array(
+            'hotel_code' => $code,
+            'start_date' => $start_date,
+            'end_date'   => $end_date
+        );
+
+        $xml = $this->generate_hotel_details_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
+    }
+
+    /**
+     * Generate master data XML
+     * @param $args
+     * @return mixed
+     */
+    private function generate_master_data_xml( $args ) {
+        $xml = $this->request_instance->get_basic_xml( 'retrieve_master_data' );
+
+        $master_data = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'master_data' )
+        );
+
+        $master_data->addChild(
+            IOL_Helper::parse_xml_key( 'hotel_detail' ),
+            IOL_Helper::bool_to_string( $args[ 'hotel_detail' ] )
+        );
+
+        $master_data->addChild(
+            IOL_Helper::parse_xml_key( 'hotel_facilities' ),
+            IOL_Helper::bool_to_string( $args[ 'hotel_facilities' ] )
+        );
+
+        $master_data->addChild(
+            IOL_Helper::parse_xml_key( 'hotel_messages' ),
+            IOL_Helper::bool_to_string( $args[ 'hotel_messages' ] )
+        );
+
+        $geo = $master_data->addChild(
+            IOL_Helper::parse_xml_key( 'geo' )
+        );
+
+        $geo->addChild(
+            IOL_Helper::parse_xml_key( 'country' ),
+            $args[ 'country' ]
+        );
+
+        $geo->addChild(
+            'ISOCountryCode',
+            $args[ 'iso' ]
+        );
+
+        $geo->addChild(
+            IOL_Helper::parse_xml_key( 'city' ),
+            $args[ 'city' ]
+        );
+
+        return $xml->asXML();
+    }
+
+    /**
+     * Get Master Data
+     *
+     * @return Kanda_Service_Response
+     */
+    public function get_master_data( $args = array() ) {
+        $args = wp_parse_args( $args, array(
+            'hotel_detail' => true,
+            'hotel_facilities' => true,
+            'hotel_messages' => true,
+            'city' => 'DXB',
+            'country' => 'United Arab Emirates',
+            'iso' => 'AE',
+        ) );
+
+        $xml = $this->generate_master_data_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
     }
 
 }

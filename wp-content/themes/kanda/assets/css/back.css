@@ -126,15 +126,17 @@ body {
 
 /*article list*/
 .articles-list li{
-    padding-bottom:1rem;
+    padding:1rem;
     margin-bottom:1rem;
-    border-bottom:solid 1px var(--border-color);
+    border:solid 1px var(--border-color);
+    border-top: 5px solid #3d4795;
+    background: #fff;
 }
 .articles-list li:last-child{
     border-bottom:0;
 }
 .article-title{
-    color:var(--brand-info);
+    color:var(--brand-primary);
 }
 .article-title a{
     color:inherit;

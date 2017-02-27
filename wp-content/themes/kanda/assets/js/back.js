@@ -55,7 +55,7 @@
     /**
      * Checkin / Checkout datepickers
      */
-    if( $('.datepicker-checkin').length > 0 && $('.datepicker-checkout').length > 0 ) {
+    if( $('.datepicker-start-date').length > 0 && $('.datepicker-end-date').length > 0 ) {
 
         var checkin = new Date();
         var checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
@@ -81,7 +81,7 @@
         /**
          * Checkin functionality
          */
-        $( '.datepicker-checkin' ).datepicker({
+        $( '.datepicker-start-date' ).datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
             minDate: checkin,
@@ -89,8 +89,8 @@
                 checkin = new Date( this.value );
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
 
-                $( '.datepicker-checkout').datepicker( 'option', 'minDate', checkout );
-                checkout = new Date( $( '.datepicker-checkout').datepicker( 'getDate' ) );
+                $( '.datepicker-end-date').datepicker( 'option', 'minDate', checkout );
+                checkout = new Date( $( '.datepicker-end-date').datepicker( 'getDate' ) );
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
             }
         }).datepicker( 'setDate', checkin );
@@ -98,12 +98,12 @@
         /**
          * Checkout functionality
          */
-        $( '.datepicker-checkout' ).datepicker({
+        $( '.datepicker-end-date' ).datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
             minDate: checkout,
             onSelect: function(){
-                checkin = $( '.datepicker-checkin' ).datepicker( 'getDate' );
+                checkin = $( '.datepicker-start-date' ).datepicker( 'getDate' );
                 checkout = new Date( this.value );
 
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
@@ -114,11 +114,11 @@
          * Nights count functionality
          */
         $( '#nights_count').on( 'change keyup', function(){
-            checkin = $( '.datepicker-checkin' ).datepicker( 'getDate' );
+            checkin = $( '.datepicker-start-date' ).datepicker( 'getDate' );
             if( checkin ) {
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
             }
-            $( '.datepicker-checkout' ).datepicker( 'setDate', checkout );
+            $( '.datepicker-end-date' ).datepicker( 'setDate', checkout );
         } );
     }
 
@@ -206,80 +206,28 @@
             $( '.currency.opened' ).removeClass('opened');
         }
     });
+
+    /** tabs in popup */
+    $('body').on( 'click', '.popup-tabs .tab-headings a', function(){
+        var _this = $(this),
+            _tabs = _this.closest( '.tabs' ),
+            _headings = _this.siblings( '.tab-heading' ),
+            _contents = _tabs.find( '.tab-contents .tab-content'),
+            _target = _this.data('target'),
+            _active_class = '-warning',
+            _static_class = '-info';
+
+        if( _this.hasClass( _active_class ) ) {
+            return;
+        }
+
+        _headings.not(_this).removeClass(_active_class).addClass(_static_class);
+        _this.removeClass(_static_class).addClass(_active_class);
+
+        _contents.filter(':visible').addClass('hidden');
+        _contents.filter(_target).removeClass('hidden');
+    } );
     /*************************************** /end Currency functionality ***************************************/
-
-    /******************************************* Popup functionality *******************************************/
-    /**
-     * Open popup on node event (click)
-     */
-    $('.popup-block').on('click', function(){
-        var popup_id = $(this).data('target');
-        if( popup_id ) {
-            open_popup( popup_id );
-        }
-    });
-
-    /**
-     * Close popup on close button event (click)
-     */
-    $('.popup-close').on('click', function(){
-        close_popup( $(this) );
-    });
-
-    /**
-     * Open popup by popup id
-     *
-     * @param popup_id
-     * @param callbacks
-     */
-    function open_popup( popup_id, callbacks ) {
-        var default_callbacks = { before : null, before_show : null, after : null };
-        $.extend( default_callbacks, callbacks );
-
-        if( typeof default_callbacks.before == 'function' ) {
-            default_callbacks.before();
-        }
-
-        $('body').addClass('popup-open');
-
-        if( typeof default_callbacks.before_show == 'function' ) {
-            default_callbacks.before_show();
-        }
-
-        $('#'+ popup_id ).addClass('open');
-
-        if( typeof default_callbacks.after == 'function' ) {
-            setTimeout( default_callbacks.after, 10 );
-        }
-    }
-
-    /**
-     * Close popup
-     *
-     * @param btn
-     * @param callbacks
-     */
-    function close_popup( btn, callbacks ) {
-        var default_callbacks = { before : null, after_close : null, after : null };
-        $.extend( default_callbacks, callbacks );
-
-        if( typeof default_callbacks.before == 'function' ) {
-            default_callbacks.before();
-        }
-
-        btn.closest( 'popup-wrap').removeClass('open');
-
-        if( typeof default_callbacks.after_close == 'function' ) {
-            default_callbacks.after_close();
-        }
-
-        $('body').removeClass('popup-open');
-
-        if( typeof default_callbacks.after == 'function' ) {
-            setTimeout( default_callbacks.after, 10 );
-        }
-    }
-    /***************************************** /end Popup functionality *****************************************/
 
     /******************************************* Avatar functionality *******************************************/
     if( $( '#avatar-upload-ui').length > 0 ) {
@@ -514,28 +462,138 @@
     }
     /********************************************** /end Edit profile ********************************************/
 
-    console.log( kanda );
+    /********************************************** Popups **********************************************/
+    function loading_popup() {
+        $.magnificPopup.open({
+            items: {
+                src: '#loading-popup',
+            },
+            type:'inline',
+            showCloseBtn : false,
+            closeOnBgClick : false,
+            enableEscapeKey : false,
+            midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+        });
+    }
+
+    function error_popup( content ) {
+        $.magnificPopup.close();
+
+        $('#error-popup').html( content );
+        $.magnificPopup.open({
+            items: {
+                src: '#error-popup',
+            },
+            type:'inline',
+            showCloseBtn : true,
+            closeOnBgClick : true,
+            enableEscapeKey : true,
+            midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+        });
+    }
+
+    $('.maps-popup').magnificPopup({
+        type: 'iframe',
+        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+        iframe: {
+            markup: '<div class="mfp-iframe-scaler">'+
+            '<div class="mfp-close"></div>'+
+            '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
+            '</div>', // HTML markup of popup, `mfp-close` will be replaced by the close button
+
+            patterns: {
+                youtube: {
+                    index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
+
+                    id: 'v=', // String that splits URL in a two parts, second part should be %id%
+                    // Or null - full URL will be returned
+                    // Or a function that should return %id%, for example:
+                    // id: function(url) { return 'parsed id'; }
+
+                    src: '//www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe.
+                },
+                vimeo: {
+                    index: 'vimeo.com/',
+                    id: '/',
+                    src: '//player.vimeo.com/video/%id%?autoplay=1'
+                },
+                gmaps: {
+                    index: '//maps.google.',
+                    src: '%id%&output=embed'
+                }
+
+                // you may add here more sources
+
+            },
+
+            srcAction: 'iframe_src', // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".
+        }
+    });
+
+    $('.ajax-popup').magnificPopup({
+        type: 'ajax',
+        midClick: true,
+        closeBtnInside:true,
+        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+        callbacks : {
+            parseAjax: function ( mfpResponse ) {
+                if( ! mfpResponse.data ) {
+                    mfpResponse.data = kanda.translatable.invalid_request
+                }
+                mfpResponse.data = '<div class="white-popup">' + mfpResponse.data + '</div>';
+            },
+            ajaxContentAdded : function(){
+                $( this.content ).find( '.hotel-gallery').slick({
+                    arrows      : false,
+                    fade        : false,
+                    autoplay    : true,
+                    dots        : true,
+                    dotsClass   : 'slick-dots container'
+                });;
+            }
+        }
+
+    });
+
+    $('.open-popup').magnificPopup({
+        type:'inline',
+        midClick: true,
+        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />'
+    });
+    /********************************************** Popups **********************************************/
 
     /************************************************ Search hotels **********************************************/
     if( $('#hotel_search_form').length > 0 ) {
 
-        //$('#hotel_search_form').on( 'submit', function(){
-        //
-        //    // todo check validity
-        //    var is_valid = true;
-        //    if( is_valid ) {
-        //        $.ajax({
-        //            url         : kanda.ajaxurl,
-        //            type        : 'POST',
-        //            dataType    : 'JSON'
-        //            data        : {
-        //                action      : 'kanda_hotels_search',
-        //                security    : 'asdasd'
-        //            }
-        //        });
-        //    }
-        //
-        //} );
+        $('#hotel_search_form').on( 'submit', function(){
+
+            var _this = $(this),
+                _criteria = _this.serialize();
+
+            $.ajax({
+                url : kanda.ajaxurl,
+                type : 'POST',
+                dataType : 'JSON',
+                data: {
+                    action : 'search_hotels',
+                    criteria : _criteria
+                },
+                beforeSend: loading_popup(),
+                success : function( response ){
+                    if( response.success ) {
+                        window.location = response.data.redirect_to
+                    } else {
+                        error_popup( response.data.message );
+                    }
+                },
+                error : function(){
+                    $.magnificPopup.close();
+                }
+            });
+
+            return false;
+
+        } );
 
     }
     /********************************************** /end Search hotels *******************************************/

@@ -59,7 +59,7 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Rating', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
-                        <select class="rating" name="hotel_rating">
+                        <select class="rating" name="star_rating">
                             <option value=""></option>
                             <option value="2"></option>
                             <option value="2"></option>
@@ -73,8 +73,8 @@
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Hotels In Request', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
                         <select class="custom-select" name="include_on_request">
-                            <option value="Y"><?php esc_html_e( 'Available & On Request', 'kanda' ); ?></option>
-                            <option value="N" selected="selected"><?php esc_html_e( 'Only Available', 'kanda' ); ?></option>
+                            <option value="1"><?php esc_html_e( 'Available & On Request', 'kanda' ); ?></option>
+                            <option value="0" selected="selected"><?php esc_html_e( 'Only Available', 'kanda' ); ?></option>
                         </select>
                     </div>
                 </div>
@@ -352,13 +352,13 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Check In date', 'kanda' ); ?></label>
                     <div class="calendar-field col-lg-7">
-                        <input type="text" name="check_in" class="form-control datepicker-checkin">
+                        <input type="text" name="start_date" class="form-control datepicker-start-date">
                     </div>
                 </div>
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Check Out date', 'kanda' ); ?></label>
                     <div class="calendar-field col-lg-7">
-                        <input type="text" name="check_out" class="form-control datepicker-checkout">
+                        <input type="text" name="end_date" class="form-control datepicker-end-date">
                     </div>
                 </div>
                 <div class="form-group row clearfix">
@@ -437,3 +437,6 @@
         <input type="submit" name="kanda_search" value="Search hotel" class="btn -primary pull-right">
     </footer>
 </form>
+
+<div id="loading-popup" class="loading-popup mfp-hide"></div>
+<div id="error-popup" class="white-popup text-center mfp-hide"></div>

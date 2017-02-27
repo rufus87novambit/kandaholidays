@@ -101,6 +101,44 @@ function kanda_widgets_init() {
     }
 }
 
+add_action( 'init', 'kanda_register_post_types' );
+function kanda_register_post_types() {
+    $labels = array(
+        'name'               => _x( 'Hotels', 'post type general name', 'kanda' ),
+        'singular_name'      => _x( 'Hotel', 'post type singular name', 'kanda' ),
+        'menu_name'          => _x( 'Hotels', 'admin menu', 'kanda' ),
+        'name_admin_bar'     => _x( 'Hotel', 'add new on admin bar', 'kanda' ),
+        'add_new'            => _x( 'Add New', 'hotel', 'kanda' ),
+        'add_new_item'       => __( 'Add New Hotel', 'kanda' ),
+        'new_item'           => __( 'New Hotel', 'kanda' ),
+        'edit_item'          => __( 'Edit Hotel', 'kanda' ),
+        'view_item'          => __( 'View Hotel', 'kanda' ),
+        'all_items'          => __( 'All Hotels', 'kanda' ),
+        'search_items'       => __( 'Search Hotels', 'kanda' ),
+        'parent_item_colon'  => __( 'Parent Hotels:', 'kanda' ),
+        'not_found'          => __( 'No hotels found.', 'kanda' ),
+        'not_found_in_trash' => __( 'No hotels found in Trash.', 'kanda' )
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'description'        => __( 'Description.', 'kanda' ),
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'hotel' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => null,
+        'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+    );
+
+    register_post_type( 'hotel', $args );
+}
+
 /**
  * Add custom role
  */

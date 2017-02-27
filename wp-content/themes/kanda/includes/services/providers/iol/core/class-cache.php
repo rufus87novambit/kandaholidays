@@ -7,10 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class IOL_Search_Cache extends Kanda_Service_Cache {
 
+    protected $table_search = 'iol_search';
+
+    protected $table_search_results = 'iol_search_results';
     /**
      * Insert response
      *
      * @param Kanda_Service_Response $response
+     * @return string
      */
     private function _insert( Kanda_Service_Response $response ) {
 
@@ -73,12 +77,15 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         }
 
+        return $request_id;
+
     }
 
     /**
      * Update response
      *
      * @param Kanda_Service_Response $response
+     * @return string
      */
     private function _update( Kanda_Service_Response $response ) {
 
@@ -137,6 +144,8 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
             }
 
         }
+
+        return $request_id;
     }
 
     /**
@@ -169,16 +178,18 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
      * Cache response
      *
      * @param Kanda_Service_Response $response
-     * @param insert | update
+     * @param $type insert | update
+     * @return null|string
      */
     public function cache( Kanda_Service_Response $response, $type ) {
         switch( $type ) {
             case 'insert':
-                $this->_insert( $response );
+                return $this->_insert( $response );
                 break;
             case 'update':
-                $this->_update( $response );
+                return $this->_update( $response );
         }
+        return null;
     }
 
     /**

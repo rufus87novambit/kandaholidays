@@ -111,8 +111,11 @@ class Base_Controller {
      * @return mixed
      */
     public function change_title( $title, $id = null ) {
-        if( $this->post_id == $id && $this->title ) {
+        global $wp_query;
+        if( $wp_query->in_the_loop && $this->post_id == $id && $this->title ) {
             $title = $this->title;
+
+            remove_filter( 'the_title', array( $this, 'render' ) );
         }
 
         return $title;
@@ -125,7 +128,8 @@ class Base_Controller {
      * @return string
      */
     public function render( $content ) {
-        if( $this->post_id == get_the_ID() ) {
+        global $wp_query;
+        if( $wp_query->in_the_loop && $this->post_id == get_the_ID() ) {
 
             $template = trailingslashit($this->views_path . $this->name) . $this->view . '.php';
             if ( file_exists( $template ) ) {
@@ -135,6 +139,8 @@ class Base_Controller {
             } else {
                 $content = kanda_default_page_content( $content );
             }
+
+            remove_filter( 'the_content', array( $this, 'render' ) );
         }
 
         return $content;

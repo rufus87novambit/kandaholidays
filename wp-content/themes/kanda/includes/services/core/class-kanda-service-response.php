@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Kanda_Service_Response {
 
     private $request;
+    private $request_id;
     private $code;
     private $data;
     private $message = '';
@@ -22,6 +23,18 @@ class Kanda_Service_Response {
      */
     public function set_request( $request = array() ) {
         $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * Set request id
+     *
+     * @param $request_id
+     * @return $this
+     */
+    public function set_request_id( $request_id ) {
+        $this->request_id = $request_id;
 
         return $this;
     }
@@ -69,6 +82,15 @@ class Kanda_Service_Response {
      */
     public function get_request() {
         return $this->request;
+    }
+
+    /**
+     * Get request_id
+     *
+     * @return mixed
+     */
+    public function get_request_id() {
+        return $this->request_id;
     }
 
     /**
@@ -126,7 +148,14 @@ class Kanda_Service_Response {
             $this->code = wp_remote_retrieve_response_code( $http );
 
             $xml = wp_remote_retrieve_body( $http );
-            $this->data = IOL_Helper::convert_xml_to_readable( $xml );
+            $data = IOL_Helper::convert_xml_to_readable( $xml );
+
+            if( isset( $data['errormessage'] ) ) {
+                $this->code = 404;
+                $this->message = $data['errormessage']['error']['errors']['msg'];
+            } else {
+                $this->data = IOL_Helper::convert_xml_to_readable( $xml );
+            }
         }
 
     }

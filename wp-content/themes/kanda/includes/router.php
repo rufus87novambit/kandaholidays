@@ -84,8 +84,13 @@ function kanda_add_rewrite_rule() {
 
         /******************************************** 2. Hotels Controller ********************************************/
         array(
-            'regex' => 'hotels(\/)?([a-zA-Z0-9]*)?(\/)?([0-9]*)?(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hsid=$matches[2]&kp=$matches[4]', 123, 'hotels', 'index' ),
+            'regex' => 'hotels\/result\/([a-zA-Z0-9]*)(\/([0-9]*))?(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&k_rid=$matches[1]&k_page=$matches[3]&unwanted=$matches[5]', 123, 'hotels', 'results' ),
+            'after' => 'top'
+        ),
+        array(
+            'regex' => 'hotels(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 123, 'hotels', 'index' ),
             'after' => 'top'
         ),
         /******************************************** /end Hotels Controller ********************************************/
@@ -117,7 +122,7 @@ function kanda_add_rewrite_rule() {
             'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
             'after' => 'top'
         ),
-        /******************************************** /end Hotels Controller ********************************************/
+        /******************************************** /end Profiles Controller ********************************************/
 
         // other rules should go here
     );
@@ -137,8 +142,8 @@ function kanda_query_vars( $public_query_vars ) {
         'action',
         'key',
         'ksecurity',
-        'hsid',
-        'kp',
+        'k_rid',
+        'k_page',
         'unwanted'
         // other variables should go here
     ) );

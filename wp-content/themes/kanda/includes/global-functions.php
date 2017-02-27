@@ -345,6 +345,9 @@ function kanda_url_to( $name, $params = array() ) {
         case 'profile':
             $url = home_url( '/profile' );
             break;
+        case 'hotels':
+            $url = home_url( '/hotels' );
+            break;
         default:
             $url = false;
     }
@@ -374,12 +377,13 @@ function &kanda_get_cached_posts() {
  *
  * @param $post_id
  * @param string $key
+ * @param bool|false $force
  * @return mixed|null
  */
-function kanda_get_post_meta( $post_id, $key = '' ) {
+function kanda_get_post_meta( $post_id, $key = '', $force = false ) {
 
     $cached_posts = &kanda_get_cached_posts();
-    if( ! isset( $cached_posts[ $post_id ] ) ) {
+    if( ! isset( $cached_posts[ $post_id ] ) || $force ) {
 
         $cached_posts[ $post_id ] = isset( $cached_posts[ $post_id ] ) ? $cached_posts[ $post_id ] : array();
 
@@ -420,10 +424,10 @@ function &kanda_get_cached_users() {
  * @param string $key
  * @return mixed|null
  */
-function kanda_get_user_meta( $user_id, $key = '', $force_update = false ) {
+function kanda_get_user_meta( $user_id, $key = '', $force = false ) {
 
     $cached_users = &kanda_get_cached_users();
-    if( ! isset( $cached_users[ $user_id ] ) || $force_update ) {
+    if( ! isset( $cached_users[ $user_id ] ) || $force ) {
 
         $cached_users[ $user_id ] = isset( $cached_users[ $user_id ] ) ? $cached_users[ $user_id ] : array();
 
@@ -464,10 +468,10 @@ function &kanda_get_cached_terms() {
  * @param string $key
  * @return mixed|null
  */
-function kanda_get_term_meta( $term_id, $key = '' ) {
+function kanda_get_term_meta( $term_id, $key = '', $force = false ) {
 
     $cached_terms = &kanda_get_cached_terms();
-    if( ! isset( $cached_terms[ $term_id ] ) ) {
+    if( ! isset( $cached_terms[ $term_id ] ) || $force ) {
 
         $cached_terms[ $term_id ] = isset( $cached_terms[ $term_id ] ) ? $cached_terms[ $term_id ] : array();
 
@@ -543,4 +547,61 @@ function kanda_upload_file( $key, $parent_post_id = 0 ) {
     }
 
     return $is_valid ? array( 'is_valid' => $is_valid, 'attachment_id' => $attach_id ) : array( 'is_valid' => $is_valid, 'message' => $message );
+}
+
+function kanda_generate_price( $price, $hotel_code, $currency ) {
+    return sprintf( '%1$s %2$s', $price, $currency );
+}
+
+/**
+ * Insert an attachment from an URL address.
+ *
+ * @param $url
+ * @param null $post_id
+ * @return bool|int|WP_Error
+ */
+function kanda_insert_attachment_from_url( $url, $post_id = null) {
+
+    if( ! class_exists( 'WP_Http' ) )
+        include_once( ABSPATH . WPINC . '/class-http.php' );
+
+    $http = new WP_Http();
+    $response = $http->request( $url );
+    if( $response['response']['code'] != 200 ) {
+        return false;
+    }
+
+    $upload = wp_upload_bits( basename($url), null, $response['body'] );
+    if( !empty( $upload['error'] ) ) {
+        return false;
+    }
+
+    $file_path = $upload['file'];
+    $file_name = basename( $file_path );
+    $file_type = wp_check_filetype( $file_name, null );
+    $attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
+    $wp_upload_dir = wp_upload_dir();
+
+    $post_info = array(
+        'guid'				=> $wp_upload_dir['url'] . '/' . $file_name,
+        'post_mime_type'	=> $file_type['type'],
+        'post_title'		=> $attachment_title,
+        'post_content'		=> '',
+        'post_status'		=> 'inherit',
+    );
+
+    // Create the attachment
+    $attach_id = wp_insert_attachment( $post_info, $file_path, $post_id );
+
+    // Include image.php
+    require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+    // Define attachment metadata
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+
+    // Assign metadata to attachment
+    wp_update_attachment_metadata( $attach_id,  $attach_data );
+
+    return $attach_id;
+
 }

@@ -28,7 +28,7 @@ class IOL_Config {
      * @var string
      */
 
-    private static $mode = 'test';
+    private static $mode = 'live';
 
     /**
      * Access details
@@ -43,9 +43,9 @@ class IOL_Config {
             'url'       => 'http://www.v3.staging.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx',
         ),
         'live' => array(
-            'code'      => 'PLACE LIVE CODE HERE',
-            'password'  => 'PLACE LIVE PASS HERE',
-            'token'     => 'PRbA2!pW@9Q-FZdFYkYm5&hEUUbX4^WDe5wh?Z^V86aTbV6U#B4p6&Xwy#R@',
+            'code'      => 'TRA_KANDA_PROD',
+            'password'  => 'TRA_KANDA_XML',
+            'token'     => 'KCL960313',
             'url'       => 'http://www.v3.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx'
         )
     );
@@ -63,7 +63,8 @@ class IOL_Config {
      * @var array
      */
     private static $cache_timeout = array(
-        'search' => 3 * HOUR_IN_SECONDS,
+        'search'        => 3 * HOUR_IN_SECONDS,
+        'hotel_details'
     );
 
     /**

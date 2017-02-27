@@ -41,6 +41,10 @@ function kanda_enqueue_styles(){
  */
 function kanda_get_back_localize() {
     return array(
-        'ajaxurl' => admin_url( 'admin-ajax.php' )
+        'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+        'themeurl'  => KANDA_THEME_URL,
+        'translatable' => array(
+            'invalid_request' => esc_html__( 'Invalid request', 'kanda' )
+        )
     );
 }

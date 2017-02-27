@@ -11,13 +11,13 @@ class Kanda_Service_Cache {
      * Search table name
      * @var string
      */
-    private $table_search = 'service_search';
+    protected $table_search;
 
     /**
      * Search results table name
      * @var string
      */
-    private $table_search_results = 'service_search_results';
+    protected $table_search_results;
 
     /**
      * Get search table name

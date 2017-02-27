@@ -72,3 +72,31 @@ function kanda_ajax_upload_avatar() {
     }
 
 }
+
+/**
+ * Ajax search hotels
+ */
+add_action( 'wp_ajax_search_hotels', 'kanda_search_hotels' );
+function kanda_search_hotels() {
+
+    if( ! class_exists( 'Hotels_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-hotels-controller.php' );
+    }
+
+    $controller = new Hotels_Controller();
+    $controller->search();
+}
+
+/**
+ * Ajax get hotel details
+ */
+add_action( 'wp_ajax_hotel_details', 'kanda_get_hotel_details' );
+function kanda_get_hotel_details(){
+    if( ! class_exists( 'Hotels_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-hotels-controller.php' );
+    }
+
+    $controller = new Hotels_Controller();
+    echo $controller->get_hotel_details();
+    die;
+}
