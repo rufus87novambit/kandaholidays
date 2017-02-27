@@ -115,7 +115,7 @@ gulp.task('js-back', function () {
     gulp.src([
         '../assets/js/plugins/jquery.customSelect.min.js',
         '../assets/js/plugins/jquery.barrating.js',
-      //  'node_modules/modernizr/src/Modernizr.js',
+        'node_modules/gulp-modernizr/build/modernizr-custom.js',
         'node_modules/jquery-validation/dist/jquery.validate.js',
         'node_modules/cropperjs/dist/cropper.js',
         'node_modules/jquery-ui-dist/jquery-ui.min.js',
