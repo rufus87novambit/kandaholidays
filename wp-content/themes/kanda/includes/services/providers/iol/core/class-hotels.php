@@ -146,7 +146,7 @@ class IOL_Hotels {
 
                 $response_data = array();
                 foreach( $data as $d ) {
-                    $response_data[] = unserialize( $d->data );
+                    $response_data[] = IOL_Helper::savable_format_to_array ( $d->data );
                 }
                 $response = new Kanda_Service_Response();
 
@@ -158,7 +158,7 @@ class IOL_Hotels {
             }
             // outdated / need to update
             else {
-                $args = unserialize( $cached->request );
+                $args = IOL_Helper::savable_format_to_array( $cached->request );
                 $xml = $this->generate_search_xml( $args );
 
                 $response = $this->request_instance->process( $xml, $args );
@@ -222,7 +222,7 @@ class IOL_Hotels {
         $cached = $cache_instance->get( $request_id );
 
         if( $cached ) {
-            $args = unserialize( $cached->request );
+            $args = IOL_Helper::savable_format_to_array( $cached->request );
             $response = $this->search( $args, $page );
         } else {
             $response = new Kanda_Service_Response();
@@ -346,9 +346,9 @@ class IOL_Hotels {
             'hotel_detail' => true,
             'hotel_facilities' => true,
             'hotel_messages' => true,
-            'city' => 'DXB',
             'country' => 'United Arab Emirates',
             'iso' => 'AE',
+            'city' => '',
         ) );
 
         $xml = $this->generate_master_data_xml( $args );

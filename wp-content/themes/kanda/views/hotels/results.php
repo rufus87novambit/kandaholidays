@@ -12,12 +12,16 @@
         <div class="row">
             <div class="article-obj col-sm-4">
                 <a href="single_news.html">
-                    <?php //the_post_thumbnail( 'full' ); ?>
+                    <?php if( ! empty( $hotel['images'] ) ) { ?>
+                    <img src="<?php echo kanda_get_cropped_image_src( $hotel['images'][0], array( 'width' => 315, 'height' => 152 ) ); ?>" alt="<?php echo $hotel['hotelname']; ?>">
+                    <?php } else { ?>
+                    <img src="<?php echo kanda_get_hotel_placeholder_image(); ?>" alt="<?php echo $hotel['hotelname']; ?>">
+                    <?php } ?>
                 </a>
             </div>
 
             <div class="article-body col-sm-8">
-                <div class="editor-content">Lorem ipsum ...</div>
+                <div class="editor-content"><?php echo wp_trim_words( $hotel[ 'hoteldescr' ], 55 ); ?></div>
                 <div class="article-actions pull-right">
 
                     <a href="#<?php echo $hotel['hotelcode']; ?>" class="open-popup btn -info -sm  clearfix"><?php esc_html_e( 'Rooms', 'kanda' ); ?></a>

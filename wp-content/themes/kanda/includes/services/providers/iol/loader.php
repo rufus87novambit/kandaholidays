@@ -63,6 +63,7 @@ if( ! class_exists( 'IOL_Provider' ) ) {
             $this->load_dependant( $this->core, 'class-helper', 'IOL_Helper' );
             $this->load_dependant( $this->core, 'class-cache', 'IOL_Search_Cache' );
             $this->load_dependant( $this->core, 'class-request', 'IOL_Request' );
+            $this->load_dependant( $this->core, 'class-master-data', 'IOL_Master_Data' );
         }
 
         /**

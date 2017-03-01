@@ -26,6 +26,17 @@ class IOL_Helper {
     }
 
     /**
+     * Check if is associative array
+     *
+     * @param array $array
+     * @return bool
+     */
+    public static function is_associative_array( array $array ) {
+        if ( array() === $array ) return false;
+        return array_keys( $array ) !== range(0, count( $array ) - 1);
+    }
+
+    /**
      * Change XML encoding to recognizable one
      *
      * @param SimpleXMLElement $xml
@@ -110,6 +121,26 @@ class IOL_Helper {
      */
     public static function bool_to_string( $value ) {
         return $value ? 'Y' : 'N';;
+    }
+
+    /**
+     * Convert array to savable format
+     *
+     * @param array $array
+     * @return string
+     */
+    public static function array_to_savable_format( array $array ){
+        return serialize( $array );
+    }
+
+    /**
+     * Convert savable format to array
+     *
+     * @param $data
+     * @return mixed
+     */
+    public static function savable_format_to_array( $data ) {
+        return maybe_unserialize( $data );
     }
 
 }

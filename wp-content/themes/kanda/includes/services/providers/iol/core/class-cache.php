@@ -37,7 +37,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 'id'            => $request_id,
                 'created_at'    => $date,
                 'provider'      => IOL_Config::get( 'id' ),
-                'request'       => $this->array_to_savable_format( $request ),
+                'request'       => IOL_Helper::array_to_savable_format( $request ),
                 'status_code'   => $response->get_code(),
                 'message'       => $response->get_message()
             ),
@@ -60,17 +60,27 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
 
-            foreach ($data['hotels']['hotel'] as $hotel) {
+            $master_data = IOL_Master_Data::get_data( $request[ 'city' ] );
+
+            foreach ($data['hotels']['hotel'] as $hotel ) {
+
+                $code = $hotel['hotelcode'];
+                $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();
+                $hotel[ 'hoteldescr' ] = isset( $hotel_master_data[ 'description' ] ) ? $hotel_master_data[ 'description' ] : '';
+                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
+
                 $values[] = sprintf(
-                    '(\'%1$s\', \'%2$s\', \'%3$s\')',
+                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\')',
                     $date,
                     $request_id,
-                    $this->array_to_savable_format( $hotel )
+                    $code,
+                    $hotel['starrating'],
+                    IOL_Helper::array_to_savable_format( $hotel )
                 );
             }
             if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `data` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `rating`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }
@@ -127,18 +137,27 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         $data = $response->get_data();
 
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
-
+            $master_data = IOL_Master_Data::get_data( $request[ 'city' ] );
             foreach ($data['hotels']['hotel'] as $hotel) {
+
+                $code = $hotel['hotelcode'];
+                $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();
+                $hotel[ 'hoteldescr' ] = isset( $hotel_master_data[ 'description' ] ) ? $hotel_master_data[ 'description' ] : '';
+                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
+
                 $values[] = sprintf(
-                    '(\'%1$s\', \'%2$s\', \'%3$s\')',
+                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\')',
                     $date,
                     $request_id,
-                    $this->array_to_savable_format( $hotel )
+                    $code,
+                    $hotel['starrating'],
+                    IOL_Helper::array_to_savable_format( $hotel )
                 );
+
             }
             if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `data` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `rating`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }

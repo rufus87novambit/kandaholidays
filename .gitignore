@@ -24,3 +24,4 @@
 /wp-content/themes/kanda/site-helpers/node_modules
 /wp-content/themes/kanda/site-helpers/.sass-cache
 /wp-content/themes/kanda/logs
+/wp-content/themes/kanda/includes/vendor/cimage/cache

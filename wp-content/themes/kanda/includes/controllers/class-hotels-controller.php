@@ -17,6 +17,25 @@ class Hotels_Controller extends Base_Controller {
     }
 
     /**
+     * Get master data
+     *
+     * @param $city
+     * @return bool
+     */
+    public function get_master_data( $city ) {
+        $response = provider_iol()->hotels()->get_master_data( array( 'city' => $city ) );
+        if( $response->is_valid() ) {
+            $data = $response->get_data();
+            $hotels = $data[ 'masterdatadetails' ][ 'hotel' ];
+
+            return IOL_Master_Data::save( $city, $hotels );
+        } else {
+            kanda_logger()->log( sprintf( 'Cannot get master data for %s', $city ) );
+            return false;
+        }
+    }
+
+    /**
      * Hotels main page
      * @param $args
      */

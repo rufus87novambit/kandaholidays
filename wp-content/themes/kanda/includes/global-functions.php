@@ -605,3 +605,33 @@ function kanda_insert_attachment_from_url( $url, $post_id = null) {
     return $attach_id;
 
 }
+
+/**
+ * Get cropped image src
+ *
+ * @param $url
+ * @param array $args
+ * @return string
+ */
+function kanda_get_cropped_image_src( $image_url, $args = array() ) {
+
+    $args = wp_parse_args( $args, array(
+        'width'         => 150,
+        'height'        => 150,
+        'src'           => $image_url,
+        'crop-to-fit'   => '',
+    ) );
+
+    $url = KANDA_INCLUDES_URL . 'vendor/cimage/webroot/imgp.php';
+
+    return add_query_arg( $args, $url );
+
+}
+
+/**
+ * Get placeholder image for hotel
+ * @return string
+ */
+function kanda_get_hotel_placeholder_image() {
+    return KANDA_THEME_URL . 'images/back/hotel.png';
+}

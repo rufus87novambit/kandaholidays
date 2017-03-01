@@ -46,17 +46,7 @@ class Kanda_Service_Cache {
      * @return string
      */
     protected function get_request_id ( $request ) {
-        return substr( md5( $this->array_to_savable_format( $request ) ), 0, 8 );
-    }
-
-    /**
-     * Convert array to savable format
-     *
-     * @param $data
-     * @return string
-     */
-    protected function array_to_savable_format( $data ){
-        return serialize( $data );
+        return substr( md5( IOL_Helper::array_to_savable_format( $request ) ), 0, 8 );
     }
 
 }
