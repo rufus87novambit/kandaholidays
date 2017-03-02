@@ -131,30 +131,41 @@ class IOL_Hotels {
      *
      * @param $args
      * @param int $page
-     * @return Kanda_Service_Response
+     * @param null|int|-1 $limit
+     * @return IOL_Response|Kanda_Service_Response
      */
-    public function search( $args, $page = 1 ) {
+    public function search( $args, $page = 1, $limit = null ) {
 
         $cache_instance = $this->get_cache_instance();
         $cached = $cache_instance->get( $args );
+
+        if( is_null( $limit ) ) {
+            $limit = IOL_Config::get('sql_limit->search');
+        } elseif( $limit < 0 ) {
+            $limit = -1;
+        } else {
+            $limit = absint($limit);
+        }
 
         if( $cached ) {
             // get it from cache
             if( $cache_instance->is_alive( $cached->created_at ) ) {
 
-                $data = $cache_instance->get_data($cached->id, $page, IOL_Config::get('sql_limit->search'));
+                $cached_data = $cache_instance->get_data( $cached->id, $page, $limit );
 
                 $response_data = array();
-                foreach( $data as $d ) {
+                foreach( $cached_data['data'] as $d ) {
                     $response_data[] = IOL_Helper::savable_format_to_array ( $d->data );
                 }
-                $response = new Kanda_Service_Response();
+                $response = new IOL_Response();
 
-                $response
-                    ->set_code($cached->status_code)
-                    ->set_request($args)
-                    ->set_request_id( $cached->id )
-                    ->set_data($response_data);
+                $response->code = $cached->status_code;
+                $response->request = $args;
+                $response->request_id = $cached->id;
+                $response->data = $response_data;
+                $response->total = $cached_data['total'];
+                $response->per_page = $limit;
+
             }
             // outdated / need to update
             else {
@@ -166,18 +177,19 @@ class IOL_Hotels {
                 if( $response->is_valid() ) {
                     $request_id = $cache_instance->cache( $response, 'update' );
 
-                    $data = $response->get_data();
-                    if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
-                        $limit = IOL_Config::get( 'sql_limit->search' );
+                    if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
                         $offset = ( $page - 1 ) * $limit;
-                        $data = array_slice( $data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                        $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                        $total = count( $response->data[ 'hotels' ][ 'hotel' ] );
                     } else {
                         $data = array();
+                        $total = 0;
                     }
 
-                    $response
-                        ->set_request_id( $request_id )
-                        ->set_data( $data );
+                    $response->request_id = $request_id;
+                    $response->data = $data;
+                    $response->total = $total;
+                    $response->per_page = $limit;
                 }
             }
 
@@ -191,18 +203,19 @@ class IOL_Hotels {
             if( $response->is_valid() ) {
                 $request_id = $cache_instance->cache( $response, 'insert' );
 
-                $data = $response->get_data();
-                if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
-                    $limit = IOL_Config::get( 'sql_limit->search' );
+                if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
                     $offset = ( $page - 1 ) * $limit;
-                    $data = array_slice( $data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                    $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                    $total = count( $response->data[ 'hotels' ][ 'hotel' ] );
                 } else {
                     $data = array();
+                    $total = 0;
                 }
 
-                $response
-                    ->set_request_id( $request_id )
-                    ->set_data( $data );
+                $response->request_id = $request_id;
+                $response->data = $data;
+                $response->total = $total;
+                $response->per_page = $limit;
             }
         }
 
@@ -214,22 +227,22 @@ class IOL_Hotels {
      *
      * @param $request_id
      * @param int|false $page false|-1 to get all results
-     * @return Kanda_Service_Response
+     * @param null|int|-1 $limit
+     * @return IOL_Response|Kanda_Service_Response
      */
-    public function search_by_id( $request_id, $page = 1 ) {
+    public function search_by_id( $request_id, $page = 1, $limit = null ) {
 
         $cache_instance = $this->get_cache_instance();
         $cached = $cache_instance->get( $request_id );
 
         if( $cached ) {
             $args = IOL_Helper::savable_format_to_array( $cached->request );
-            $response = $this->search( $args, $page );
+            $response = $this->search( $args, $page, $limit );
         } else {
-            $response = new Kanda_Service_Response();
+            $response = new IOL_Response();
 
-            $response
-                ->set_code( 404 )
-                ->set_message( __( 'Invalid request', 'kanda' ) );
+            $response->code = 404;
+            $response->message = __( 'Invalid request', 'kanda' );
         }
 
         return $response;

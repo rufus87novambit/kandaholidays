@@ -224,3 +224,43 @@
 .secondary-menu {
     margin-bottom: 20px;
 }
+
+/** Pagination */
+.pagination {
+    font-size: 0;
+}
+
+.pagination a,
+.pagination span {
+    font-size: .875rem;
+    display: inline-block;
+    padding: 5px;
+    margin-right: 2px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: .2rem;
+    color: #fff;
+    width: 33px;
+    height: 33px;
+    text-align: center;
+}
+.pagination a:last-child {
+    margin-right: 0;
+}
+.pagination a.page-numbers {
+    background-color: var(--brand-info);
+    border-color: var(--brand-info);
+}
+.pagination a.page-numbers:hover {
+    background-color: var(--brand-info-border);
+    border-color: var(--brand-info-border);
+}
+.pagination span.page-numbers {
+    background-color: var(--brand-warning);
+    border-color: var(--brand-warning);
+}
+.pagination span.dots {
+    color: inherit;
+    border: none;
+    background-color: transparent;
+}

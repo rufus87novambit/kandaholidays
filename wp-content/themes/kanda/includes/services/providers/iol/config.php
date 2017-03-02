@@ -72,7 +72,7 @@ class IOL_Config {
      * @var array
      */
     private static $sql_limit = array(
-        'search' => 10
+        'search' => 5
     );
 
     /**

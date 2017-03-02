@@ -7,9 +7,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class IOL_Search_Cache extends Kanda_Service_Cache {
 
+    /**
+     * Holds search table name
+     *
+     * @var string
+     */
     protected $table_search = 'iol_search';
 
+    /**
+     * Holds search results table name
+     *
+     * @var string
+     */
     protected $table_search_results = 'iol_search_results';
+
     /**
      * Insert response
      *
@@ -24,8 +35,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         $result_table = $this->get_search_results_table();
 
         $date = current_time( 'mysql' );
-        $request = $response->get_request();
-        $request_id = $this->get_request_id( $request );
+        $request_id = $this->get_request_id( $response->request );
 
         /** Delete old requests */
         $this->_delete_died_requests();
@@ -37,9 +47,9 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 'id'            => $request_id,
                 'created_at'    => $date,
                 'provider'      => IOL_Config::get( 'id' ),
-                'request'       => IOL_Helper::array_to_savable_format( $request ),
-                'status_code'   => $response->get_code(),
-                'message'       => $response->get_message()
+                'request'       => IOL_Helper::array_to_savable_format( $response->request ),
+                'status_code'   => $response->code,
+                'message'       => $response->message
             ),
             array(
                 '%s',
@@ -56,11 +66,11 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         /** insert response data */
         $values = array();
-        $data = $response->get_data();
+        $data = $response->data;
 
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
 
-            $master_data = IOL_Master_Data::get_data( $request[ 'city' ] );
+            $master_data = IOL_Master_Data::get_data( $response->request[ 'city' ] );
 
             foreach ($data['hotels']['hotel'] as $hotel ) {
 
@@ -105,16 +115,15 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         $result_table = $this->get_search_results_table();
 
         $date = current_time( 'mysql' );
-        $request = $response->get_request();
-        $request_id = $this->get_request_id( $request );
+        $request_id = $this->get_request_id( $response->request );
 
         /** insert request */
         $wpdb->update(
             $search_table,
             array(
                 'created_at'    => $date,
-                'status_code'   => $response->get_code(),
-                'message'       => $response->get_message()
+                'status_code'   => $response->code,
+                'message'       => $response->message
             ),
             array(
                 'id' => $request_id,
@@ -134,10 +143,10 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         /** insert response data */
         $values = array();
-        $data = $response->get_data();
+        $data = $response->data;
 
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
-            $master_data = IOL_Master_Data::get_data( $request[ 'city' ] );
+            $master_data = IOL_Master_Data::get_data( $response->request[ 'city' ] );
             foreach ($data['hotels']['hotel'] as $hotel) {
 
                 $code = $hotel['hotelcode'];
@@ -251,11 +260,33 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         $request_id = is_string( $request ) ? $request : $this->get_request_id( $request );
 
         $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}'";
-        if( $page && $page > 0 ) {
+        if( $page && ( $page > 0 ) && ( $per_page > 0 ) ) {
             $offset = ( $page - 1 ) * $per_page;
 
             $query .= " LIMIT {$offset},{$per_page}";
         }
+
+        $total_query = "SELECT COUNT(*) FROM `{$table}` WHERE `request_id` = '{$request_id}'";
+
+        return array(
+            'data'  => $wpdb->get_results( $query ),
+            'total' => $wpdb->get_var( $total_query )
+        );
+    }
+
+    /**
+     * Get all data for request
+     *
+     * @param $request
+     * @return array|null|object
+     */
+    public function get_all_data( $request ) {
+        global $wpdb;
+        $table = $this->get_search_results_table();
+
+        $request_id = is_string( $request ) ? $request : $this->get_request_id( $request );
+
+        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}'";
 
         return $wpdb->get_results( $query );
     }

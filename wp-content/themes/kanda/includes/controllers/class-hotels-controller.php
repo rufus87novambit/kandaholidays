@@ -25,7 +25,7 @@ class Hotels_Controller extends Base_Controller {
     public function get_master_data( $city ) {
         $response = provider_iol()->hotels()->get_master_data( array( 'city' => $city ) );
         if( $response->is_valid() ) {
-            $data = $response->get_data();
+            $data = $response->data;
             $hotels = $data[ 'masterdatadetails' ][ 'hotel' ];
 
             return IOL_Master_Data::save( $city, $hotels );
@@ -60,10 +60,10 @@ class Hotels_Controller extends Base_Controller {
                 if( $criteria ) {
                     $response = provider_iol()->hotels()->search( $criteria );
                     if( $response->is_valid() ) {
-                        $redirect_to = kanda_url_to( 'hotels', array( 'result', $response->get_request_id(), 1 ) );
+                        $redirect_to = kanda_url_to( 'hotels', array( 'result', $response->request_id, 1 ) );
                     } else {
                         $is_valid = false;
-                        $message = $response->get_message();
+                        $message = $response->message;
                     }
 
                 } else {
@@ -95,27 +95,13 @@ class Hotels_Controller extends Base_Controller {
     public function results( $args ) {
         $request_id = $args[ 'k_rid' ];
         $page = absint( $args[ 'k_page' ] );
-        $page = $page ? $page : 1;
+        $this->page = $page ? $page : 1;
 
-        $response = provider_iol()->hotels()->search_by_id( $request_id, $page );
+        $limit = isset( $_GET['per_page'] ) ? $_GET['per_page'] : null;
+        $response = provider_iol()->hotels()->search_by_id( $request_id, $this->page, $limit );
 
         if( $response->is_valid() ) {
-            $this->request = $response->get_request();
-            $this->hotels = $response->get_data();
-
-            $hotel_codes = wp_list_pluck( $this->hotels, 'hotelcode' );
-            $hotel_codes_sql = array();
-            foreach( $hotel_codes as $hotel_code ) {
-                $hotel_codes_sql[] = sprintf( '\'%s\'', $hotel_code );
-            }
-
-            global $wpdb;
-            $query = "SELECT `pm`.`meta_value` AS `code`, `p`.*
-                        FROM `{$wpdb->postmeta}` AS `pm`
-                        LEFT JOIN `{$wpdb->posts}` AS `p` ON `p`.`ID` = `pm`.`post_id`
-                        WHERE `pm`.`meta_key` = 'hotelcode' AND `pm`.`meta_value` IN ( " . implode( ',', $hotel_codes_sql ) . " )";
-
-            $this->hotel_posts = $wpdb->get_results( $query, OBJECT_K );
+            $this->response = $response;
         } else {
             $this->show_404();
         }
@@ -159,7 +145,7 @@ class Hotels_Controller extends Base_Controller {
                     $response = provider_iol()->hotels()->hotel_details( $code, $start_date, $end_date );
                     if( ! $response->is_valid() ) {
                         $is_valid = false;
-                        $message = $response->get_message();
+                        $message = $response->message;
                     }
 
                 }
@@ -173,7 +159,7 @@ class Hotels_Controller extends Base_Controller {
 
                 $template = KANDA_THEME_PATH . 'views/partials/popup-hotel-details.php';
                 if( file_exists( $template ) ) {
-                    $data = $response->get_data();
+                    $data = $response->data;
                     $hotel = $data['details'];
 
                     ob_start();

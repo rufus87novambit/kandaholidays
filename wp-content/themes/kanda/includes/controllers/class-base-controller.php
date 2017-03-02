@@ -152,9 +152,12 @@ class Base_Controller {
      * @param $partial
      * @return string
      */
-    public function partial( $partial ) {
+    public function partial( $partial, $args ) {
         $template = trailingslashit( $this->views_path . 'partials' ) . $partial . '.php';
 
+        foreach( $args as $name => $value ) {
+            ${$name} = $value;
+        }
         ob_start();
         include( $template );
         return ob_get_clean();

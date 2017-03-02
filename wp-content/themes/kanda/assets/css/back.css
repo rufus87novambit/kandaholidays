@@ -13,7 +13,6 @@ body {
     font-size: 14px;
     line-height: 1.5;
     background: #fff;
-    box-shadow: 0 5px 19px var(--brand-primary);
     border-top: 5px solid #fff;
 }
 /*********************** Header ***********************/
@@ -131,9 +130,6 @@ body {
     border:solid 1px var(--border-color);
     border-top: 5px solid #3d4795;
     background: #fff;
-}
-.articles-list li:last-child{
-    border-bottom:0;
 }
 .article-title{
     color:var(--brand-primary);

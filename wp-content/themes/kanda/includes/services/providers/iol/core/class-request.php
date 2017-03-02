@@ -36,7 +36,7 @@ class IOL_Request {
 
         $http = wp_remote_post( $this->access->url, $request_args );
 
-        $response_instance = new Kanda_Service_Response();
+        $response_instance = new IOL_Response();
         $response_instance->load( $http, $args );
 
         return $response_instance;
