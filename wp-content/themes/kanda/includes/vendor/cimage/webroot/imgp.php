@@ -36,7 +36,7 @@ $config = array(
     'jpg_quality'           => 100,
     'png_compression'       => 1,
     'valid_filename'        => '#^[a-z0-9A-Z-/_ \.,:]+$#',
-    'defaultImage'          => dirname( dirname( dirname( dirname(__DIR__) ) ) ) . '/images/back/hotel.png'
+    'defaultImage'          => dirname( dirname( dirname( dirname(__DIR__) ) ) ) . '/images/back/hotel-placeholder.jpg'
 
 );
 

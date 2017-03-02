@@ -22,7 +22,12 @@ legend {
     font-size: 14px;
     margin-bottom: .5rem;
 }
-.custom-select.customSelect,
+select.kanda-select,
+select.kanda-select-late-init {
+    opacity: 0;
+}
+.kanda-select.kandaSelect,
+.kanda-select-late-init.kandaSelect,
 .form-control{
     font-family: 'Open Sans', sans-serif;
     display: block;
@@ -55,9 +60,11 @@ legend {
     box-shadow: 0 0 1px #ccc;
 }
 
-.custom-select.customSelect{
+.kanda-select.kandaSelect,
+.kanda-select-late-init.kandaSelect{
     background:#fff url(../images/back/arrow_down.png) no-repeat right 12px center;
     white-space:nowrap;
+    opacity: 0;
 }
 
 textarea.form-control{

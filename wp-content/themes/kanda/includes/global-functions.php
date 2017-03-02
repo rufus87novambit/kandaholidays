@@ -633,5 +633,5 @@ function kanda_get_cropped_image_src( $image_url, $args = array() ) {
  * @return string
  */
 function kanda_get_hotel_placeholder_image() {
-    return KANDA_THEME_URL . 'images/back/hotel.png';
+    return KANDA_THEME_URL . 'images/back/hotel-placeholder.jpg';
 }

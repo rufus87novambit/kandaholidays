@@ -81,7 +81,7 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Hotels In Request', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="include_on_request">
+                        <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="include_on_request">
                             <option value="1" <?php selected( 1, $include_on_request ); ?>><?php esc_html_e( 'Available & On Request', 'kanda' ); ?></option>
                             <option value="0" <?php selected( 0, $include_on_request ); ?>><?php esc_html_e( 'Only Available', 'kanda' ); ?></option>
                         </select>
@@ -92,7 +92,7 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Nationality', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="nationality">
+                        <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="nationality">
                             <option value="AF" <?php selected( "AF", $nationality ); ?>>Afghanistan</option>
                             <option value="AX" <?php selected( "AX", $nationality ); ?>>Åland Islands</option>
                             <option value="AL" <?php selected( "AL", $nationality ); ?>>Albania</option>
@@ -351,7 +351,7 @@
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Currency', 'kanda' ); ?></label>
                     <?php if( $currencies = kanda_get_theme_option( 'exchange_active_currencies' ) ) { ?>
                         <div class="select-wrap col-lg-7">
-                            <select class="custom-select" name="currency">
+                            <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="currency">
                                 <?php foreach( $currencies as $curr ) { ?>
                                     <option value="<?php echo $curr; ?>" <?php selected( $curr, $currency ); ?>><?php echo $curr; ?></option>
                                 <?php } ?>
@@ -398,7 +398,7 @@
             <div class="form-group row clearfix">
                 <label class="form-label col-lg-5"><?php esc_html_e( 'How Many Rooms Do You Require?', 'kanda' ); ?></label>
                 <div class="select-wrap col-lg-7">
-                    <select class="custom-select" name="rooms_count" id="rooms_count">
+                    <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="rooms_count" id="rooms_count">
                         <option value="1" <?php selected( 1, $rooms_count ); ?>>1</option>
                         <option value="2" <?php selected( 2, $rooms_count ); ?>>2</option>
                         <option value="3" <?php selected( 3, $rooms_count ); ?>>3</option>
@@ -418,7 +418,7 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Adults', 'kanda' ); ?>:</label>
                     <div class="select-wrap col-lg-7">
-                        <select class="custom-select" name="room_occupants[1][adults]">
+                        <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="room_occupants[1][adults]">
                             <option value="1"><?php esc_html_e( '1 Adult - Single', 'kanda' ); ?></option>
                             <option value="2"><?php esc_html_e( '2 Adults - Double', 'kanda' ); ?></option>
                             <option value="3"><?php esc_html_e( '3 Adults - Triple', 'kanda' ); ?></option>
@@ -435,7 +435,7 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Children', 'kanda' ); ?>:</label>
                     <div class="select-wrap col-lg-7">
-                        <select class="custom-select children-presence" name="room_occupants[1][child]">
+                        <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?> children-presence" name="room_occupants[1][child]">
                             <option value="0"><?php esc_html_e( 'Without children', 'kanda' ); ?></option>
                             <option value="1"><?php esc_html_e( '1 Child', 'kanda' ); ?></option>
                             <option value="2"><?php esc_html_e( '2 Children', 'kanda' ); ?></option>

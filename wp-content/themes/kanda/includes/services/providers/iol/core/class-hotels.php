@@ -127,31 +127,46 @@ class IOL_Hotels {
     }
 
     /**
+     * Get default args for search request
+     *
+     * @return array
+     */
+    private function get_search_request_detault_args() {
+        return array(
+            'page'      => 1,
+            'limit'     => IOL_Config::get('sql_limit->search'),
+            'order_by'  => 'name',
+            'order'     => 'asc'
+        );
+    }
+
+    /**
      * Search hotels
      *
-     * @param $args
-     * @param int $page
-     * @param null|int|-1 $limit
+     * @param $request_args
+     * @param array $args
      * @return IOL_Response|Kanda_Service_Response
      */
-    public function search( $args, $page = 1, $limit = null ) {
+    public function search( $request_args, $args = array() ) {
+
+        $args = wp_parse_args( $args, $this->get_search_request_detault_args() );
 
         $cache_instance = $this->get_cache_instance();
-        $cached = $cache_instance->get( $args );
+        $cached = $cache_instance->get( $request_args );
 
-        if( is_null( $limit ) ) {
-            $limit = IOL_Config::get('sql_limit->search');
-        } elseif( $limit < 0 ) {
-            $limit = -1;
+        if( is_null( $args['limit'] ) ) {
+            $args['limit'] = IOL_Config::get('sql_limit->search');
+        } elseif( $args['limit'] < 0 ) {
+            $args['limit'] = -1;
         } else {
-            $limit = absint($limit);
+            $args['limit'] = absint($args['limit']);
         }
 
         if( $cached ) {
             // get it from cache
             if( $cache_instance->is_alive( $cached->created_at ) ) {
 
-                $cached_data = $cache_instance->get_data( $cached->id, $page, $limit );
+                $cached_data = $cache_instance->get_data( $cached->id, $args );
 
                 $response_data = array();
                 foreach( $cached_data['data'] as $d ) {
@@ -160,26 +175,26 @@ class IOL_Hotels {
                 $response = new IOL_Response();
 
                 $response->code = $cached->status_code;
-                $response->request = $args;
+                $response->request = $request_args;
                 $response->request_id = $cached->id;
                 $response->data = $response_data;
                 $response->total = $cached_data['total'];
-                $response->per_page = $limit;
+                $response->per_page = $args['limit'];
 
             }
             // outdated / need to update
             else {
-                $args = IOL_Helper::savable_format_to_array( $cached->request );
-                $xml = $this->generate_search_xml( $args );
+                $request_args = IOL_Helper::savable_format_to_array( $cached->request );
+                $xml = $this->generate_search_xml( $request_args );
 
-                $response = $this->request_instance->process( $xml, $args );
+                $response = $this->request_instance->process( $xml, $request_args );
 
                 if( $response->is_valid() ) {
                     $request_id = $cache_instance->cache( $response, 'update' );
 
                     if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
-                        $offset = ( $page - 1 ) * $limit;
-                        $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                        $offset = ( $args['page'] - 1 ) * $args['limit'];
+                        $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $args['limit'] );
                         $total = count( $response->data[ 'hotels' ][ 'hotel' ] );
                     } else {
                         $data = array();
@@ -189,23 +204,23 @@ class IOL_Hotels {
                     $response->request_id = $request_id;
                     $response->data = $data;
                     $response->total = $total;
-                    $response->per_page = $limit;
+                    $response->per_page = $args['limit'];
                 }
             }
 
         }
         // new request statement
         else {
-            $xml = $this->generate_search_xml( $args );
+            $xml = $this->generate_search_xml( $request_args );
 
-            $response = $this->request_instance->process( $xml, $args );
+            $response = $this->request_instance->process( $xml, $request_args );
 
             if( $response->is_valid() ) {
                 $request_id = $cache_instance->cache( $response, 'insert' );
 
                 if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
-                    $offset = ( $page - 1 ) * $limit;
-                    $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $limit );
+                    $offset = ( $args['page'] - 1 ) * $args['limit'];
+                    $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $args['limit'] );
                     $total = count( $response->data[ 'hotels' ][ 'hotel' ] );
                 } else {
                     $data = array();
@@ -215,7 +230,7 @@ class IOL_Hotels {
                 $response->request_id = $request_id;
                 $response->data = $data;
                 $response->total = $total;
-                $response->per_page = $limit;
+                $response->per_page = $args['limit'];
             }
         }
 
@@ -226,18 +241,19 @@ class IOL_Hotels {
      * Search hotel by request id
      *
      * @param $request_id
-     * @param int|false $page false|-1 to get all results
-     * @param null|int|-1 $limit
+     * @param array $args
      * @return IOL_Response|Kanda_Service_Response
      */
-    public function search_by_id( $request_id, $page = 1, $limit = null ) {
+    public function search_by_id( $request_id, $args = array() ) {
+
+        $args = wp_parse_args( $args, $this->get_search_request_detault_args() );
 
         $cache_instance = $this->get_cache_instance();
         $cached = $cache_instance->get( $request_id );
 
         if( $cached ) {
-            $args = IOL_Helper::savable_format_to_array( $cached->request );
-            $response = $this->search( $args, $page, $limit );
+            $request_args = IOL_Helper::savable_format_to_array( $cached->request );
+            $response = $this->search( $request_args, $args );
         } else {
             $response = new IOL_Response();
 

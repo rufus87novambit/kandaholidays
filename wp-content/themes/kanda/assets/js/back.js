@@ -1,5 +1,20 @@
 (function($) {
 
+    var destroyCustomSelectsOn = function( node ){
+        node
+            .find( 'span.customSelect').remove().end()
+            .find( 'select.hasCustomSelect' ).removeAttr( 'style' )
+    }
+
+    var initCustomSelectOn = function( node ) {
+        node.customSelect({
+            customClass : 'kandaSelect'
+        });
+        setTimeout( function(){
+            $('.kandaSelect').css({ opacity : 1 });
+        }, 10 );
+    }
+
     //menu toggle
     $('#menuBtn').on( 'click', function(){
         $('body').toggleClass('menu-opened');
@@ -23,14 +38,14 @@
         emptyValue : '',
         deselectable: true,
         hoverState: false,
-        showValues: true,
+        showValues: true
     });
 
     /**
      * Custom Select
      */
-    if($('.custom-select').length > 0) {
-        $(".custom-select").customSelect();
+    if($('.kanda-select').length > 0) {
+        initCustomSelectOn( $('.kanda-select') );
     }
 
     //if( $('.flash-message').length > 0 ) {
@@ -140,16 +155,16 @@
                         .data( 'index', block_index )
                         .removeClass( 'occupants-cloneable' )
                         .find( '.children-age-box').addClass('hidden')
-                            .find('.children-ages').empty().end().end()
+                        .find('.children-ages').empty().end().end()
                         .find('legend span').text( block_index ).end()
                         .find('input, select').each( function(){
                             this.name = this.name.replace('[1]', '[' + block_index + ']');
-                        }).end()
-                        .find( 'span.customSelect').remove().end()
-                        .find( 'select.hasCustomSelect' ).removeAttr( 'style' )
+                        });
+
+                    destroyCustomSelectsOn( clone );
 
                     clone.insertAfter( $('.occupants:last') );
-                    $('.occupants:last .custom-select').customSelect();
+                    initCustomSelectOn( $('.occupants:last .kanda-select') );
                 }
             } else if( count < existing_count ) {
                 $('.occupants').slice( count - existing_count).remove();
@@ -281,7 +296,6 @@
             }
         });
 
-
     }
 
     if( $( '#cropper-avatar').length > 0 ) {
@@ -306,7 +320,7 @@
                     $( '#coordinates').val( JSON.stringify( cropper.getData( true ) ) );
                 }
             } );
-            }
+        }
 
         if( $( '#cropper.has-avatar').length ) {
             init_cropper( 'cropper-avatar', 'preview-avatar' );
@@ -355,49 +369,49 @@
     if( $('#form_edit_profile').length > 0 ) {
         var kanda_back_form_edit_profile = $('#form_edit_profile'),
             kanda_back_form_edit_profile_validation_args = {
-            rules : {
-                user_email : {
-                    required : true,
-                    email : true
+                rules : {
+                    user_email : {
+                        required : true,
+                        email : true
+                    },
+                    first_name : {
+                        required : true
+                    },
+                    last_name : {
+                        required : true
+                    },
+                    mobile : {
+                        phone_number : true
+                    },
+                    company_phone : {
+                        phone_number : true
+                    },
+                    company_website: {
+                        url : true
+                    }
                 },
-                first_name : {
-                    required : true
-                },
-                last_name : {
-                    required : true
-                },
-                mobile : {
-                    phone_number : true
-                },
-                company_phone : {
-                    phone_number : true
-                },
-                company_website: {
-                    url : true
+                messages : {
+                    user_email : {
+                        required : edit_profile.validation.user_email.required,
+                        email : edit_profile.validation.user_email.email
+                    },
+                    first_name : {
+                        required : edit_profile.validation.first_name.required,
+                    },
+                    last_name : {
+                        required : edit_profile.validation.last_name.required,
+                    },
+                    mobile : {
+                        phone_number : edit_profile.validation.mobile.phone_number,
+                    },
+                    company_phone : {
+                        phone_number : edit_profile.validation.company_phone.phone_number,
+                    },
+                    company_website: {
+                        url : edit_profile.validation.company_website.url,
+                    }
                 }
-            },
-            messages : {
-                user_email : {
-                    required : edit_profile.validation.user_email.required,
-                    email : edit_profile.validation.user_email.email
-                },
-                first_name : {
-                    required : edit_profile.validation.first_name.required,
-                },
-                last_name : {
-                    required : edit_profile.validation.last_name.required,
-                },
-                mobile : {
-                    phone_number : edit_profile.validation.mobile.phone_number,
-                },
-                company_phone : {
-                    phone_number : edit_profile.validation.company_phone.phone_number,
-                },
-                company_website: {
-                    url : edit_profile.validation.company_website.url,
-                }
-            }
-        };
+            };
 
         kanda_back_form_edit_profile_validation_args = Object.assign(
             kanda_back_form_validation_default_args,
@@ -558,7 +572,13 @@
     $('.open-popup').magnificPopup({
         type:'inline',
         midClick: true,
-        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />'
+        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+        callbacks: {
+            open: function() {
+                destroyCustomSelectsOn( $(this.content) );
+                initCustomSelectOn( $(this.content).find( '.kanda-select-late-init') );
+            }
+        }
     });
     /********************************************** Popups **********************************************/
 

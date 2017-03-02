@@ -8,11 +8,13 @@
     --gray:#757575;
     --gray2:#ccc;
 
+    --helper-primary: #5bc0de;
+    --helper-secondary: #ff6500;
+
     --brand-primary: #3d4795;
     --brand-success: #5ABD7E;
     --brand-info: #5bc0de;
     --brand-warning: #D0C048;
-   /*// --brand-danger: #fd5477;*/
     --brand-danger: #D8000C;
 
     --brand-primary-border: #2856b6;

@@ -46,6 +46,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
             array(
                 'id'            => $request_id,
                 'created_at'    => $date,
+                'user_id'       => get_current_user_id(),
                 'provider'      => IOL_Config::get( 'id' ),
                 'request'       => IOL_Helper::array_to_savable_format( $response->request ),
                 'status_code'   => $response->code,
@@ -54,6 +55,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
             array(
                 '%s',
                 '%s',
+                '%d',
                 '%s',
                 '%s',
                 '%d',
@@ -80,17 +82,18 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
 
                 $values[] = sprintf(
-                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\')',
+                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\', \'%6$s\')',
                     $date,
                     $request_id,
                     $code,
+                    $hotel['hotelname'],
                     $hotel['starrating'],
                     IOL_Helper::array_to_savable_format( $hotel )
                 );
             }
             if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `rating`, `data` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `name`, `rating`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }
@@ -126,7 +129,8 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 'message'       => $response->message
             ),
             array(
-                'id' => $request_id,
+                'id'        => $request_id,
+                'user_id'   => get_current_user_id(),
             ),
             array(
                 '%s',
@@ -134,7 +138,8 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 '%s',
             ),
             array(
-                '%s'
+                '%s',
+                '%d'
             )
         );
 
@@ -155,10 +160,11 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
 
                 $values[] = sprintf(
-                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\')',
+                    '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\', \'%6$s\')',
                     $date,
                     $request_id,
                     $code,
+                    $hotel['hotelname'],
                     $hotel['starrating'],
                     IOL_Helper::array_to_savable_format( $hotel )
                 );
@@ -166,7 +172,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
             }
             if ( !empty( $values ) ) {
                 $values = implode(',', $values);
-                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `rating`, `data` ) VALUES {$values}";
+                $query = "INSERT INTO `{$result_table}` ( `created_at`, `request_id`, `code`, `name`, `rating`, `data` ) VALUES {$values}";
 
                 $wpdb->query($query);
             }
@@ -184,8 +190,9 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         $search_table = $this->get_search_table();
         $deadtime = date( 'Y-m-d H:i:s', ( strtotime( current_time( 'mysql' ) ) - IOL_Config::get( 'cache_timeout->search' ) ) );
+        $user_id = get_current_user_id();
 
-        $query = "DELETE FROM {$search_table} WHERE `created_at` < '{$deadtime}'";
+        $query = "DELETE FROM {$search_table} WHERE `created_at` < '{$deadtime}' AND `user_id` = {$user_id}";
         $wpdb->query( $query );
     }
 
@@ -240,8 +247,9 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         global $wpdb;
         $table = $this->get_search_table();
         $id = is_string( $request ) ? $request : $this->get_request_id( $request );
+        $user_id = get_current_user_id();
 
-        $query = "SELECT * FROM `{$table}` WHERE `id` = '{$id}'";
+        $query = "SELECT * FROM `{$table}` WHERE `id` = '{$id}' AND `user_id` = {$user_id}";
         return $wpdb->get_row( $query );
     }
 
@@ -249,24 +257,25 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
      * Get data by request
      *
      * @param $request
-     * @param int $page
-     * @param int $per_page
-     * @return array|null|object
+     * @param array $args
+     * @return array
      */
-    public function get_data( $request, $page, $per_page ) {
+    public function get_data( $request, $args = array() ) {
         global $wpdb;
         $table = $this->get_search_results_table();
 
         $request_id = is_string( $request ) ? $request : $this->get_request_id( $request );
+        $order_by = in_array( $args['order_by'], array( 'name', 'rating' ) ) ? $args['order_by'] : 'name';
+        $order = in_array( strtolower( $args['order'] ), array( 'asc', 'desc' ) ) ? strtoupper( $args['order'] ) : 'ASC';
 
-        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}'";
-        if( $page && ( $page > 0 ) && ( $per_page > 0 ) ) {
-            $offset = ( $page - 1 ) * $per_page;
+        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}' ORDER BY `{$order_by}` {$order}";
+        if( $args['page'] && ( $args['page'] > 0 ) && ( $args['limit'] > 0 ) ) {
+            $offset = ( $args['page'] - 1 ) * $args['limit'];
 
-            $query .= " LIMIT {$offset},{$per_page}";
+            $query .= " LIMIT {$offset},{$args['limit']}";
         }
 
-        $total_query = "SELECT COUNT(*) FROM `{$table}` WHERE `request_id` = '{$request_id}'";
+        $total_query = "SELECT COUNT(*) FROM `{$table}` WHERE `request_id` = '{$request_id}' ORDER BY `{$order_by}` {$order}";
 
         return array(
             'data'  => $wpdb->get_results( $query ),

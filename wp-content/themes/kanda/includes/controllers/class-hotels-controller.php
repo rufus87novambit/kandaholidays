@@ -94,11 +94,22 @@ class Hotels_Controller extends Base_Controller {
      */
     public function results( $args ) {
         $request_id = $args[ 'k_rid' ];
+
         $page = absint( $args[ 'k_page' ] );
         $this->page = $page ? $page : 1;
 
         $limit = isset( $_GET['per_page'] ) ? $_GET['per_page'] : null;
-        $response = provider_iol()->hotels()->search_by_id( $request_id, $this->page, $limit );
+        $order_by = $this->order_by = isset( $_GET['order_by'] ) ? $_GET['order_by'] : 'name';
+        $order = $this->order = isset( $_GET['order'] ) ? $_GET['order'] : 'asc';
+
+        $args = array(
+            'page'      => $page,
+            'limit'     => $limit,
+            'order_by'  => $order_by,
+            'order'     => $order
+        );
+
+        $response = provider_iol()->hotels()->search_by_id( $request_id, $args );
 
         if( $response->is_valid() ) {
             $this->response = $response;
