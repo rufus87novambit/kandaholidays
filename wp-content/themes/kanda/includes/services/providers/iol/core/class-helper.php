@@ -143,4 +143,24 @@ class IOL_Helper {
         return maybe_unserialize( $data );
     }
 
+    /**
+     * Get cities
+     * @return null
+     */
+    public static function get_cities() {
+        return IOL_Config::get( 'cities' );
+    }
+
+    /**
+     * Get city name from city code
+     *
+     * @param $code
+     * @return string|null
+     */
+    public static function get_city_name_from_code( $code ) {
+        $cities = self::get_cities();
+
+        return isset( $cities[ $code ] ) ? $cities[ $code ] : null;
+    }
+
 }

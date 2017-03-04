@@ -38,9 +38,9 @@ class Kanda_Logger {
     private function get_and_set_or_create_log() {
         $date = date( 'Y-m-d', current_time( 'timestamp', true ) );
         $folder = trailingslashit( KANDA_THEME_PATH . 'log' );
-        $file = $folder . 'log.log';
 
         $path = $folder . $date;
+        $file = trailingslashit( $path ) . 'log.log';
 
         if( ! file_exists( $file ) && wp_mkdir_p( $path ) && fopen( $file, 'w+' ) ) {
             $this->file = $file;

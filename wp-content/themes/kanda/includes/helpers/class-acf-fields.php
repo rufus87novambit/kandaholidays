@@ -38,6 +38,14 @@ class Kanda_Fields {
 
         if( is_admin() ) {
             add_filter( 'acf/update_value/name=send_activation_email', array( $this, 'send_activation_email' ), 10, 3 );
+            add_filter('acf/prepare_field/name=hotelcode', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=hotelcity', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=hotelstarrating', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=hotelphone', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=hoteladdress', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=hotelweb', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=checkintime', array( $this, 'make_readonly' ) );
+            add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
         }
 
     }
@@ -86,6 +94,12 @@ class Kanda_Fields {
         }
 
         return $value;
+    }
+
+    public function make_readonly( $field ) {
+        $field['readonly'] = true;
+
+        return $field;
     }
 
 }

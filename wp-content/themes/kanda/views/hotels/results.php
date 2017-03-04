@@ -1,4 +1,4 @@
-<form class="form-block" method="get">
+<form class="form-block" method="get" action="<?php echo kanda_url_to( 'hotels', array( 'result', $this->response->request_id, 1 ) ); ?>">
     <fieldset class="clearfix">
         <div class="row">
             <div class="col-lg-4 col-sm-3 col-xs-12">

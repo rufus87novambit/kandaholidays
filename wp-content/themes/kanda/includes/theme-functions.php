@@ -133,7 +133,7 @@ function kanda_register_post_types() {
         'has_archive'        => true,
         'hierarchical'       => false,
         'menu_position'      => null,
-        'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+        'supports'           => array( 'title', 'author' )
     );
 
     register_post_type( 'hotel', $args );

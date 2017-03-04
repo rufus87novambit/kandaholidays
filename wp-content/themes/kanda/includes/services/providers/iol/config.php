@@ -76,6 +76,19 @@ class IOL_Config {
     );
 
     /**
+     * Cities code/name association
+     * @var array
+     */
+    private static $cities = array(
+        'AUH'   => 'Abu Dhabi',
+        'AJMA'  => 'Ajman',
+        'ALAZ'  => 'Al Ain',
+        'DXB'   => 'Dubai',
+        'FUJA'  => 'Fujairah',
+        'RASK ' => 'Ras al Khaimah'
+    );
+
+    /**
      * Request args
      * @var array
      */

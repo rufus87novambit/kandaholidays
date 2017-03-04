@@ -17,31 +17,11 @@ class Hotels_Controller extends Base_Controller {
     }
 
     /**
-     * Get master data
-     *
-     * @param $city
-     * @return bool
-     */
-    public function get_master_data( $city ) {
-        $response = provider_iol()->hotels()->get_master_data( array( 'city' => $city ) );
-        if( $response->is_valid() ) {
-            $data = $response->data;
-            $hotels = $data[ 'masterdatadetails' ][ 'hotel' ];
-
-            return IOL_Master_Data::save( $city, $hotels );
-        } else {
-            kanda_logger()->log( sprintf( 'Cannot get master data for %s', $city ) );
-            return false;
-        }
-    }
-
-    /**
      * Hotels main page
      * @param $args
      */
     public function index( $args ) {
         $this->view = 'index';
-
     }
 
     /**
@@ -195,7 +175,7 @@ class Hotels_Controller extends Base_Controller {
      * @return bool|string
      */
     public function get_hotel_google_map_url( $geolocation ) {
-        if( isset( $geolocation['latitude'] ) && isset( $geolocation['longitude'] ) ) {
+        if( isset( $geolocation['latitude'] ) && (bool)$geolocation['latitude'] && isset( $geolocation['longitude'] ) && (bool)$geolocation['longitude'] ) {
             return sprintf( 'https://maps.google.com/?q=%1$s+%2$s', $geolocation['latitude'], $geolocation['longitude'] );
         }
         return false;

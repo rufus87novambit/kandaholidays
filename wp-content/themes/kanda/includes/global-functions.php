@@ -176,7 +176,7 @@ function kanda_get_exchange_rates ( $force = false ) {
         } else {
 
             $message = "Hi developer.\n";
-            $message .= sprintf("There was an error geting rates from %s.\n with following details.", $endpoint);
+            $message .= sprintf("There was an error getting rates from %s.\n with following details.", $endpoint);
             $message .= sprintf("Error: %s", $error);
 
             kanda_mailer()->send_developer_email( 'CBA problem', $message );
@@ -278,7 +278,7 @@ function kanda_show_notification( $notification = array() ) {
             default:
                 $icon = '';
         }
-        printf('<div class="flash-message alert alert-%1$s" role="alert">%2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
+        printf('<div class="flash-message alert alert-%1$s" role="alert"><button class="alert-close-btn icon-cross2"></button> %2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
     }
 }
 

@@ -4,48 +4,15 @@
     <fieldset class="fieldset sep-btm">
         <legend><?php esc_html_e( 'SELECT DESTINATION', 'kanda' ); ?></legend>
         <ul class="block-sm-3 clearfix">
+            <?php foreach( IOL_Config::get( 'cities' ) as $city_code => $city_name ) { ?>
             <li>
                 <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="AUH" <?php checked( 'AUH', $city ); ?>>
+                    <input type='radio' class="ctrl-inp" name="city" value="<?php echo $city_code; ?>" <?php checked( $city_code, $city ); ?>>
                     <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Abu Dhabi', 'kanda' ); ?></span>
+                    <span class="ctrl-label"><?php echo $city_name; ?></span>
                 </label>
             </li>
-            <li>
-                <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="AJMA" <?php checked( 'AJMA', $city ); ?>>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Ajman', 'kanda' ); ?></span>
-                </label>
-            </li>
-            <li>
-                <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="ALAZ" <?php checked( 'ALAZ', $city ); ?>>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Al Ain', 'kanda' ); ?></span>
-                </label>
-            </li>
-            <li>
-                <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="DXB" <?php checked( 'DXB', $city ); ?>>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Dubai', 'kanda' ); ?></span>
-                </label>
-            </li>
-            <li>
-                <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="FUJA" <?php checked( 'FUJA', $city ); ?>>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Fujairah', 'kanda' ); ?></span>
-                </label>
-            </li>
-            <li>
-                <label class="ctrl-field -rbtn">
-                    <input type='radio' class="ctrl-inp" name="city" value="RASK" <?php checked( 'RASK', $city ); ?>>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label"><?php esc_html_e( 'Ras Al Khaimah', 'kanda' ); ?></span>
-                </label>
-            </li>
+            <?php } ?>
         </ul>
     </fieldset>
 

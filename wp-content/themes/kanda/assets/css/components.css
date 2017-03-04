@@ -127,8 +127,9 @@
 }
 .alert-close-btn{
     position:absolute;
-    top:5px;
-    right:0;
+    top:50%;
+    margin-top: -6px;
+    right:5px;
     display:inline-block;
     font-size:10px;
     color:#fff;

@@ -48,14 +48,14 @@
         initCustomSelectOn( $('.kanda-select') );
     }
 
-    //if( $('.flash-message').length > 0 ) {
-    //    var flash_message_timeout = setTimeout( function(){
-    //        $('.flash-message').addClass( 'shown' );
-    //        setTimeout( function(){
-    //            $('.flash-message').remove()
-    //        }, 500 );
-    //    } , 5000);
-    //}
+    if( $('.flash-message').length > 0 ) {
+        $( '.flash-message .alert-close-btn').on( 'click', function(){
+            $('.flash-message').addClass( 'shown' );
+            setTimeout( function(){
+                $('.flash-message').remove()
+            }, 500 );
+        } );
+    }
 
     /**
      * Date picker
