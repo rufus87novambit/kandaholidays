@@ -97,6 +97,35 @@ function kanda_get_hotel_details(){
     }
 
     $controller = new Hotels_Controller();
-    echo $controller->get_hotel_details();
-    die;
+    $controller->get_hotel_details();
+}
+
+/**
+ * Get specific hotels list
+ */
+add_action( 'wp_ajax_city_hotels', 'kanda_get_city_hotels_list' );
+function kanda_get_city_hotels_list( $city = false ) {
+    $is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
+
+    $city = $is_ajax ? $_REQUEST[ 'city' ] : $city;
+    $is_valid = true;
+    if( $city && array_key_exists( $city, IOL_Config::get( 'cities' ) ) ) {
+
+        global $wpdb;
+        $query = "SELECT `p`.`post_title` FROM `wp_posts` AS `p`
+                    LEFT JOIN `wp_postmeta` AS `pm` ON `pm`.`post_id` = `p`.`ID` AND `meta_key` = 'hotelcity'
+                    WHERE `p`.`post_type` = 'hotel' AND `pm`.`meta_value` = '{$city}'";
+
+        $results = $wpdb->get_col( $query );
+    } else {
+        $is_valid = false;
+        $message = __( 'Invalid city', 'kanda' );
+    }
+
+    if( $is_ajax ) {
+        $is_valid ? wp_send_json_success( $results ) : wp_send_json_error( $message );
+    } else {
+        return $is_valid ? array( 'is_valid' => $is_valid, 'results' => $results ) : array( 'is_valid' => $is_valid, 'message' => $message );
+    }
+
 }

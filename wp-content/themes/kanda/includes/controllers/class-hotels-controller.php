@@ -16,13 +16,49 @@ class Hotels_Controller extends Base_Controller {
         parent::__construct( $post_id );
     }
 
+    /************************************************** Index **************************************************/
+    /**
+     * Specific hooks for index
+     */
+    private function index_add_hooks() {
+        add_action( 'wp_enqueue_scripts', array( $this, 'index_enqueue_scripts' ), 11 );
+    }
+
+    /**
+     * Add specific data for index
+     */
+    public function index_enqueue_scripts() {
+        global $wp_scripts;
+
+        $back_script = $wp_scripts->query( 'back', 'registered' );
+
+        if( ! $back_script ) {
+            return false;
+        }
+        if( !in_array( 'jquery-ui-datepicker', $back_script->deps ) ){
+            $back_script->deps[] = 'jquery-ui-datepicker';
+        }
+        if( !in_array( 'jquery-ui-autocomplete', $back_script->deps ) ){
+            $back_script->deps[] = 'jquery-ui-autocomplete';
+        }
+
+        wp_enqueue_script( 'jquery-ui-datepicker' );
+        wp_enqueue_script( 'jquery-ui-autocomplete' );
+        wp_localize_script( 'back', 'hotel', array(
+            'validation' => Kanda_Config::get( 'validation->back->form_hotel_search' )
+        ));
+    }
     /**
      * Hotels main page
      * @param $args
      */
     public function index( $args ) {
+        $this->index_add_hooks();
+
         $this->view = 'index';
     }
+
+    /************************************************** Search **************************************************/
 
     /**
      * Handle search request
@@ -68,15 +104,19 @@ class Hotels_Controller extends Base_Controller {
         $this->show_404();
     }
 
+    /************************************************** Results **************************************************/
     /**
      * Hotels search request results
      * @param $args
      */
     public function results( $args ) {
+
+        $this->index_add_hooks();
+
         $request_id = $args[ 'k_rid' ];
 
         $page = absint( $args[ 'k_page' ] );
-        $this->page = $page ? $page : 1;
+        $this->page = $page = $page ? $page : 1;
 
         $limit = isset( $_GET['per_page'] ) ? $_GET['per_page'] : null;
         $order_by = $this->order_by = isset( $_GET['order_by'] ) ? $_GET['order_by'] : 'name';
@@ -101,6 +141,64 @@ class Hotels_Controller extends Base_Controller {
         $this->view = 'results';
     }
 
+    /************************************************** Hotel details **************************************************/
+
+    /**
+     * Single hotel
+     *
+     * @param $args
+     */
+    public function view_hotel( $args ) {
+
+        $is_valid = true;
+        $start_date = isset( $_GET['start_date'] ) ? $_GET['start_date'] : '';
+
+        if( ! $start_date ) {
+            $is_valid = false;
+        } else {
+            $d = DateTime::createFromFormat( 'Ymd', $start_date );
+            if( ! $d || ( $d->format('Ymd') !== $start_date ) ) {
+                $is_valid = false;
+            }
+        }
+
+        $end_date = isset( $_GET['end_date'] ) ? $_GET['end_date'] : '';
+        if( ! $end_date ) {
+            $is_valid = false;
+        } else {
+            $d = DateTime::createFromFormat( 'Ymd', $end_date );
+            if( ! $d || ( $d->format('Ymd') !== $end_date ) ) {
+                $is_valid = false;
+            }
+        }
+
+        if( $is_valid ) {
+            global $wpdb;
+
+            $query = "SELECT `post_id` FROM `{$wpdb->postmeta}` WHERE `meta_key` = 'hotelcode' AND `meta_value` = '{$args['hcode']}'";
+
+            $post_id = $wpdb->get_var( $query );
+            if( $post_id ) {
+
+                $this->hotel_code = $args['hcode'];
+                $this->security = wp_create_nonce( 'kanda-get-hotel-details' );
+                $this->start_date = date( 'd F, Y', strtotime( $start_date ) );
+                $this->end_date = date( 'd F, Y', strtotime( $end_date ) );
+
+                $hotel_post = get_post( (int)$post_id );
+                $this->title = get_the_title( $hotel_post );
+            } else {
+                $is_valid = false;
+            }
+        }
+
+        if( ! $is_valid ) {
+            $this->show_404();
+        }
+
+        $this->view = 'view';
+    }
+
     /**
      * Get hotel details
      *
@@ -113,7 +211,7 @@ class Hotels_Controller extends Base_Controller {
             $is_valid = true;
             if( wp_verify_nonce( $security, 'kanda-get-hotel-details' ) ) {
 
-                $code = isset( $_REQUEST['code'] ) ? $_REQUEST['code'] : false;
+                $code = isset( $_REQUEST['hotel'] ) ? $_REQUEST['hotel'] : false;
                 if( ! $code ) {
                     $is_valid = false;
                     $message = __( 'Hotel code is required', 'kanda' );
@@ -137,6 +235,22 @@ class Hotels_Controller extends Base_Controller {
                     if( ! $response->is_valid() ) {
                         $is_valid = false;
                         $message = $response->message;
+                    } else {
+
+                        $template = KANDA_THEME_PATH . 'views/partials/hotel-details.php';
+                        if( file_exists( $template ) ) {
+                            $data = $response->data;
+                            $hotel = $data['details'];
+
+                            ob_start();
+                            include( $template );
+                            $content = ob_get_clean();
+
+                        } else {
+                            $is_valid = false;
+                            $message = __( 'Internal server error', 'kanda' );
+                        }
+
                     }
 
                 }
@@ -147,26 +261,16 @@ class Hotels_Controller extends Base_Controller {
             }
 
             if( $is_valid ) {
-
-                $template = KANDA_THEME_PATH . 'views/partials/popup-hotel-details.php';
-                if( file_exists( $template ) ) {
-                    $data = $response->data;
-                    $hotel = $data['details'];
-
-                    ob_start();
-                    include( $template );
-                    return ob_get_clean();
-                } else {
-                    return __( 'Internal server error', 'kanda' );
-                }
+                wp_send_json_success( array( 'content' => $content ) );
             } else {
-                return $message;
+                wp_send_json_error( array( 'message' => $message ) );
             }
+
         }
         $this->show_404();
     }
 
-    /************************ Helper methods ************************/
+    /************************************************** Helper methods **************************************************/
 
     /**
      * Get hotel Google Map url
@@ -187,16 +291,13 @@ class Hotels_Controller extends Base_Controller {
      * @param $args
      * @return string
      */
-    public function get_hotel_details_request_url( $args ) {
+    public function get_single_hotel_url( $args ) {
         return add_query_arg(
             array(
-                'action'        => 'hotel_details',
-                'security'      => wp_create_nonce( 'kanda-get-hotel-details' ),
-                'code'          => $args['hotelcode'],
                 'start_date'    => $args['start_date'],
                 'end_date'      => $args['end_date']
             ),
-            admin_url( 'admin-ajax.php' )
+            kanda_url_to( 'hotels', array( 'view', $args['hotelcode'] ) )
         );
     }
 

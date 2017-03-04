@@ -549,6 +549,14 @@ function kanda_upload_file( $key, $parent_post_id = 0 ) {
     return $is_valid ? array( 'is_valid' => $is_valid, 'attachment_id' => $attach_id ) : array( 'is_valid' => $is_valid, 'message' => $message );
 }
 
+/**
+ * Generate price for hotel
+ *
+ * @param $price
+ * @param $hotel_code
+ * @param $currency
+ * @return string
+ */
 function kanda_generate_price( $price, $hotel_code, $currency ) {
     return sprintf( '%1$s %2$s', $price, $currency );
 }
@@ -634,4 +642,20 @@ function kanda_get_cropped_image_src( $image_url, $args = array() ) {
  */
 function kanda_get_hotel_placeholder_image() {
     return KANDA_THEME_URL . 'images/back/hotel-placeholder.jpg';
+}
+
+/**
+ * Get loading popup HTML
+ * @return string
+ */
+function kanda_get_loading_popup() {
+    return '<div id="loading-popup" class="loading-popup mfp-hide"></div>';
+}
+
+/**
+ * Get error popup HTML
+ * @return string
+ */
+function kanda_get_error_popup() {
+    return '<div id="error-popup" class="white-popup text-center mfp-hide"></div>';
 }

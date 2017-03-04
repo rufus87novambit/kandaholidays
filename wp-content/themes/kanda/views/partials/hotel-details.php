@@ -1,7 +1,5 @@
 <div class="row">
     <div class="col-sm-6">
-        <h3><?php echo $hotel['hotelname']; ?></h3>
-        
         <div>
             <i class="icon icon-phone"></i>
             <?php echo $hotel['hotelphone']; ?>
@@ -22,7 +20,7 @@
     <div class="col-sm-6">
         <div class="hotel-gallery">
             <?php foreach( $hotel['images'][ 'img' ] as $img ) { ?>
-            <div><img src="<?php echo $img; ?>" alt="<?php esc_html_e( 'gallery', 'kanda' ); ?>" /></div>
+            <div><img src="<?php echo kanda_get_cropped_image_src( $img, array( 'width' => 500, 'height' => 300 ) ); ?>" alt="<?php esc_html_e( 'gallery', 'kanda' ); ?>" /></div>
             <?php } ?>
         </div>
     </div>

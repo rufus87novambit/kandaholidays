@@ -26,21 +26,6 @@ class Profiles_Controller extends Base_Controller {
 
     }
 
-    /**
-     * Profile edit
-     * @param $args
-     */
-//    public function edit( $args ) {
-//
-//        $action = (isset($args['sub-action']) && $args['sub-action']) ? sprintf('edit_%s', $args['sub-action']) : 'edit_profile';
-//        if( method_exists( $this, $action ) ) {
-//            $this->$action( $args );
-//        } else {
-//            $this->show_404();
-//        }
-//
-//    }
-
     /************************************************** Edit Profile **************************************************/
     /**
      * Specific hooks for edit profile

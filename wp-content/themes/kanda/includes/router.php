@@ -89,6 +89,11 @@ function kanda_add_rewrite_rule() {
             'after' => 'top'
         ),
         array(
+            'regex' => 'hotels\/view\/([a-zA-Z0-9-]*)(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hcode=$matches[1]&unwanted=$matches[3]', 123, 'hotels', 'view_hotel' ),
+            'after' => 'top'
+        ),
+        array(
             'regex' => 'hotels(\/)?',
             'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 123, 'hotels', 'index' ),
             'after' => 'top'
@@ -144,6 +149,7 @@ function kanda_query_vars( $public_query_vars ) {
         'ksecurity',
         'k_rid',
         'k_page',
+        'hcode',
         'unwanted'
         // other variables should go here
     ) );

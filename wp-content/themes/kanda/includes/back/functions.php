@@ -20,7 +20,6 @@ require_once( KANDA_BACK_PATH . 'ajax.php' );
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
-    wp_enqueue_script( 'jquery-ui-datepicker' );
     wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', array( 'jquery' ), null, true );
     wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
 }

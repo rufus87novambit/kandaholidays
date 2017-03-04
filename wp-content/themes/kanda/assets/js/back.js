@@ -1,11 +1,19 @@
 (function($) {
 
+    /**
+     * Destroy custom selects
+     * @param node
+     */
     var destroyCustomSelectsOn = function( node ){
         node
-            .find( 'span.customSelect').remove().end()
+            .find( 'span.kandaSelect').remove().end()
             .find( 'select.hasCustomSelect' ).removeAttr( 'style' )
     }
 
+    /**
+     * Init custom selects
+     * @param node
+     */
     var initCustomSelectOn = function( node ) {
         node.customSelect({
             customClass : 'kandaSelect'
@@ -17,7 +25,7 @@
 
     //menu toggle
     $('#menuBtn').on( 'click', function(){
-        $('body').toggleClass('menu-opened');
+        $('body').toggleClass( 'menu-opened' );
         return false;
     });
 
@@ -48,6 +56,9 @@
         initCustomSelectOn( $('.kanda-select') );
     }
 
+    /**
+     * Flash message hide
+     */
     if( $('.flash-message').length > 0 ) {
         $( '.flash-message .alert-close-btn').on( 'click', function(){
             $('.flash-message').addClass( 'shown' );
@@ -73,7 +84,7 @@
     if( $('.datepicker-start-date').length > 0 && $('.datepicker-end-date').length > 0 ) {
 
         var checkin = new Date();
-        var checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
+        var checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
 
         /**
          * Get date in milliseconds
@@ -180,7 +191,7 @@
 
             append_box.empty();
             for( var i = 0; i < value; i++ ) {
-                append_box.append('<input type="number" name="room_occupants[' + block_index + '][child][age][' + i + ']" class="form-control" value="0" min="1" max="12">');
+                append_box.append('<input type="number" name="room_occupants[' + block_index + '][child][age][' + i + ']" class="form-control" value="0" min="0" max="12">');
             }
             if( value > 0 ) {
                 children_box.removeClass('hidden');
@@ -189,6 +200,7 @@
             }
         } );
     }
+
     /**
      * Slider
      */
@@ -222,7 +234,9 @@
         }
     });
 
-    /** tabs in popup */
+    /**
+     * Tabs in popup
+     */
     $('body').on( 'click', '.popup-tabs .tab-headings a', function(){
         var _this = $(this),
             _tabs = _this.closest( '.tabs' ),
@@ -361,6 +375,24 @@
         return regex_result;
     } );
 
+    /**
+     * jQuery UI datepicker
+     */
+    $.validator.addMethod( 'jquery_ui_datepicker', function( value, element ) {
+        var date = $( element).datepicker( 'getDate' );
+        if ( Object.prototype.toString.call( date ) === "[object Date]" ) {
+            return isNaN( date.getTime() ) ? false : true;
+        }
+        return false;
+    } );
+
+    /**
+     * Deny typing in node
+     */
+    $('.deny-typing').on( 'keydown', function(){
+        return false;
+    });
+
     /************************************************ Edit profile ***********************************************/
 
     /**
@@ -478,6 +510,8 @@
 
     /********************************************** Popups **********************************************/
     function loading_popup() {
+        $.magnificPopup.close();
+
         $.magnificPopup.open({
             items: {
                 src: '#loading-popup',
@@ -494,6 +528,7 @@
         $.magnificPopup.close();
 
         $('#error-popup').html( content );
+
         $.magnificPopup.open({
             items: {
                 src: '#error-popup',
@@ -506,14 +541,14 @@
         });
     }
 
-    $('.maps-popup').magnificPopup({
+    $('.iframe-popup').magnificPopup({
         type: 'iframe',
         tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
         iframe: {
             markup: '<div class="mfp-iframe-scaler">'+
             '<div class="mfp-close"></div>'+
             '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
-            '</div>', // HTML markup of popup, `mfp-close` will be replaced by the close button
+            '</div>',
 
             patterns: {
                 youtube: {
@@ -563,7 +598,7 @@
                     autoplay    : true,
                     dots        : true,
                     dotsClass   : 'slick-dots container'
-                });;
+                });
             }
         }
 
@@ -583,9 +618,81 @@
     /********************************************** Popups **********************************************/
 
     /************************************************ Search hotels **********************************************/
-    if( $('#hotel_search_form').length > 0 ) {
+    if( $('#form_hotel_search').length > 0 ) {
 
-        $('#hotel_search_form').on( 'submit', function(){
+        var kanda_back_form_hotel_search = $('#form_hotel_search'),
+            kanda_back_form_hotel_search_validation_args = {
+                rules : {
+                    start_date : {
+                        required : true,
+                        jquery_ui_datepicker : true
+                    },
+                    end_date : {
+                        required : true,
+                        jquery_ui_datepicker : true
+                    },
+                    nights_count : {
+                        required : true
+                    },
+                    rooms_count : {
+                        required : true
+                    }
+                },
+                messages : {
+                    start_date : {
+                        required : hotel.validation.start_date.required,
+                        jquery_ui_datepicker : hotel.validation.start_date.jquery_ui_datepicker,
+                    },
+                    end_date : {
+                        required : hotel.validation.end_date.required,
+                        jquery_ui_datepicker : hotel.validation.end_date.jquery_ui_datepicker,
+                    },
+                    nights_count : {
+                        required : hotel.validation.nights_count.required
+                    },
+                    rooms_count : {
+                        required : hotel.validation.rooms_count.required
+                    }
+                }
+            };
+
+        kanda_back_form_hotel_search_validation_args = Object.assign(
+            kanda_back_form_validation_default_args,
+            kanda_back_form_hotel_search_validation_args
+        );
+
+        kanda_back_form_hotel_search.validate( kanda_back_form_hotel_search_validation_args );
+
+        kanda_back_form_hotel_search.find( 'input[name="city"]').on( 'change', function( e ){
+            var _this = $(this),
+                _city = _this.val();
+
+            $.ajax({
+                url  : kanda.ajaxurl,
+                type : 'GET',
+                dataType : 'JSON',
+                data : {
+                    action : 'city_hotels',
+                    city : _city
+                },
+                success : function( response ){
+                    if( response.success ) {
+                        $( '#hotel_name' ).autocomplete({
+                            appendTo : '#autocomplete-wrap',
+                            minLength: 1,
+                            autoFocus: true,
+                            source: response.data
+                        });
+                    }
+                }
+            });
+        }).filter( ':checked' ).trigger( 'change' );
+
+        kanda_back_form_hotel_search.on( 'submit', function(){
+
+            if ( ! $( this ).valid() ) {
+                return false;
+            }
 
             var _this = $(this),
                 _criteria = _this.serialize();
@@ -617,4 +724,53 @@
 
     }
     /********************************************** /end Search hotels *******************************************/
+
+    /********************************************** Single Hotel *******************************************/
+    if( $('#hotel-details-box').length > 0 ) {
+        (function get_hotel_details() {
+            var _hotel_details_box = $('#hotel-details-box'),
+                _hotel_code = _hotel_details_box.data( 'hotel-code' ),
+                _start_date = _hotel_details_box.data( 'start-date' ),
+                _end_date = _hotel_details_box.data( 'end-date' ),
+                _security = _hotel_details_box.data( 'security' );
+
+            $.ajax({
+                url  : kanda.ajaxurl,
+                type : 'GET',
+                dataType : 'JSON',
+                data : {
+                    action      : 'hotel_details',
+                    hotel       : _hotel_code,
+                    start_date  : _start_date,
+                    end_date    : _end_date,
+                    security    : _security
+                },
+                beforeSend: loading_popup(),
+                success : function( response ){
+                    if( response.success ) {
+                        _hotel_details_box.html( $( response.data.content ) );
+                        _hotel_details_box.find( '.hotel-gallery').slick({
+                            arrows      : false,
+                            fade        : false,
+                            autoplay    : true,
+                            dots        : true,
+                            dotsClass   : 'slick-dots container'
+                        });
+
+                        $.magnificPopup.close();
+                    } else {
+                        $.magnificPopup.close();
+                        error_popup( response.data.message );
+                    }
+                },
+                error : function(){
+                    $.magnificPopup.close();
+                    error_popup( 'Internal server error. Please try again' );
+                }
+            });
+
+
+        })();
+    }
+    /********************************************** /end Single Hotel *******************************************/
 })(jQuery);

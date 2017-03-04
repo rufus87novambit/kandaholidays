@@ -86,7 +86,7 @@ textarea.form-control{
 .has-error .form-control-feedback{
     color:var(--brand-danger);
 }
-.has-error .form-control{
+.has-error .form-control.error{
     border-color:var(--brand-danger);
 }
 

@@ -1,4 +1,5 @@
-<?php echo $this->partial( 'hotel-search-form' ); ?>
-
-<div id="loading-popup" class="loading-popup mfp-hide"></div>
-<div id="error-popup" class="white-popup text-center mfp-hide"></div>
+<?php
+    echo $this->partial( 'hotel-search-form' );
+    echo kanda_get_loading_popup();
+    echo kanda_get_error_popup();
+?>

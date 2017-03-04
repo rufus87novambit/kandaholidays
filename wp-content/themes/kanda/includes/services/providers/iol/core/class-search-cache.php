@@ -73,8 +73,12 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
 
             $master_data = IOL_Master_Data::get_data( $response->request[ 'city' ] );
+            $hotels = $data['hotels']['hotel'];
 
-            foreach ($data['hotels']['hotel'] as $hotel ) {
+            if( IOL_Helper::is_associative_array( $hotels ) ) {
+                $hotels = array( $hotels );
+            }
+            foreach ( $hotels as $hotel ) {
 
                 $code = $hotel['hotelcode'];
                 $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();
@@ -152,7 +156,12 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
         if( isset( $data[ 'hotels' ][ 'hotel' ] ) ) {
             $master_data = IOL_Master_Data::get_data( $response->request[ 'city' ] );
-            foreach ($data['hotels']['hotel'] as $hotel) {
+            $hotels = $data['hotels']['hotel'];
+
+            if( IOL_Helper::is_associative_array( $hotels ) ) {
+                $hotels = array( $hotels );
+            }
+            foreach ($hotels as $hotel) {
 
                 $code = $hotel['hotelcode'];
                 $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();

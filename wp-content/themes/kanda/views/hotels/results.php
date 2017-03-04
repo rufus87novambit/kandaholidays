@@ -1,4 +1,4 @@
-<form class="form-block" method="get" action="<?php echo kanda_url_to( 'hotels', array( 'result', $this->response->request_id, 1 ) ); ?>">
+<form class="form-block" method="get" action="<?php echo kanda_url_to( 'hotels', array( 'result', $this->response->request_id ) ); ?>">
     <fieldset class="clearfix">
         <div class="row">
             <div class="col-lg-4 col-sm-3 col-xs-12">
@@ -87,10 +87,10 @@
 
                     <a href="#<?php echo $hotel['hotelcode']; ?>" class="open-popup btn -info -sm  clearfix"><?php esc_html_e( 'Rooms', 'kanda' ); ?></a>
 
-                    <a href="<?php echo $this->get_hotel_details_request_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $this->response->request['start_date'], 'end_date' => $this->response->request['end_date'] ), $this->response->request ); ?>" class="ajax-popup btn -info -sm  clearfix"><?php esc_html_e( 'Hotel', 'kanda' ); ?></a>
+                    <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => date( 'Ymd', strtotime($this->response->request['start_date'] ) ), 'end_date' => date( 'Ymd', strtotime( $this->response->request['end_date'] ) ) ), $this->response->request ); ?>" class="btn -info -sm  clearfix" target="_blank"><?php esc_html_e( 'Hotel', 'kanda' ); ?></a>
 
                     <?php if( isset( $hotel['geolocation'] ) && $map_url = $this->get_hotel_google_map_url( $hotel['geolocation'] ) ) { ?>
-                        <a href="<?php echo $map_url; ?>" class="btn -warning -sm maps-popup clearfix"><?php esc_html_e( 'View on map', 'kanda' ); ?></a>
+                        <a href="<?php echo $map_url; ?>" class="btn -warning -sm iframe-popup clearfix"><?php esc_html_e( 'View on map', 'kanda' ); ?></a>
                     <?php } ?>
 
                 </div>
@@ -147,5 +147,7 @@
         echo $this->partial( 'hotel-search-form', $args );
     ?>
 </div>
-<div id="loading-popup" class="loading-popup mfp-hide"></div>
-<div id="error-popup" class="white-popup text-center mfp-hide"></div>
+<?php
+    echo kanda_get_loading_popup();
+    echo kanda_get_error_popup();
+?>

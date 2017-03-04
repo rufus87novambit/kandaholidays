@@ -128,7 +128,7 @@ function kanda_register_post_types() {
         'show_ui'            => true,
         'show_in_menu'       => true,
         'query_var'          => true,
-        'rewrite'            => array( 'slug' => 'hotel' ),
+        'rewrite'            => array( 'slug' => 'hotels/view' ),
         'capability_type'    => 'post',
         'has_archive'        => true,
         'hierarchical'       => false,

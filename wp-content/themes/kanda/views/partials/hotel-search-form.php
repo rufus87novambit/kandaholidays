@@ -1,4 +1,4 @@
-<form class="form-block" id="hotel_search_form" method="post">
+<form class="form-block" id="form_hotel_search" method="post">
 
     <?php $city = isset( $city ) ? $city : 'AUH'; ?>
     <fieldset class="fieldset sep-btm">
@@ -25,7 +25,8 @@
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Hotel Name', 'kanda' ); ?></label>
                     <div class="col-lg-7">
-                        <input type="text" name="hotel_name" class="form-control" value="<?php echo $hotel_name; ?>">
+                        <input type="text" id="hotel_name" name="hotel_name" class="form-control" value="<?php echo $hotel_name; ?>">
+                        <div id="autocomplete-wrap"></div>
                     </div>
                 </div>
 
@@ -330,27 +331,39 @@
             <div class="col-sm-6">
                 <legend><?php esc_html_e( 'SELECT YOUR TRAVEL DATES', 'kanda' ); ?></legend>
 
-                <?php $start_date = isset( $start_date ) ? $start_date : ''; ?>
+                <?php
+                    $start_date = isset( $start_date ) ? $start_date : '';
+                    $has_error = isset( $this->errors[ 'start_date' ] );
+                ?>
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Check In date', 'kanda' ); ?></label>
                     <div class="calendar-field col-lg-7">
-                        <input type="text" name="start_date" class="form-control datepicker-start-date" value="<?php echo $start_date; ?>">
+                        <input type="text" name="start_date" class="form-control datepicker-start-date deny-typing" value="<?php echo $start_date; ?>">
+                        <div class="form-control-feedback"><small><?php echo $has_error ? $this->errors[ 'start_date' ] : ''; ?></small></div>
                     </div>
                 </div>
 
-                <?php $end_date = isset( $end_date ) ? $end_date : ''; ?>
+                <?php
+                    $end_date = isset( $end_date ) ? $end_date : '';
+                    $has_error = isset( $this->errors[ 'end_date' ] );
+                ?>
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Check Out date', 'kanda' ); ?></label>
                     <div class="calendar-field col-lg-7">
-                        <input type="text" name="end_date" class="form-control datepicker-end-date" value="<?php echo $end_date; ?>">
+                        <input type="text" name="end_date" class="form-control datepicker-end-date deny-typing" value="<?php echo $end_date; ?>">
+                        <div class="form-control-feedback"><small><?php echo $has_error ? $this->errors[ 'end_date' ] : ''; ?></small></div>
                     </div>
                 </div>
 
-                <?php $nights_count = isset( $nights_count ) ? $nights_count : '1'; ?>
+                <?php
+                    $nights_count = isset( $nights_count ) ? $nights_count : '1';
+                    $has_error = isset( $this->errors[ 'nights_count' ] );
+                ?>
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Number Of Nights', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">
                         <input id="nights_count" name="nights_count" type="number" class="form-control -sm" min="1" value="<?php echo $nights_count; ?>">
+                        <div class="form-control-feedback"><small><?php echo $has_error ? $this->errors[ 'nights_count' ] : ''; ?></small></div>
                     </div>
                 </div>
             </div>

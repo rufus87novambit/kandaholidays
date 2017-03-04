@@ -84,3 +84,15 @@ function kanda_manage_users_custom_column( $value, $column_name, $user_id ) {
 }
 
 /******************************************* /end Add extra fields to users table *******************************************/
+
+/**
+ * Remove permalink edit box function single hotel admin edit
+ */
+add_filter( 'get_sample_permalink_html', 'kanda_hide_permalinks' );
+function kanda_hide_permalinks( $html ){
+    global $post;
+    if( $post->post_type == 'hotel' ) {
+        $html = preg_replace('~<span id="edit-slug-buttons".*</span>~Ui', '', $html);
+    }
+    return $html;
+}

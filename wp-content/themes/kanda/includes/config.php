@@ -209,13 +209,22 @@ class Kanda_Config {
                     ),
                 ),
                 'form_hotel_search' => array(
-                    'checkin' => array(
+                    // key => input_id
+                    'start_date' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date from config', 'kanda' ),
                     ),
-                    'checkout' => array(
+                    'end_date' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date from config', 'kanda' ),
+                    ),
+                    'nights_count' => array(
+                        'required'   => esc_html__( 'Required', 'kanda' )
+                    ),
+                    'rooms_count' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
                     )
-                )
+                ),
             )
         );
         self::$controller_map = array(

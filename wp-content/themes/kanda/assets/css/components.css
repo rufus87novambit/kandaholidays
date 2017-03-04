@@ -231,6 +231,25 @@
     margin-bottom: 1rem;
 }
 
+#autocomplete-wrap {
+    position: relative;
+}
+#autocomplete-wrap .ui-widget.ui-widget-content {
+    border-color: var(--brand-primary);
+    background-color: #fff;
+    background-image: none;
+    font-size: .875rem;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    max-height: 151px;
+    overflow-y: auto;
+}
+#autocomplete-wrap .ui-widget.ui-widget-content li {
+    padding: 5px 10px;
+}
+
 /** Pagination */
 .pagination {
     font-size: 0;
