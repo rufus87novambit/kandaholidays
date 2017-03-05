@@ -86,13 +86,13 @@
                 <div class="article-actions pull-right">
 
                     <a href="#<?php echo $hotel['hotelcode']; ?>" class="btn -info -sm  clearfix show-booking-details">
-                        <i class="icon icon-room"></i>
-                        <?php esc_html_e( 'Rooms', 'kanda' ); ?>
+                        <i class="icon icon-hand-pointer-o"></i>
+                        <?php esc_html_e( 'Book', 'kanda' ); ?>
                     </a>
 
                     <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => date( 'Ymd', strtotime($this->response->request['start_date'] ) ), 'end_date' => date( 'Ymd', strtotime( $this->response->request['end_date'] ) ) ), $this->response->request ); ?>" class="btn -info -sm  clearfix" target="_blank">
-                        <i class="icon icon-hotel"></i>
-                        <?php esc_html_e( 'Hotel', 'kanda' ); ?>
+                        <i class="icon icon-info2"></i>
+                        <?php esc_html_e( 'Hotel details', 'kanda' ); ?>
                     </a>
 
                     <?php if( isset( $hotel['geolocation'] ) && $map_url = $this->get_hotel_google_map_url( $hotel['geolocation'] ) ) { ?>
