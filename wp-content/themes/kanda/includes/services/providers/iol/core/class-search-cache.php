@@ -309,4 +309,20 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         return $wpdb->get_results( $query );
     }
 
+    /**
+     * Get data by specific field
+     *
+     * @param $by
+     * @param $value
+     * @return mixed|null
+     */
+    public function get_data_by( $by, $value ) {
+        global $wpdb;
+        $table = $this->get_search_results_table();
+
+        $query = "SELECT `data` FROM `{$table}` WHERE `{$by}` = '{$value}'";
+        $data = $wpdb->get_var( $query );
+        return $data ? IOL_Helper::savable_format_to_array( $data ) : null;
+    }
+
 }

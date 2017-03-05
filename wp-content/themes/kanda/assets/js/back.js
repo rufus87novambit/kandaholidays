@@ -541,80 +541,103 @@
         });
     }
 
-    $('.iframe-popup').magnificPopup({
-        type: 'iframe',
-        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
-        iframe: {
-            markup: '<div class="mfp-iframe-scaler">'+
-            '<div class="mfp-close"></div>'+
-            '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
-            '</div>',
-
-            patterns: {
-                youtube: {
-                    index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
-
-                    id: 'v=', // String that splits URL in a two parts, second part should be %id%
-                    // Or null - full URL will be returned
-                    // Or a function that should return %id%, for example:
-                    // id: function(url) { return 'parsed id'; }
-
-                    src: '//www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe.
-                },
-                vimeo: {
-                    index: 'vimeo.com/',
-                    id: '/',
-                    src: '//player.vimeo.com/video/%id%?autoplay=1'
-                },
-                gmaps: {
-                    index: '//maps.google.',
-                    src: '%id%&output=embed'
-                }
-
-                // you may add here more sources
-
+    $('body').on( 'click', '.iframe-popup', function() {
+        var _src = $(this).attr('href');
+        $.magnificPopup.open({
+            items: {
+                src: _src
             },
+            type: 'iframe',
+            tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+            iframe: {
+                markup: '<div class="mfp-iframe-scaler">'+
+                '<div class="mfp-close"></div>'+
+                '<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
+                '</div>',
 
-            srcAction: 'iframe_src', // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".
-        }
-    });
+                patterns: {
+                    youtube: {
+                        index: 'youtube.com/', // String that detects type of video (in this case YouTube). Simply via url.indexOf(index).
 
-    $('.ajax-popup').magnificPopup({
-        type: 'ajax',
-        midClick: true,
-        closeBtnInside:true,
-        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
-        callbacks : {
-            parseAjax: function ( mfpResponse ) {
-                if( ! mfpResponse.data ) {
-                    mfpResponse.data = kanda.translatable.invalid_request
-                }
-                mfpResponse.data = '<div class="white-popup">' + mfpResponse.data + '</div>';
+                        id: 'v=', // String that splits URL in a two parts, second part should be %id%
+                        // Or null - full URL will be returned
+                        // Or a function that should return %id%, for example:
+                        // id: function(url) { return 'parsed id'; }
+
+                        src: '//www.youtube.com/embed/%id%?autoplay=1' // URL that will be set as a source for iframe.
+                    },
+                    vimeo: {
+                        index: 'vimeo.com/',
+                        id: '/',
+                        src: '//player.vimeo.com/video/%id%?autoplay=1'
+                    },
+                    gmaps: {
+                        index: '//maps.google.',
+                        src: '%id%&output=embed'
+                    }
+
+                    // you may add here more sources
+
+                },
+
+                srcAction: 'iframe_src', // Templating object key. First part defines CSS selector, second attribute. "iframe_src" means: find "iframe" and set attribute "src".
+            }
+        });
+
+        return false;
+    } );
+
+    $('body').on( 'click', '.ajax-popup', function(){
+        var _src = $(this).attr('href');
+        $.magnificPopup.open({
+            items: {
+                src: _src
             },
-            ajaxContentAdded : function(){
-                $( this.content ).find( '.hotel-gallery').slick({
-                    arrows      : false,
-                    fade        : false,
-                    autoplay    : true,
-                    dots        : true,
-                    dotsClass   : 'slick-dots container'
-                });
+            type: 'ajax',
+            midClick: true,
+            closeBtnInside:true,
+            tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+            callbacks : {
+                parseAjax: function ( mfpResponse ) {
+                    if( ! mfpResponse.data ) {
+                        mfpResponse.data = kanda.translatable.invalid_request
+                    }
+                    mfpResponse.data = '<div class="white-popup">' + mfpResponse.data + '</div>';
+                },
+                ajaxContentAdded : function(){
+                    $( this.content ).find( '.hotel-gallery').slick({
+                        arrows      : false,
+                        fade        : false,
+                        autoplay    : true,
+                        dots        : true,
+                        dotsClass   : 'slick-dots container'
+                    });
+                }
             }
-        }
 
-    });
+        });
 
-    $('.open-popup').magnificPopup({
-        type:'inline',
-        midClick: true,
-        tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
-        callbacks: {
-            open: function() {
-                destroyCustomSelectsOn( $(this.content) );
-                initCustomSelectOn( $(this.content).find( '.kanda-select-late-init') );
+        return false;
+    } );
+
+    $('body').on( 'click', '.open-popup', function(){
+        var _src = $(this).attr( 'href' );
+        $('.open-popup').magnificPopup({
+            items : {
+                src: _src
+            },
+            type:'inline',
+            midClick: true,
+            tLoading : '<img src="' + kanda.themeurl + '/images/back/ripple.svg" alt="loading" />',
+            callbacks: {
+                open: function() {
+                    destroyCustomSelectsOn( $(this.content) );
+                    initCustomSelectOn( $(this.content).find( '.kanda-select-late-init') );
+                }
             }
-        }
-    });
+        });
+        return false;
+    } );
     /********************************************** Popups **********************************************/
 
     /************************************************ Search hotels **********************************************/

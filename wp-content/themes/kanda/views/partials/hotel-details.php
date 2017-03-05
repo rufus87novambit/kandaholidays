@@ -1,21 +1,37 @@
 <div class="row">
-    <div class="col-sm-6">
-        <div>
-            <i class="icon icon-phone"></i>
-            <?php echo $hotel['hotelphone']; ?>
-        </div>
-        <div>
-            <i class="icon icon-email"></i>
-            <?php echo $hotel['hotelemail']; ?>
-        </div>
-        <div>
-            <i class="icon icon-website"></i>
-            <?php echo $hotel['hotelweb']; ?>
-        </div>
-        <div>
-            <i class="icon icon-address"></i>
-            <?php echo $hotel['hoteladdress']; ?>
-        </div>
+    <div class="col-sm-6 hotel-detailed-information">
+        <ul>
+            <li>
+                <a href="callto:<?php echo $hotel['hotelphone']; ?>" class="btn -sm -warning">
+                    <i class="icon icon-phone"></i>
+                    <?php echo $hotel['hotelphone']; ?>
+                </a>
+            </li>
+            <li>
+                <a href="mailto:<?php echo $hotel['hotelemail']; ?>" class="btn -sm -warning">
+                    <i class="icon icon-envelope"></i>
+                    <?php echo $hotel['hotelemail']; ?>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo 'http://' . strtr( $hotel['hotelweb'], array( 'http://' => '', 'https://' => '', 'www.' => '' ) ); ?>" class="btn -sm -warning" target="_blank">
+                    <i class="icon icon-globe"></i>
+                    <?php echo $hotel['hotelweb']; ?>
+                </a>
+            </li>
+            <li>
+                <p><?php echo $hotel['hoteladdress']; ?></p>
+                <?php
+                    $map_url = ( $cached_hotel && isset( $cached_hotel['geolocation'] ) ) ? $this->get_hotel_google_map_url( $cached_hotel['geolocation'] ) : false;
+                    if( $map_url ) {
+                ?>
+                <a href="<?php echo $map_url ? $map_url : 'javascript:void(0)'; ?>" class="btn -sm -warning <?php echo $map_url ? 'iframe-popup' : ''; ?>">
+                    <i class="icon icon-location"></i>
+                    <?php esc_html_e( 'View on map', 'kanda' ); ?>
+                </a>
+                <?php } ?>
+            </li>
+        </ul>
     </div>
     <div class="col-sm-6">
         <div class="hotel-gallery">
@@ -35,21 +51,35 @@
 <div class="tabs popup-tabs">
     <div class="tab-headings">
         <?php if( $has_description ) { ?>
-        <a href="javascript:void(0);" data-target=".hoteloverview" class="btn -sm -warning tab-heading"><?php esc_html_e( 'Overview', 'kanda' ); ?></a>
+        <a href="javascript:void(0);" data-target=".hoteloverview" class="btn -sm -warning tab-heading">
+            <i class="icon icon-tags"></i>
+            <?php esc_html_e( 'Overview', 'kanda' ); ?>
+        </a>
         <?php } ?>
 
         <?php if( $has_hotel_facilities ) { ?>
-        <a href="javascript:void(0);" data-target=".hotelfacilities" class="btn -sm -info tab-heading"><?php esc_html_e( 'Hotel facilities', 'kanda' ); ?></a>
+        <a href="javascript:void(0);" data-target=".hotelfacilities" class="btn -sm -info tab-heading">
+            <i class="icon icon-hotel"></i>
+            <?php esc_html_e( 'Hotel facilities', 'kanda' ); ?>
+        </a>
         <?php } ?>
 
         <?php if( $has_room_facilities ) { ?>
-        <a href="javascript:void(0);" data-target=".roomfacilities" class="btn -sm -info tab-heading"><?php esc_html_e( 'Room facilities', 'kanda' ); ?></a>
+        <a href="javascript:void(0);" data-target=".roomfacilities" class="btn -sm -info tab-heading">
+            <i class="icon icon-room"></i>
+            <?php esc_html_e( 'Room facilities', 'kanda' ); ?>
+        </a>
         <?php } ?>
     </div>
     <div class="tab-contents editor-content">
         <?php if( $has_description ) { ?>
         <div class="tab-content hoteloverview">
-            <?php echo preg_replace( '#</?(html|head|body)[^>]*>#i', '', $hotel['description'] ); ?>
+            <?php
+                $hotel_description = preg_replace( '#</?(html|head|body)[^>]*>#i', '', $hotel['description'] );
+                $hotel_description = preg_replace( '/style=(["\'])[^\1]*?\1/i', '', $hotel_description, -1 );
+
+                echo $hotel_description;
+            ?>
         </div>
         <?php } ?>
 

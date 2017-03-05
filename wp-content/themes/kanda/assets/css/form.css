@@ -129,8 +129,9 @@ textarea.form-control{
     position: relative;
     width: 18px;
     height: 18px;
-    border: solid 1px var(--brand-primary);
+    border: solid 2px var(--brand-primary);
     margin-right:5px;
+    background-color: #fff;
 }
 .ctrl-field.-rbtn .ctrl-btn{
     -webkit-border-radius:50%;

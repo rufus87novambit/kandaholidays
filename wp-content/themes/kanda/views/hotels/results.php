@@ -85,12 +85,21 @@
             <div class="col-lg-12">
                 <div class="article-actions pull-right">
 
-                    <a href="#<?php echo $hotel['hotelcode']; ?>" class="open-popup btn -info -sm  clearfix"><?php esc_html_e( 'Rooms', 'kanda' ); ?></a>
+                    <a href="#<?php echo $hotel['hotelcode']; ?>" class="open-popup btn -info -sm  clearfix">
+                        <i class="icon icon-room"></i>
+                        <?php esc_html_e( 'Rooms', 'kanda' ); ?>
+                    </a>
 
-                    <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => date( 'Ymd', strtotime($this->response->request['start_date'] ) ), 'end_date' => date( 'Ymd', strtotime( $this->response->request['end_date'] ) ) ), $this->response->request ); ?>" class="btn -info -sm  clearfix" target="_blank"><?php esc_html_e( 'Hotel', 'kanda' ); ?></a>
+                    <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => date( 'Ymd', strtotime($this->response->request['start_date'] ) ), 'end_date' => date( 'Ymd', strtotime( $this->response->request['end_date'] ) ) ), $this->response->request ); ?>" class="btn -info -sm  clearfix" target="_blank">
+                        <i class="icon icon-hotel"></i>
+                        <?php esc_html_e( 'Hotel', 'kanda' ); ?>
+                    </a>
 
                     <?php if( isset( $hotel['geolocation'] ) && $map_url = $this->get_hotel_google_map_url( $hotel['geolocation'] ) ) { ?>
-                        <a href="<?php echo $map_url; ?>" class="btn -warning -sm iframe-popup clearfix"><?php esc_html_e( 'View on map', 'kanda' ); ?></a>
+                        <a href="<?php echo $map_url; ?>" class="btn -warning -sm iframe-popup clearfix">
+                            <i class="icon icon-location"></i>
+                            <?php esc_html_e( 'View on map', 'kanda' ); ?>
+                        </a>
                     <?php } ?>
 
                 </div>

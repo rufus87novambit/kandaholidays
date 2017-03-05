@@ -1,5 +1,6 @@
 :root {
-    --bg-color: #f7f7f7;
+    /*--bg-color: #f7f7f7;*/
+    --bg-color: #efefef;
     --border-color:#d8d8d8;
     --text-color: #373b42;
     --color-muted: #636c72;
@@ -13,14 +14,14 @@
 
     --brand-primary: #3d4795;
     --brand-success: #5ABD7E;
-    --brand-info: #5bc0de;
-    --brand-warning: #D0C048;
+    --brand-info: #31b0d5;
+    --brand-warning: #ec971f;
     --brand-danger: #D8000C;
 
     --brand-primary-border: #2856b6;
     --brand-success-border: #449d44;
-    --brand-info-border: #31b0d5;
-    --brand-warning-border: #ec971f;
+    --brand-info-border: #5bc0de;
+    --brand-warning-border: #D0C048;
     --brand-danger-border: #c9302c;
 }
 

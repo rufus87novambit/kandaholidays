@@ -24,6 +24,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-tags:before {
+  content: "\e910";
+}
+.icon-prices:before {
+  content: "\e910";
+}
+.icon-envelope:before {
+  content: "\e913";
+}
+.icon-cross2:before {
+  content: "\e941";
+}
 .icon-triangle-up:before {
   content: "\e900";
 }
@@ -75,6 +87,48 @@
 .icon-edit:before {
   content: "\e90b";
 }
+.icon-room:before {
+  content: "\e912";
+}
+.icon-location:before {
+  content: "\e916";
+}
+.icon-earth:before {
+  content: "\e914";
+}
+.icon-globe:before {
+  content: "\e914";
+}
+.icon-language:before {
+  content: "\e914";
+}
+.icon-web:before {
+  content: "\e914";
+}
+.icon-internet:before {
+  content: "\e914";
+}
+.icon-sphere:before {
+  content: "\e914";
+}
+.icon-planet:before {
+  content: "\e914";
+}
+.icon-phone:before {
+  content: "\e915";
+}
+.icon-telephone:before {
+  content: "\e915";
+}
+.icon-contact:before {
+  content: "\e915";
+}
+.icon-support:before {
+  content: "\e915";
+}
+.icon-call:before {
+  content: "\e915";
+}
 .icon-image:before {
   content: "\e90d";
 }
@@ -108,7 +162,9 @@
 .icon-star:before {
   content: "\e90f";
 }
-.icon-cross2:before {
-  content: "\e941";
+.icon-bed:before {
+  content: "\e911";
 }
-
+.icon-hotel:before {
+  content: "\e911";
+}

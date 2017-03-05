@@ -4,7 +4,6 @@ get_header( $template_options['header'] );
 
 if( is_user_logged_in() ) { ?>
     <div class="row">
-        <?php get_sidebar(); ?>
         <div class="primary col-md-9">
             <div class="box">
                 <h1 class="page-title"><?php echo apply_filters( 'the_title', $template_options['title'], 0 ); ?></h1>
@@ -12,6 +11,7 @@ if( is_user_logged_in() ) { ?>
                 <?php echo apply_filters( 'the_content', $template_options['content'] ); ?>
             </div>
         </div>
+        <?php get_sidebar(); ?>
     </div>
 <?php } else { ?>
 

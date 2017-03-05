@@ -192,6 +192,15 @@ if( ! class_exists( 'IOL_Provider' ) ) {
         }
 
         /**
+         * Get search instance
+         *
+         * @return IOL_Search_Cache
+         */
+        public function cache() {
+            return new IOL_Search_Cache();
+        }
+
+        /**
          * Get hotels instance
          * @return IOL_Hotels
          */

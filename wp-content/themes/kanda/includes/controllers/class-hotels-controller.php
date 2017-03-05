@@ -176,8 +176,8 @@ class Hotels_Controller extends Base_Controller {
             global $wpdb;
 
             $query = "SELECT `post_id` FROM `{$wpdb->postmeta}` WHERE `meta_key` = 'hotelcode' AND `meta_value` = '{$args['hcode']}'";
-
             $post_id = $wpdb->get_var( $query );
+
             if( $post_id ) {
 
                 $this->hotel_code = $args['hcode'];
@@ -241,6 +241,8 @@ class Hotels_Controller extends Base_Controller {
                         if( file_exists( $template ) ) {
                             $data = $response->data;
                             $hotel = $data['details'];
+
+                            $cached_hotel = provider_iol()->cache()->get_data_by( 'code', $code );
 
                             ob_start();
                             include( $template );

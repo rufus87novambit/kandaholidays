@@ -1,7 +1,6 @@
 <?php get_header(); ?>
 
 <div class="row">
-    <?php get_sidebar(); ?>
     <div class="primary col-md-9">
         <?php if( have_posts() ) { the_post(); ?>
             <div class="box">
@@ -11,6 +10,7 @@
             </div>
         <?php } ?>
     </div>
+    <?php get_sidebar(); ?>
 </div>
 
 <?php get_footer(); ?>

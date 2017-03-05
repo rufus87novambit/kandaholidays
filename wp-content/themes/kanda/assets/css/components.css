@@ -255,6 +255,11 @@
     font-size: 0;
 }
 
+.hotel-detailed-information li {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
 .pagination a,
 .pagination span {
     font-size: .875rem;
