@@ -153,6 +153,9 @@ textarea.form-control{
 }
 
 /*radiobutton*/
+.ctrl-field.-rbtn {
+    cursor: pointer;
+}
 .ctrl-field.-rbtn .ctrl-inp:checked + .ctrl-btn:before {
     width:7px;
     height:7px;

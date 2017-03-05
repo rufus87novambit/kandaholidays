@@ -228,9 +228,10 @@ class Kanda_Config {
             )
         );
         self::$controller_map = array(
-            'auth'      => 'login|register|forgot|reset',
-            'profile'   => 'edit',
-            'hotels'    => 'index'
+            'auth'          => 'login|register|forgot|reset',
+            'profile'       => 'edit|password|photo',
+            'hotels'        => 'index|results|view_hotel',
+            'index'         => 'dashboard'
         );
     }
 

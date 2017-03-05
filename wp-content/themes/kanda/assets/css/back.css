@@ -212,7 +212,15 @@ body {
 }
 
 /*Users List*/
-.users-table .th:first-child,
-.users-table .tr .td:first-child{
+.users-table .th.checkbox,
+.users-table .tr .td.checkbox{
     width:10%;
+}
+
+/** booking details */
+.booking-details-wrap {
+    margin-top: 1rem;
+}
+.booking-details-box {
+    display: none;
 }

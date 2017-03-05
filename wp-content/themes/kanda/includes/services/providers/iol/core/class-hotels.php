@@ -123,6 +123,11 @@ class IOL_Hotels {
             IOL_Helper::bool_to_string( true )
         );
 
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'optional-supplement-Y-N' ),
+            IOL_Helper::bool_to_string( true )
+        );
+
         return $xml->asXML();
     }
 

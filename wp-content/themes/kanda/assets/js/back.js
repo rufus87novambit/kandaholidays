@@ -622,7 +622,7 @@
 
     $('body').on( 'click', '.open-popup', function(){
         var _src = $(this).attr( 'href' );
-        $('.open-popup').magnificPopup({
+        $.magnificPopup.open({
             items : {
                 src: _src
             },
@@ -638,6 +638,61 @@
         });
         return false;
     } );
+
+    var confirmDialog = function(message, headline, cb) {
+        var _dialog = '';
+
+        _dialog += '<div class="mfp-with-anim white-popup confirmation">';
+            _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
+            if (headline) {
+                _dialog += '<h2 class="text-center">' + headline + '</h2>';
+            }
+            _dialog += '<div class="content">' + message + '</div>';
+            _dialog += '<div class="actions text-center">';
+                _dialog += '<button type="button" class="btn -sm -primary">Submit</button> ';
+                _dialog += '<button type="button" class="btn -sm -danger">Cancel</button>';
+            _dialog += '</div>';
+        _dialog += '</div>';
+
+        $.magnificPopup.open({
+            items: {
+                src: _dialog
+            },
+            showCloseBtn : true,
+            closeOnBgClick : false,
+            enableEscapeKey : true,
+            midClick: true,
+            callbacks: {
+                open: function() {
+                    var _content = $(this.content);
+
+                    _content.on('click', '.-primary', function() {
+                        if (typeof cb == 'function') {
+                            cb();
+                        }
+                        $.magnificPopup.close();
+                        $(document).off('keydown', confirmationPopupkeydownHandler);
+                    });
+
+                    _content.on('click', '.-danger', function() {
+                        $.magnificPopup.close();
+                        $(document).off('keydown', confirmationPopupkeydownHandler);
+                    });
+
+                    var confirmationPopupkeydownHandler = function (e) {
+                        if (e.keyCode == 13) {
+                            _content.find('.-primary').trigger( 'click' );
+                            return false;
+                        } else if (e.keyCode == 27) {
+                            _content.find('.-danger').trigger( 'click' );
+                            return false;
+                        }
+                    };
+                    $(document).on('keydown', confirmationPopupkeydownHandler);
+                }
+            }
+        });
+    };
     /********************************************** Popups **********************************************/
 
     /************************************************ Search hotels **********************************************/
@@ -773,11 +828,10 @@
                     if( response.success ) {
                         _hotel_details_box.html( $( response.data.content ) );
                         _hotel_details_box.find( '.hotel-gallery').slick({
-                            arrows      : false,
+                            arrows      : true,
                             fade        : false,
-                            autoplay    : true,
-                            dots        : true,
-                            dotsClass   : 'slick-dots container'
+                            autoplay    : false,
+                            dots        : false
                         });
 
                         $.magnificPopup.close();
@@ -796,4 +850,51 @@
         })();
     }
     /********************************************** /end Single Hotel *******************************************/
+
+    if( $('.show-booking-details').length > 0 ) {
+        $('.show-booking-details').on( 'click', function(){
+
+            var _this = $(this),
+                _target = _this.attr( 'href' );
+
+            if( $(_this).hasClass( 'active' ) ) {
+                $(_target).slideUp(500, function(){
+                    $(_target).removeClass('active');
+                    _this.removeClass('active');
+                });
+            } else {
+                var _scroll = ( $('.booking-details-box.active').length > 0 );
+
+                $('.booking-details-box.active').stop(true, true).css( { display : 'none' } ).removeClass('active');
+                $('.show-booking-details.active').removeClass('active');
+
+                console.log( $(_this).closest('li').css( 'marginBottom' ) );
+
+                $('html, body').animate({
+                    scrollTop: $(_this).closest('li').offset().top - parseInt( $(_this).closest('li').css( 'marginBottom' ) )
+                }, 500);
+
+                $(_target).slideDown(500, function(){
+                    $(_target).addClass('active');
+                    _this.addClass('active');
+                });
+            }
+
+
+            return false;
+        } );
+    }
+
+    $('.book-btn').on('click', function(){
+        var _this = $(this),
+            _content = _this.closest('.users-table').clone(),
+            _popup_content = '';
+
+        _content.find( '.book-btn' ).remove();
+
+        _popup_content = '<p class="text-center">Are you sure you want to proccess with following details?</p>' + _content[0].outerHTML;
+        confirmDialog( _popup_content, 'Booking confirmation' );
+
+        return false;
+    });
 })(jQuery);

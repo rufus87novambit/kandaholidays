@@ -54,7 +54,7 @@
 
     <li>
         <h4 class="article-title">
-            <span><?php echo $hotel['hotelname'] ?></span>
+            <span><?php echo $hotel['hotelname'] ?> - <?php echo $hotel['propertytype'] ?></span>
             <span class="pull-right"><?php echo str_repeat( '<i class="icon icon-star-o"></i>', $hotel['starrating'] ); ?></span>
         </h4>
 
@@ -85,7 +85,7 @@
             <div class="col-lg-12">
                 <div class="article-actions pull-right">
 
-                    <a href="#<?php echo $hotel['hotelcode']; ?>" class="open-popup btn -info -sm  clearfix">
+                    <a href="#<?php echo $hotel['hotelcode']; ?>" class="btn -info -sm  clearfix show-booking-details">
                         <i class="icon icon-room"></i>
                         <?php esc_html_e( 'Rooms', 'kanda' ); ?>
                     </a>
@@ -103,11 +103,60 @@
                     <?php } ?>
 
                 </div>
-                <?php /*
-                    <div id="<?php echo $hotel['hotelcode']; ?>" class="white-popup mfp-hide">
-                    ashdakjsdhkajshd
-                </div>
-                */ ?>
+
+            </div>
+        </div>
+
+        <div class="booking-details-wrap">
+            <div class="booking-details-box" id="<?php echo $hotel['hotelcode']; ?>">
+                <?php
+                    $rooms = $hotel['roomtypedetails']['rooms']['room'];
+                    foreach( $rooms as $room ) { ?>
+                    <div class="">
+                        <div class="users-table table">
+                            <header class="thead">
+                                <div class="th" style="width: 25%"><?php esc_html_e( 'Property type', 'kanda' ); ?></div>
+                                <div class="th"><?php esc_html_e( 'Property value', 'kanda' ); ?><a href="#" class="btn -sm -info book-btn pull-right">Book</a></div>
+                            </header>
+                            <div class="tbody">
+                                <?php
+                                $properties = array(
+                                    'roomtype' => esc_html__( 'Room Type', 'kanda' ),
+                                    'mealplan' => esc_html__( 'Meal Plan', 'kanda' ),
+                                    'rate' => esc_html__( 'Rate', 'kanda' ),
+                                );
+                                foreach( $properties as $property => $property_label ) {
+                                    if( isset( $room[ $property ] ) && $room[ $property ] ) { ?>
+                                <div class="tr">
+                                    <div class="td"><?php echo $property_label; ?></div>
+                                    <div class="td"><?php echo $room[ $property ]; ?></div>
+                                </div>
+                                    <?php }
+                                }
+
+                                if( (bool)$room['discountdetails'] ) {
+                                    $room_discounts = $room['discountdetails']['discount'];
+                                    foreach( $room_discounts as $discount ) {
+                                        $properties = array(
+                                            'discountname' => esc_html__( 'Discount Name', 'kanda' ),
+                                            'discounttype' => esc_html__( 'Discount Type', 'kanda' ),
+                                            'discountnotes' => esc_html__( 'Discount Notes', 'kanda' ),
+                                            'totaldiscountrate' => esc_html__( 'Discount Total Rate', 'kanda' ),
+                                        );
+                                        foreach( $properties as $property => $property_label ) {
+                                            if( isset( $discount[ $property ] ) && $discount[ $property ] ) { ?>
+                                        <div class="tr">
+                                            <div class="td"><?php echo $property_label; ?></div>
+                                            <div class="td"><?php echo $discount[ $property ]; ?></div>
+                                        </div>
+                                            <?php }
+                                        }
+                                    }
+                                } ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </li>

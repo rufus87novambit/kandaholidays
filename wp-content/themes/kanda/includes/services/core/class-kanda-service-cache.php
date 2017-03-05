@@ -24,7 +24,7 @@ class Kanda_Service_Cache {
      *
      * @return string
      */
-    protected function get_search_table() {
+    public function get_search_table() {
         global $wpdb;
         return $wpdb->prefix . $this->table_search;
     }
@@ -34,7 +34,7 @@ class Kanda_Service_Cache {
      *
      * @return string
      */
-    protected function get_search_results_table() {
+    public function get_search_results_table() {
         global $wpdb;
         return $wpdb->prefix . $this->table_search_results;
     }

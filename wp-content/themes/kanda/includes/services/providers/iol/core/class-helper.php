@@ -99,6 +99,71 @@ class IOL_Helper {
     }
 
     /**
+     * convert xml string to php array - useful to get a serializable value
+     *
+     * @param string $xmlstr
+     * @return array
+     */
+    private static function xml_to_array( $xmlstr ) {
+        $doc = new DOMDocument();
+        $doc->loadXML( $xmlstr );
+
+        $root = $doc->documentElement;
+        $output = self::dom_node_to_array( $root );
+        $output['@root'] = $root->tagName;
+        return $output;
+    }
+
+    /**
+     * Dom node to array converter
+     * @param $node
+     * @return array|string
+     */
+    private static function dom_node_to_array($node) {
+        $output = array();
+        switch ($node->nodeType) {
+            case XML_CDATA_SECTION_NODE:
+            case XML_TEXT_NODE:
+                $output = trim($node->textContent);
+                break;
+            case XML_ELEMENT_NODE:
+                for ($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
+                    $child = $node->childNodes->item($i);
+                    $v = self::dom_node_to_array($child);
+                    if(isset($child->tagName)) {
+                        $t = $child->tagName;
+                        if(!isset($output[$t])) {
+                            $output[$t] = array();
+                        }
+                        $output[$t][] = $v;
+                    }
+                    elseif($v || $v === '0') {
+                        $output = (string) $v;
+                    }
+                }
+                if($node->attributes->length && !is_array($output)) { //Has attributes but isn't an array
+                    $output = array('@content'=>$output); //Change output into an array.
+                }
+                if(is_array($output)) {
+                    if($node->attributes->length) {
+                        $a = array();
+                        foreach($node->attributes as $attrName => $attrNode) {
+                            $a[$attrName] = (string) $attrNode->value;
+                        }
+                        $output['@attributes'] = $a;
+                    }
+                    foreach ($output as $t => $v) {
+                        if(is_array($v) && count($v)==1 && $t!='@attributes') {
+                            $output[$t] = $v[0];
+                        }
+                    }
+                }
+                break;
+        }
+        return $output;
+    }
+
+    /**
      * Convert xml to readable format
      *
      * @param $xml
@@ -106,11 +171,13 @@ class IOL_Helper {
      */
     public static function convert_xml_to_readable( $xml ) {
         $xml = preg_replace('/(<\?xml[^?]+?)utf-16/i', '$1utf-8', $xml );
-        $xml = simplexml_load_string( $xml );
+        $xml = preg_replace('/^\s*\/\/<!\[CDATA\[([\s\S]*)\/\/\]\]>\s*\z/', '$1', $xml);
+        $xml = preg_replace( '#</?(html|head|body)[^>]*>#i', '', $xml );
+        $xml = preg_replace( '/style=(["\'])[^\1]*?\1/i', '', $xml, -1 );
 
-        $xml = json_decode( json_encode( $xml ), true );
+        $xml_array = self::xml_to_array( $xml );
 
-        return self::array_change_key_case_recursive( $xml );
+        return self::array_change_key_case_recursive( $xml_array );
     }
 
     /**
@@ -120,7 +187,7 @@ class IOL_Helper {
      * @return bool
      */
     public static function bool_to_string( $value ) {
-        return $value ? 'Y' : 'N';;
+        return $value ? 'Y' : 'N';
     }
 
     /**

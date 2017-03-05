@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <?php $include_on_request = isset( $include_on_request ) ? $include_on_request : 0; ?>
+                <?php $include_on_request = isset( $include_on_request ) ? $include_on_request : 1; ?>
                 <div class="form-group row clearfix">
                     <label class="form-label col-lg-5"><?php esc_html_e( 'Hotels In Request', 'kanda' ); ?></label>
                     <div class="select-wrap col-lg-7">

@@ -129,6 +129,15 @@ function kanda_add_rewrite_rule() {
         ),
         /******************************************** /end Profiles Controller ********************************************/
 
+        /******************************************** 4. Dashboard Controller ********************************************/
+        array(
+            'regex' => 'dashboard(\/)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 16, 'dashboard', 'dashboard' ),
+            'after' => 'top'
+        ),
+
+        /******************************************** /end Dashboard Controller ********************************************/
+
         // other rules should go here
     );
 
@@ -178,6 +187,11 @@ function kanda_parse_request( $query_vars ) {
 
             $controller = get_controller_by_slug( $front_page->post_name );
             $action = $front_page->post_name;
+
+            if( $controller ) {
+                $query_vars->query_vars[ 'page_id' ] = $front_page->ID;
+            }
+
         }
     } else {
         if( isset( $query_vars->query_vars['controller'] ) ) {
@@ -199,7 +213,7 @@ function kanda_parse_request( $query_vars ) {
             require_once ( $controller_file );
 
             if( class_exists( $controller_class_name ) ) {
-                $controller = new $controller_class_name( $query_vars->query_vars[ "page_id" ] );
+                $controller = new $controller_class_name( $query_vars->query_vars[ 'page_id' ] );
 
                 $action = $action ? $action : $controller->default_action;
 

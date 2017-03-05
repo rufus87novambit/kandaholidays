@@ -16,16 +16,6 @@ class Profiles_Controller extends Base_Controller {
         parent::__construct( $post_id );
     }
 
-    /**
-     * Profile view
-     * @param $args
-     */
-    public function view( $args ) {
-
-        $this->view = 'view';
-
-    }
-
     /************************************************** Edit Profile **************************************************/
     /**
      * Specific hooks for edit profile

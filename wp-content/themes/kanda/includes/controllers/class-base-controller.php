@@ -141,6 +141,8 @@ class Base_Controller {
             }
 
             remove_filter( 'the_content', array( $this, 'render' ) );
+
+            $content = apply_filters( 'kanda/controller_content', $content );
         }
 
         return $content;

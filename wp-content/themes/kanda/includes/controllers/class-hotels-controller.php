@@ -303,5 +303,4 @@ class Hotels_Controller extends Base_Controller {
         );
     }
 
-
 }

@@ -249,7 +249,7 @@
                 <div class="table-wrap">
                     <div class="users-table table">
                         <header class="thead">
-                            <div class="th">Delete</div>
+                            <div class="th checkbox">Delete</div>
                             <div class="th">Username</div>
                             <div class="th">Display Name</div>
                             <div class="th">Rate Type</div>
@@ -258,7 +258,7 @@
                         </header>
                         <div class="tbody">
                             <div class="tr">
-                                <div class="td">
+                                <div class="td checkbox">
                                     <label class="ctrl-field -chbox">
                                         <input type='checkbox' class="ctrl-inp" name="">
                                         <span class="ctrl-btn"></span>
@@ -273,7 +273,7 @@
                                 <div class="td">25 Jan, 2017</div>
                             </div>
                             <div class="tr">
-                                <div class="td">
+                                <div class="td checkbox">
                                     <label class="ctrl-field -chbox">
                                         <input type='checkbox' class="ctrl-inp" name="" >
                                         <span class="ctrl-btn"></span>
@@ -288,7 +288,7 @@
                                 <div class="td">25 Jan, 2017</div>
                             </div>
                             <div class="tr">
-                                <div class="td">
+                                <div class="td checkbox">
                                     <label class="ctrl-field -chbox">
                                         <input type='checkbox' class="ctrl-inp" name="">
                                         <span class="ctrl-btn"></span>
@@ -303,7 +303,7 @@
                                 <div class="td">25 Jan, 2017</div>
                             </div>
                             <div class="tr">
-                                <div class="td">
+                                <div class="td checkbox">
                                     <label class="ctrl-field -chbox">
                                         <input type='checkbox' class="ctrl-inp" name="">
                                         <span class="ctrl-btn"></span>
