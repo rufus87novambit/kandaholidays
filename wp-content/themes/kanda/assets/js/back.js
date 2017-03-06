@@ -36,6 +36,14 @@
     });
 
     /************************************************ Helpers **************************************************/
+
+    /**
+     * Deny typing in node
+     */
+    $('.deny-typing').on( 'keydown', function(){
+        return false;
+    });
+
     /**
      * Rating
      */
@@ -83,8 +91,12 @@
      */
     if( $('.datepicker-start-date').length > 0 && $('.datepicker-end-date').length > 0 ) {
 
-        var checkin = new Date();
-        var checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
+        var start_date_picker = $('.datepicker-start-date'),
+            end_date_picker = $('.datepicker-end-date' ),
+            min_checkin = new Date(),
+            checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin,
+            min_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() )),
+            checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
 
         /**
          * Get date in milliseconds
@@ -107,16 +119,16 @@
         /**
          * Checkin functionality
          */
-        $( '.datepicker-start-date' ).datepicker({
+        start_date_picker.datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
-            minDate: checkin,
+            minDate: min_checkin,
             onSelect: function(){
                 checkin = new Date( this.value );
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
 
-                $( '.datepicker-end-date').datepicker( 'option', 'minDate', checkout );
-                checkout = new Date( $( '.datepicker-end-date').datepicker( 'getDate' ) );
+                end_date_picker.datepicker( 'option', 'minDate', checkout );
+                checkout = new Date( end_date_picker.datepicker( 'getDate' ) );
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
             }
         }).datepicker( 'setDate', checkin );
@@ -124,12 +136,12 @@
         /**
          * Checkout functionality
          */
-        $( '.datepicker-end-date' ).datepicker({
+        end_date_picker.datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
-            minDate: checkout,
+            minDate: min_checkout,
             onSelect: function(){
-                checkin = $( '.datepicker-start-date' ).datepicker( 'getDate' );
+                checkin = start_date_picker.datepicker( 'getDate' );
                 checkout = new Date( this.value );
 
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
@@ -140,16 +152,16 @@
          * Nights count functionality
          */
         $( '#nights_count').on( 'change keyup', function(){
-            checkin = $( '.datepicker-start-date' ).datepicker( 'getDate' );
+            checkin = start_date_picker.datepicker( 'getDate' );
             if( checkin ) {
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
             }
-            $( '.datepicker-end-date' ).datepicker( 'setDate', checkout );
+            end_date_picker.datepicker( 'setDate', checkout );
         } );
     }
 
     /**
-     * Rooms count functionslity
+     * Rooms count functionality
      */
     if( $( '#rooms_count').length > 0 ) {
         $( '#rooms_count' ).on( 'change', function(){
@@ -213,6 +225,7 @@
             dotsClass   : 'slick-dots container'
         });
     }
+
     /********************************************** /end Helpers ***********************************************/
 
     /***************************************** Currency functionality ******************************************/
@@ -237,7 +250,7 @@
     /**
      * Tabs in popup
      */
-    $('body').on( 'click', '.popup-tabs .tab-headings a', function(){
+    $('body').on( 'click', '.popup-tabs .tab-headings a', function( e ){
         var _this = $(this),
             _tabs = _this.closest( '.tabs' ),
             _headings = _this.siblings( '.tab-heading' ),
@@ -386,13 +399,6 @@
         return false;
     } );
 
-    /**
-     * Deny typing in node
-     */
-    $('.deny-typing').on( 'keydown', function(){
-        return false;
-    });
-
     /************************************************ Edit profile ***********************************************/
 
     /**
@@ -509,7 +515,7 @@
     /********************************************** /end Edit profile ********************************************/
 
     /********************************************** Popups **********************************************/
-    function loading_popup() {
+    var loading_popup = function( e ) {
         $.magnificPopup.close();
 
         $.magnificPopup.open({
@@ -524,7 +530,7 @@
         });
     }
 
-    function error_popup( content ) {
+    var error_popup = function( content ) {
         $.magnificPopup.close();
 
         $('#error-popup').html( content );
@@ -540,6 +546,61 @@
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         });
     }
+
+    var confirmation_popup = function( message, headline, cb ) {
+        var _dialog = '';
+
+        _dialog += '<div class="mfp-with-anim white-popup confirmation">';
+        _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
+        if (headline) {
+            _dialog += '<h2 class="text-center">' + headline + '</h2>';
+        }
+        _dialog += '<div class="content">' + message + '</div>';
+        _dialog += '<div class="actions text-center">';
+        _dialog += '<button type="button" class="btn -sm -primary">Submit</button> ';
+        _dialog += '<button type="button" class="btn -sm -danger">Cancel</button>';
+        _dialog += '</div>';
+        _dialog += '</div>';
+
+        $.magnificPopup.open({
+            items: {
+                src: _dialog
+            },
+            showCloseBtn : true,
+            closeOnBgClick : false,
+            enableEscapeKey : true,
+            midClick: true,
+            callbacks: {
+                open: function() {
+                    var _content = $(this.content);
+
+                    _content.on('click', '.-primary', function() {
+                        if (typeof cb == 'function') {
+                            cb();
+                        }
+                        $.magnificPopup.close();
+                        $(document).off('keydown', confirmationPopupkeydownHandler);
+                    });
+
+                    _content.on('click', '.-danger', function() {
+                        $.magnificPopup.close();
+                        $(document).off('keydown', confirmationPopupkeydownHandler);
+                    });
+
+                    var confirmationPopupkeydownHandler = function (e) {
+                        if (e.keyCode == 13) {
+                            _content.find('.-primary').trigger( 'click' );
+                            return false;
+                        } else if (e.keyCode == 27) {
+                            _content.find('.-danger').trigger( 'click' );
+                            return false;
+                        }
+                    };
+                    $(document).on('keydown', confirmationPopupkeydownHandler);
+                }
+            }
+        });
+    };
 
     $('body').on( 'click', '.iframe-popup', function() {
         var _src = $(this).attr('href');
@@ -588,7 +649,9 @@
     } );
 
     $('body').on( 'click', '.ajax-popup', function(){
-        var _src = $(this).attr('href');
+        var _src = $(this).attr('href'),
+            _popup_class = $(this).data('popup') || '';
+
         $.magnificPopup.open({
             items: {
                 src: _src
@@ -602,7 +665,7 @@
                     if( ! mfpResponse.data ) {
                         mfpResponse.data = kanda.translatable.invalid_request
                     }
-                    mfpResponse.data = '<div class="white-popup">' + mfpResponse.data + '</div>';
+                    mfpResponse.data = '<div class="white-popup ' + _popup_class + '">' + mfpResponse.data.data + '</div>';
                 },
                 ajaxContentAdded : function(){
                     $( this.content ).find( '.hotel-gallery').slick({
@@ -639,60 +702,6 @@
         return false;
     } );
 
-    var confirmDialog = function(message, headline, cb) {
-        var _dialog = '';
-
-        _dialog += '<div class="mfp-with-anim white-popup confirmation">';
-            _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
-            if (headline) {
-                _dialog += '<h2 class="text-center">' + headline + '</h2>';
-            }
-            _dialog += '<div class="content">' + message + '</div>';
-            _dialog += '<div class="actions text-center">';
-                _dialog += '<button type="button" class="btn -sm -primary">Submit</button> ';
-                _dialog += '<button type="button" class="btn -sm -danger">Cancel</button>';
-            _dialog += '</div>';
-        _dialog += '</div>';
-
-        $.magnificPopup.open({
-            items: {
-                src: _dialog
-            },
-            showCloseBtn : true,
-            closeOnBgClick : false,
-            enableEscapeKey : true,
-            midClick: true,
-            callbacks: {
-                open: function() {
-                    var _content = $(this.content);
-
-                    _content.on('click', '.-primary', function() {
-                        if (typeof cb == 'function') {
-                            cb();
-                        }
-                        $.magnificPopup.close();
-                        $(document).off('keydown', confirmationPopupkeydownHandler);
-                    });
-
-                    _content.on('click', '.-danger', function() {
-                        $.magnificPopup.close();
-                        $(document).off('keydown', confirmationPopupkeydownHandler);
-                    });
-
-                    var confirmationPopupkeydownHandler = function (e) {
-                        if (e.keyCode == 13) {
-                            _content.find('.-primary').trigger( 'click' );
-                            return false;
-                        } else if (e.keyCode == 27) {
-                            _content.find('.-danger').trigger( 'click' );
-                            return false;
-                        }
-                    };
-                    $(document).on('keydown', confirmationPopupkeydownHandler);
-                }
-            }
-        });
-    };
     /********************************************** Popups **********************************************/
 
     /************************************************ Search hotels **********************************************/
@@ -851,7 +860,10 @@
     }
     /********************************************** /end Single Hotel *******************************************/
 
+    /********************************************** Hotel Search Results *******************************************/
+
     if( $('.show-booking-details').length > 0 ) {
+
         $('.show-booking-details').on( 'click', function(){
 
             var _this = $(this),
@@ -868,8 +880,6 @@
                 $('.booking-details-box.active').stop(true, true).css( { display : 'none' } ).removeClass('active');
                 $('.show-booking-details.active').removeClass('active');
 
-                console.log( $(_this).closest('li').css( 'marginBottom' ) );
-
                 $('html, body').animate({
                     scrollTop: $(_this).closest('li').offset().top - parseInt( $(_this).closest('li').css( 'marginBottom' ) )
                 }, 500);
@@ -883,18 +893,21 @@
 
             return false;
         } );
+
+        $('.book-btn').on('click', function(){
+            var _this = $(this),
+                _content = _this.closest('.users-table').clone(),
+                _popup_content = '';
+
+            _content.find( '.book-btn' ).remove();
+
+            _popup_content = '<p class="text-center">Are you sure you want to proccess with following details?</p>' + _content[0].outerHTML;
+            confirmation_popup( _popup_content, 'Booking confirmation' );
+
+            return false;
+        });
     }
 
-    $('.book-btn').on('click', function(){
-        var _this = $(this),
-            _content = _this.closest('.users-table').clone(),
-            _popup_content = '';
+    /********************************************** /end Hotel Search Results *******************************************/
 
-        _content.find( '.book-btn' ).remove();
-
-        _popup_content = '<p class="text-center">Are you sure you want to proccess with following details?</p>' + _content[0].outerHTML;
-        confirmDialog( _popup_content, 'Booking confirmation' );
-
-        return false;
-    });
 })(jQuery);

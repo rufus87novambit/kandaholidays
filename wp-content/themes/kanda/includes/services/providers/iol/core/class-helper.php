@@ -89,8 +89,9 @@ class IOL_Helper {
      */
     public static function convert_date( $date, $format = false ) {
         if( ! $format ) {
-            $format = get_option( 'date_format' );
+            $format = Kanda_Config::get( 'display_date_format' );
         }
+
         $d = DateTime::createFromFormat( $format, $date );
         if( $d && $d->format($format) == $date ) {
             return $d->format( IOL_Config::get( 'date_format' ) );

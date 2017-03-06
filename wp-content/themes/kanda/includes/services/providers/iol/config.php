@@ -63,8 +63,7 @@ class IOL_Config {
      * @var array
      */
     private static $cache_timeout = array(
-        'search'        => 3 * HOUR_IN_SECONDS,
-        'hotel_details'
+        'search'        => 3 * HOUR_IN_SECONDS
     );
 
     /**

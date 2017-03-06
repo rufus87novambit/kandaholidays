@@ -48,6 +48,12 @@ class Kanda_Config {
     private static $controller_map;
 
     /**
+     * Holds display date format
+     * @var
+     */
+    private static $display_date_format;
+
+    /**
      * Holds active providers
      *
      * @var array
@@ -87,10 +93,10 @@ class Kanda_Config {
                 'administrator' => 1 * DAY_IN_SECONDS,
                 'agency'        => 1 * DAY_IN_SECONDS
             ),
-            'login'             => 10 * MINUTE_IN_SECONDS,
-            'register'          => 10 * MINUTE_IN_SECONDS,
-            'forgot_password'   => 1 * HOUR_IN_SECONDS,
-            'reset_password'    => 1  * DAY_IN_SECONDS
+            'login'              => 10 * MINUTE_IN_SECONDS,
+            'register'           => 10 * MINUTE_IN_SECONDS,
+            'forgot_password'    => 1 * HOUR_IN_SECONDS,
+            'reset_password'     => 1  * DAY_IN_SECONDS,
         );
         self::$validation = array(
             'front' => array(
@@ -233,6 +239,7 @@ class Kanda_Config {
             'hotels'        => 'index|results|view_hotel',
             'index'         => 'dashboard'
         );
+        self::$display_date_format = get_option( 'date_format' );
     }
 
 }

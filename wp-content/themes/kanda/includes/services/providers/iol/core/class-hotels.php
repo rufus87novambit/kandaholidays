@@ -77,12 +77,12 @@ class IOL_Hotels {
 
         $search_criteria->addChild(
             IOL_Helper::parse_xml_key( 'start_date' ),
-            IOL_Helper::convert_date( $args['start_date'], 'd F, Y' )
+            IOL_Helper::convert_date( $args['start_date'], Kanda_Config::get( 'display_date_format' ) )
         );
 
         $search_criteria->addChild(
             IOL_Helper::parse_xml_key( 'end_date' ),
-            IOL_Helper::convert_date( $args['end_date'], 'd F, Y' )
+            IOL_Helper::convert_date( $args['end_date'], Kanda_Config::get( 'display_date_format' ) )
         );
 
         $room_configuration = $search_criteria->addChild(
@@ -290,12 +290,12 @@ class IOL_Hotels {
 
         $search_criteria->addChild(
             IOL_Helper::parse_xml_key( 'start_date' ),
-            IOL_Helper::convert_date( $args['start_date'], 'd F, Y' )
+            IOL_Helper::convert_date( $args['start_date'], Kanda_Config::get( 'display_date_format' ) )
         );
 
         $search_criteria->addChild(
             IOL_Helper::parse_xml_key( 'end_date' ),
-            IOL_Helper::convert_date( $args['end_date'], 'd F, Y' )
+            IOL_Helper::convert_date( $args['end_date'], Kanda_Config::get( 'display_date_format' ) )
         );
 
         return $xml->asXML();
@@ -319,6 +319,77 @@ class IOL_Hotels {
         $xml = $this->generate_hotel_details_xml( $args );
 
         return $this->request_instance->process( $xml, $args );
+    }
+
+    /**
+     * Generate hotel cancellation policy XML
+     *
+     * @param $args
+     * @return mixed|SimpleXMLElement
+     */
+    private function generate_hotel_cancellation_policy_xml( $args ) {
+        $xml = $this->request_instance->get_basic_xml( 'hotel_cancellation_policy_request' );
+
+        $search_criteria = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'search_criteria' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'hotel_code' ),
+            $args['hotel_code']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'start_date' ),
+            IOL_Helper::convert_date( $args['start_date'], 'Ymd' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'end_date' ),
+            IOL_Helper::convert_date( $args['end_date'], 'Ymd' )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'room_type_code' ),
+            $args['room_type_code']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'city_code' ),
+            'DXB'
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'contract_token_id' ),
+            $args['contract_token_id']
+        );
+
+        return $xml->asXML();
+    }
+
+    /**
+     * Get hotel cancellation policy data
+     *
+     * @param $hotel_code
+     * @param $room_type_code
+     * @param $contract_token_id
+     * @param $start_date
+     * @param $end_date
+     * @return Kanda_Service_Response
+     */
+    public function hotel_cancellation_policy( $hotel_code, $room_type_code, $contract_token_id, $start_date, $end_date ) {
+        $args = array(
+            'hotel_code'        => $hotel_code,
+            'room_type_code'    => $room_type_code,
+            'contract_token_id' => $contract_token_id,
+            'start_date'        => $start_date,
+            'end_date'          => $end_date
+        );
+
+        $xml = $this->generate_hotel_cancellation_policy_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
+
     }
 
     /**

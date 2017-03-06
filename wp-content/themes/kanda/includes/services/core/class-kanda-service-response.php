@@ -63,7 +63,6 @@ class Kanda_Service_Response {
 
             $xml = wp_remote_retrieve_body( $http );
 
-//            echo '<pre>'; var_dump($xml); echo '</pre>'; die;
             $data = IOL_Helper::convert_xml_to_readable( $xml );
 
             if( isset( $data['errormessage'] ) ) {

@@ -182,8 +182,8 @@ class Hotels_Controller extends Base_Controller {
 
                 $this->hotel_code = $args['hcode'];
                 $this->security = wp_create_nonce( 'kanda-get-hotel-details' );
-                $this->start_date = date( 'd F, Y', strtotime( $start_date ) );
-                $this->end_date = date( 'd F, Y', strtotime( $end_date ) );
+                $this->start_date = date( Kanda_Config::get( 'display_date_format' ), strtotime( $start_date ) );
+                $this->end_date = date( Kanda_Config::get( 'display_date_format' ), strtotime( $end_date ) );
 
                 $hotel_post = get_post( (int)$post_id );
                 $this->title = get_the_title( $hotel_post );
@@ -274,6 +274,86 @@ class Hotels_Controller extends Base_Controller {
 
     /************************************************** Helper methods **************************************************/
 
+    public function get_cancellation_policy() {
+        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+
+            $is_valid = true;
+            $security = isset( $_REQUEST['security'] ) ? $_REQUEST['security'] : '';
+            if( wp_verify_nonce( $security, 'kanda-get-hotel-cancellation-policy' ) ) {
+
+                $hotel_code = isset( $_REQUEST['code'] ) ? $_REQUEST['code'] : false;
+                if( ! $hotel_code ) {
+                    $is_valid = false;
+                    $message = __( 'Hotel code is required', 'kanda' );
+                }
+
+                $room_type_code = isset( $_REQUEST['roomtype'] ) ? $_REQUEST['roomtype'] : false;
+                if( ! $room_type_code ) {
+                    $is_valid = false;
+                    $message = __( 'Room type is required', 'kanda' );
+                }
+
+                $contract_token_id = isset( $_REQUEST['token'] ) ? $_REQUEST['token'] : false;
+                if( ! $contract_token_id ) {
+                    $is_valid = false;
+                    $message = __( 'Contract token is required', 'kanda' );
+                }
+
+                $start_date = isset( $_REQUEST['start_date'] ) ? $_REQUEST['start_date'] : false;
+                if( ! $start_date ) {
+                    $is_valid = false;
+                    $message = __( 'Start date is required', 'kanda' );
+                }
+
+                $end_date = isset( $_REQUEST['end_date'] ) ? $_REQUEST['end_date'] : false;
+                if( ! $end_date ) {
+                    $is_valid = false;
+                    $message = __( 'End date is required', 'kanda' );
+                }
+
+                if( $is_valid ) {
+
+                    $response = provider_iol()->hotels()->hotel_cancellation_policy( $hotel_code, $room_type_code, $contract_token_id, $start_date, $end_date );
+                    if( ! $response->is_valid() ) {
+                        $is_valid = false;
+                        $message = $response->message;
+                    } else {
+
+                        $template = KANDA_THEME_PATH . 'views/partials/hotel-cancellation-policy.php';
+                        if( file_exists( $template ) ) {
+                            $data = $response->data;
+                            $cancellation_policies = ( array_key_exists( 'cancellationdetails', $data ) && isset( $data['cancellationdetails']['cancellation'] ) ) ? $data['cancellationdetails']['cancellation'] : array();
+
+                            ob_start();
+                            include( $template );
+                            $content = ob_get_clean();
+
+                        } else {
+                            $is_valid = false;
+                            $message = __( 'Internal server error', 'kanda' );
+                        }
+
+                    }
+
+                }
+
+            } else {
+                $is_valid = false;
+                $message = __( 'Invalid request', 'kanda' );
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( $content );
+            } else {
+                wp_send_json_error( $message );
+            }
+
+
+        } else {
+            $this->show_404();
+        }
+    }
+
     /**
      * Get hotel Google Map url
      *
@@ -300,6 +380,29 @@ class Hotels_Controller extends Base_Controller {
                 'end_date'      => $args['end_date']
             ),
             kanda_url_to( 'hotels', array( 'view', $args['hotelcode'] ) )
+        );
+    }
+
+    /**
+     * Get hotel booking cancellation policy url
+     *
+     * @param $hotel_code
+     * @param $roomtypecode
+     * @param $contracttokenid
+     * @param $start_date
+     * @param $end_date
+     * @return string
+     */
+    public function get_cancellation_policy_url( $hotel_code, $roomtypecode, $contracttokenid, $start_date, $end_date ) {
+        return add_query_arg( array(
+                'action'        => 'hotel_cancellation_policy',
+                'code'          => $hotel_code,
+                'roomtype'      => $roomtypecode,
+                'token'         => $contracttokenid,
+                'start_date'    => $start_date,
+                'end_date'      => $end_date,
+                'security'      => wp_create_nonce( 'kanda-get-hotel-cancellation-policy' )
+            ), admin_url( 'admin-ajax.php' )
         );
     }
 

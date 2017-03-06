@@ -1,3 +1,7 @@
+<?php
+$start_date = date( 'Ymd', strtotime($this->response->request['start_date'] ) );
+$end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
+?>
 <form class="form-block" method="get" action="<?php echo kanda_url_to( 'hotels', array( 'result', $this->response->request_id ) ); ?>">
     <fieldset class="clearfix">
         <div class="row">
@@ -48,6 +52,7 @@
         </div>
     </fieldset>
 </form>
+
 <!-- Media list -->
 <ul class="articles-list">
     <?php foreach( $this->response->data as $hotel ) { ?>
@@ -90,7 +95,7 @@
                         <?php esc_html_e( 'Book', 'kanda' ); ?>
                     </a>
 
-                    <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => date( 'Ymd', strtotime($this->response->request['start_date'] ) ), 'end_date' => date( 'Ymd', strtotime( $this->response->request['end_date'] ) ) ), $this->response->request ); ?>" class="btn -info -sm  clearfix" target="_blank">
+                    <a href="<?php echo $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, $this->response->request ) ); ?>" class="btn -info -sm  clearfix" target="_blank">
                         <i class="icon icon-info2"></i>
                         <?php esc_html_e( 'Hotel details', 'kanda' ); ?>
                     </a>
@@ -112,48 +117,52 @@
                 <?php
                     $rooms = $hotel['roomtypedetails']['rooms']['room'];
                     foreach( $rooms as $room ) { ?>
-                    <div class="">
-                        <div class="users-table table">
-                            <header class="thead">
-                                <div class="th" style="width: 25%"><?php esc_html_e( 'Property type', 'kanda' ); ?></div>
-                                <div class="th"><?php esc_html_e( 'Property value', 'kanda' ); ?><a href="#" class="btn -sm -info book-btn pull-right">Book</a></div>
-                            </header>
-                            <div class="tbody">
-                                <?php
-                                $properties = array(
-                                    'roomtype' => esc_html__( 'Room Type', 'kanda' ),
-                                    'mealplan' => esc_html__( 'Meal Plan', 'kanda' ),
-                                    'rate' => esc_html__( 'Rate', 'kanda' ),
-                                );
-                                foreach( $properties as $property => $property_label ) {
-                                    if( isset( $room[ $property ] ) && $room[ $property ] ) { ?>
-                                <div class="tr">
-                                    <div class="td"><?php echo $property_label; ?></div>
-                                    <div class="td"><?php echo $room[ $property ]; ?></div>
+                    <div class="users-table table">
+                        <header class="thead">
+                            <div class="th" style="width: 25%"><?php esc_html_e( 'Property type', 'kanda' ); ?></div>
+                            <div class="th">
+                                <?php esc_html_e( 'Property value', 'kanda' ); ?>
+                                <div class="actions pull-right">
+                                    <a href="javascript:void(0);" class="btn -sm -info book-btn"><?php esc_html_e( 'Book', 'kanda' ); ?></a>
+                                    <a href="<?php echo $this->get_cancellation_policy_url( $hotel['hotelcode'], $room['roomtypecode'], $room['contracttokenid'], $start_date, $end_date ); ?>" class="btn -sm -warning ajax-popup" data-popup="confirmation"><?php esc_html_e( 'Cancellation policy', 'kanda' ); ?></a>
                                 </div>
-                                    <?php }
-                                }
-
-                                if( (bool)$room['discountdetails'] ) {
-                                    $room_discounts = $room['discountdetails']['discount'];
-                                    foreach( $room_discounts as $discount ) {
-                                        $properties = array(
-                                            'discountname' => esc_html__( 'Discount Name', 'kanda' ),
-                                            'discounttype' => esc_html__( 'Discount Type', 'kanda' ),
-                                            'discountnotes' => esc_html__( 'Discount Notes', 'kanda' ),
-                                            'totaldiscountrate' => esc_html__( 'Discount Total Rate', 'kanda' ),
-                                        );
-                                        foreach( $properties as $property => $property_label ) {
-                                            if( isset( $discount[ $property ] ) && $discount[ $property ] ) { ?>
-                                        <div class="tr">
-                                            <div class="td"><?php echo $property_label; ?></div>
-                                            <div class="td"><?php echo $discount[ $property ]; ?></div>
-                                        </div>
-                                            <?php }
-                                        }
-                                    }
-                                } ?>
                             </div>
+                        </header>
+                        <div class="tbody">
+                            <?php
+                            $properties = array(
+                                'roomtype' => esc_html__( 'Room Type', 'kanda' ),
+                                'mealplan' => esc_html__( 'Meal Plan', 'kanda' ),
+                                'rate' => esc_html__( 'Rate', 'kanda' ),
+                            );
+                            foreach( $properties as $property => $property_label ) {
+                                if( isset( $room[ $property ] ) && $room[ $property ] ) { ?>
+                            <div class="tr">
+                                <div class="td"><?php echo $property_label; ?></div>
+                                <div class="td"><?php echo $room[ $property ]; ?></div>
+                            </div>
+                                <?php }
+                            }
+
+                            if( (bool)$room['discountdetails'] ) {
+                                $room_discounts = $room['discountdetails']['discount'];
+                                foreach( $room_discounts as $discount ) {
+                                    $properties = array(
+                                        'discountname' => esc_html__( 'Discount Name', 'kanda' ),
+                                        'discounttype' => esc_html__( 'Discount Type', 'kanda' ),
+                                        'discountnotes' => esc_html__( 'Discount Notes', 'kanda' ),
+                                        'totaldiscountrate' => esc_html__( 'Discount Total Rate', 'kanda' ),
+                                    );
+                                    foreach( $properties as $property => $property_label ) {
+                                        if( isset( $discount[ $property ] ) && $discount[ $property ] ) { ?>
+                                    <div class="tr">
+                                        <div class="td"><?php echo $property_label; ?></div>
+                                        <div class="td"><?php echo $discount[ $property ]; ?></div>
+                                    </div>
+                                        <?php }
+                                    }
+                                }
+                            } ?>
                         </div>
                     </div>
                 <?php } ?>

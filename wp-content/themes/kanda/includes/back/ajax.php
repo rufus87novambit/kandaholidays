@@ -101,6 +101,19 @@ function kanda_get_hotel_details(){
 }
 
 /**
+ * Ajax get hotel cancellation policy
+ */
+add_action( 'wp_ajax_hotel_cancellation_policy', 'kanda_get_hotel_cancellation_policy' );
+function kanda_get_hotel_cancellation_policy() {
+    if( ! class_exists( 'Hotels_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-hotels-controller.php' );
+    }
+
+    $controller = new Hotels_Controller();
+    $controller->get_cancellation_policy();
+}
+
+/**
  * Get specific hotels list
  */
 add_action( 'wp_ajax_city_hotels', 'kanda_get_city_hotels_list' );
