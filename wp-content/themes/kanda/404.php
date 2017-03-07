@@ -5,7 +5,7 @@ get_header( $template_options['header'] );
 if( is_user_logged_in() ) { ?>
     <div class="row">
         <div class="primary col-md-9">
-            <div class="box">
+            <div class="box main-content">
                 <h1 class="page-title"><?php echo apply_filters( 'the_title', $template_options['title'], 0 ); ?></h1>
 
                 <?php echo apply_filters( 'the_content', $template_options['content'] ); ?>

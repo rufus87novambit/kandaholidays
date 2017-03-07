@@ -42,6 +42,9 @@
 .br-theme-kanda-stars .br-widget .br-current-rating {
     display: none;
 }
+.br-theme-kanda-stars .br-readonly {
+    opacity: 0.2;
+}
 .br-theme-kanda-stars .br-readonly a {
     cursor: default;
 }

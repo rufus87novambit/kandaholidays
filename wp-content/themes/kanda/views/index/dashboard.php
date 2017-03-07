@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-6">
-        <div class="box">
+        <div class="box main-content">
             <h2 class="page-title"><?php _e( 'Bookings', 'kanda' ); ?></h2>
             <div class="table-wrap">
                 <div class="users-table table">

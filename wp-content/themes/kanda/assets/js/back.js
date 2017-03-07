@@ -768,12 +768,29 @@
                             appendTo : '#autocomplete-wrap',
                             minLength: 1,
                             autoFocus: true,
-                            source: response.data
+                            source: response.data,
+                            select: function( event, ui ) {
+                                $('.rating').barrating( 'readonly', true );
+                            },
                         });
                     }
                 }
             });
         }).filter( ':checked' ).trigger( 'change' );
+
+        $( '#hotel_name').on('keyup', function(){
+            if( ! $(this).val() ) {
+                $('.rating').barrating( 'destroy' ).barrating({
+                    theme: 'kanda-stars',
+                    initialRating: '',
+                    allowEmpty : true,
+                    emptyValue : '',
+                    deselectable: true,
+                    hoverState: false,
+                    showValues: true
+                });
+            }
+        });
 
         kanda_back_form_hotel_search.on( 'submit', function(){
 

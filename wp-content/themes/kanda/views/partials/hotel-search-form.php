@@ -366,29 +366,31 @@
                         <div class="form-control-feedback"><small><?php echo $has_error ? $this->errors[ 'nights_count' ] : ''; ?></small></div>
                     </div>
                 </div>
+
+                <legend><?php esc_html_e( 'SELECT YOUR ROOM/S', 'kanda' ); ?></legend>
+
+                <?php $rooms_count = isset( $rooms_count ) ? $rooms_count : 1; ?>
+                <div class="form-group row clearfix">
+                    <label class="form-label col-lg-5"><?php esc_html_e( 'How Many Rooms Do You Require?', 'kanda' ); ?></label>
+                    <div class="select-wrap col-lg-7">
+                        <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="rooms_count" id="rooms_count">
+                            <option value="1" <?php selected( 1, $rooms_count ); ?>>1</option>
+                            <option value="2" <?php selected( 2, $rooms_count ); ?>>2</option>
+                            <option value="3" <?php selected( 3, $rooms_count ); ?>>3</option>
+                            <option value="4" <?php selected( 4, $rooms_count ); ?>>4</option>
+                            <option value="5" <?php selected( 5, $rooms_count ); ?>>5</option>
+                            <option value="6" <?php selected( 6, $rooms_count ); ?>>6</option>
+                            <option value="7" <?php selected( 7, $rooms_count ); ?>>7</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </fieldset>
 
     <fieldset class="fieldset row clearfix">
         <div class="col-sm-6">
-            <legend><?php esc_html_e( 'SELECT YOUR ROOM/S', 'kanda' ); ?></legend>
 
-            <?php $rooms_count = isset( $rooms_count ) ? $rooms_count : 1; ?>
-            <div class="form-group row clearfix">
-                <label class="form-label col-lg-5"><?php esc_html_e( 'How Many Rooms Do You Require?', 'kanda' ); ?></label>
-                <div class="select-wrap col-lg-7">
-                    <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="rooms_count" id="rooms_count">
-                        <option value="1" <?php selected( 1, $rooms_count ); ?>>1</option>
-                        <option value="2" <?php selected( 2, $rooms_count ); ?>>2</option>
-                        <option value="3" <?php selected( 3, $rooms_count ); ?>>3</option>
-                        <option value="4" <?php selected( 4, $rooms_count ); ?>>4</option>
-                        <option value="5" <?php selected( 5, $rooms_count ); ?>>5</option>
-                        <option value="6" <?php selected( 6, $rooms_count ); ?>>6</option>
-                        <option value="7" <?php selected( 7, $rooms_count ); ?>>7</option>
-                    </select>
-                </div>
-            </div>
         </div>
     </fieldset>
     <fieldset class="fieldset row">

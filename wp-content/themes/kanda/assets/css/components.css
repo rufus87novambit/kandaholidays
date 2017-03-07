@@ -13,8 +13,11 @@
 .box{
     background-color: var(--bg-color);
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
-    padding:25px 20px;
     margin-bottom: 1rem;
+    padding:25px 20px;
+}
+.box.main-content {
+    padding: 40px;
 }
 
 
