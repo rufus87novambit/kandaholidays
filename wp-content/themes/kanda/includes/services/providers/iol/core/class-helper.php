@@ -107,6 +107,7 @@ class IOL_Helper {
      */
     private static function xml_to_array( $xmlstr ) {
         $doc = new DOMDocument();
+        $doc->recover = true;
         $doc->loadXML( $xmlstr );
 
         $root = $doc->documentElement;
