@@ -183,6 +183,9 @@
                         .find('input, select').each( function(){
                             this.name = this.name.replace('[1]', '[' + block_index + ']');
                         });
+                    if( block_index % 2 == 0 ) {
+                        clone.find( '.col-lg-11' ).addClass( 'col-lg-offset-1' );
+                    }
 
                     destroyCustomSelectsOn( clone );
 
@@ -557,7 +560,7 @@
         }
         _dialog += '<div class="content">' + message + '</div>';
         _dialog += '<div class="actions text-center">';
-        _dialog += '<button type="button" class="btn -sm -primary">Submit</button> ';
+        _dialog += '<button type="button" class="btn -sm -secondary">Submit</button> ';
         _dialog += '<button type="button" class="btn -sm -danger">Cancel</button>';
         _dialog += '</div>';
         _dialog += '</div>';
@@ -574,7 +577,7 @@
                 open: function() {
                     var _content = $(this.content);
 
-                    _content.on('click', '.-primary', function() {
+                    _content.on('click', '.-secondary', function() {
                         if (typeof cb == 'function') {
                             cb();
                         }
@@ -589,7 +592,7 @@
 
                     var confirmationPopupkeydownHandler = function (e) {
                         if (e.keyCode == 13) {
-                            _content.find('.-primary').trigger( 'click' );
+                            _content.find('.-secondary').trigger( 'click' );
                             return false;
                         } else if (e.keyCode == 27) {
                             _content.find('.-danger').trigger( 'click' );

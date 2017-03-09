@@ -1,9 +1,9 @@
 <?php kanda_show_notification(); ?>
 
 <div class="secondary-menu">
-    <a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a>
-    <a href="javascript:void(0);" rel="button" class="btn -warning -sm"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a>
-    <a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'photo' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-image"></i> <?php esc_html_e( 'Change avatar', 'kanda' ); ?></a>
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" rel="button" class="btn -secondary -sm"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a>
+    <a href="javascript:void(0);" rel="button" class="btn -primary -sm"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a>
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'photo' ) ); ?>" rel="button" class="btn -secondary -sm"><i class="icon icon-image"></i> <?php esc_html_e( 'Change avatar', 'kanda' ); ?></a>
 </div>
 
 <form class="form-block form-inline" id="form_edit_password" method="post">
@@ -49,7 +49,7 @@
     </fieldset>
     <div class="text-right">
         <?php wp_nonce_field( 'kanda_save_password', 'security' ); ?>
-        <button type="submit" class="btn -primary" name="kanda_save"><?php _e( 'Save', 'kanda' ); ?></button>
-        <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>" class="btn -danger"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
+        <button type="submit" class="btn -secondary -sm" name="kanda_save"><?php _e( 'Save', 'kanda' ); ?></button>
+        <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>" class="btn -danger -sm"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>

@@ -1,9 +1,9 @@
 <?php kanda_show_notification(); ?>
 
 <div class="secondary-menu">
-    <a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a>
-    <a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>" rel="button" class="btn -info -sm"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a>
-    <a href="javascript:void(0);" rel="button" class="btn -warning -sm"><i class="icon icon-image"></i> <?php esc_html_e( 'Change avatar', 'kanda' ); ?></a>
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" rel="button" class="btn -secondary -sm"><i class="icon icon-user-tie"></i> <?php esc_html_e( 'Edit Profile', 'kanda' ); ?></a>
+    <a href="<?php echo kanda_url_to( 'profile', array( 'edit', 'password' ) ); ?>" rel="button" class="btn -secondary -sm"><i class="icon icon-key"></i> <?php esc_html_e( 'Change password', 'kanda' ); ?></a>
+    <a href="javascript:void(0);" rel="button" class="btn -primary -sm"><i class="icon icon-image"></i> <?php esc_html_e( 'Change avatar', 'kanda' ); ?></a>
 </div>
 
 <form class="form-block form-inline" enctype="multipart/form-data" method="post">
@@ -31,7 +31,7 @@
                     <div id="avatar-upload-ui" class="text-center">
                         <div><?php esc_html_e( 'Drag and drop files here', 'kanda' ); ?></div>
                         <div><?php esc_html_e( 'or', 'kanda' ); ?></div>
-                        <button class="btn -info" id="avatar-upload-browse"><?php esc_html_e( 'Select', 'kanda' ); ?></button>
+                        <button class="btn -secondary -sm" id="avatar-upload-browse"><?php esc_html_e( 'Select', 'kanda' ); ?></button>
                     </div>
                     <div id="avatar-upload-helper">
                         <div id="filelist"></div>
@@ -43,7 +43,7 @@
     <div class="text-right">
         <input type="hidden" name="coordinates" id="coordinates" />
         <?php wp_nonce_field( 'kanda-save-avatar', 'avatar-save-security' ); ?>
-        <button type="submit" class="btn -primary" name="kanda-save-avatar"><?php _e( 'Save', 'kanda' ); ?></button>
-        <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" class="btn -danger"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
+        <button type="submit" class="btn -secondary -sm" name="kanda-save-avatar"><?php _e( 'Save', 'kanda' ); ?></button>
+        <a role="button" href="<?php echo kanda_url_to( 'profile', array( 'edit' ) ); ?>" class="btn -danger -sm"><?php esc_html_e( 'Cancel', 'kanda' ); ?></a>
     </div>
 </form>

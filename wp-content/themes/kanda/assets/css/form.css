@@ -3,14 +3,14 @@
     margin-bottom:1.5rem;
 }
 
-.form-title,
-legend {
+.form-title, legend {
     display: block;
     width: 100%;
     padding: 0;
     margin-bottom: 10px;
     font-size: 15px;
     line-height: inherit;
+    font-weight: 600;
     color:var(--brand-primary);
 }
 

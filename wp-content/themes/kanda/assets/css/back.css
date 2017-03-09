@@ -12,8 +12,7 @@ body {
     color: var(--text-color);
     font-size: 14px;
     line-height: 1.5;
-    /*background: #fff;*/
-    background: rgba(61, 71, 149, 0.39);
+    background: var(--body-bg);
     border-top: 5px solid #fff;
 }
 /*********************** Header ***********************/
@@ -166,7 +165,7 @@ body {
 * Avatar upload
 */
 #avatar-upload-ui {
-    border:3px dashed var(--bg-color);
+    border:3px dashed var(--color-gray);
     padding: 50px 0;
 }
 #filelist {

@@ -12,31 +12,31 @@
                         <div class="tr">
                             <div class="td">Booking 1</div>
                             <div class="td">
-                                <a href="#" class="btn -sm -warning">Details</a>
+                                <a href="#" class="btn -sm -primary">Details</a>
                             </div>
                         </div>
                         <div class="tr">
                             <div class="td">Booking 2</div>
                             <div class="td">
-                                <a href="#" class="btn -sm -warning">Details</a>
+                                <a href="#" class="btn -sm -primary">Details</a>
                             </div>
                         </div>
                         <div class="tr">
                             <div class="td">Booking 3</div>
                             <div class="td">
-                                <a href="#" class="btn -sm -warning">Details</a>
+                                <a href="#" class="btn -sm -primary">Details</a>
                             </div>
                         </div>
                         <div class="tr">
                             <div class="td">Booking 4</div>
                             <div class="td">
-                                <a href="#" class="btn -sm -warning">Details</a>
+                                <a href="#" class="btn -sm -primary">Details</a>
                             </div>
                         </div>
                         <div class="tr">
                             <div class="td">Booking 5</div>
                             <div class="td">
-                                <a href="#" class="btn -sm -warning">Details</a>
+                                <a href="#" class="btn -sm -primary">Details</a>
                             </div>
                         </div>
                     </div>

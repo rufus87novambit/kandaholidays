@@ -15,6 +15,7 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
     margin-bottom: 1rem;
     padding:25px 20px;
+    border-top: 4px solid #673AB7;
 }
 .box.main-content {
     padding: 40px;
@@ -46,43 +47,41 @@
 
 .btn.-primary{
     background-color:var(--brand-primary);
-    border-color:var(--brand-primary);
-}
-.btn.-primary:hover{
-    background-color:var(--brand-primary-border);
     border-color:var(--brand-primary-border);
+}
+.btn.-secondary{
+    background-color:var(--brand-secondary);
+    border-color:var(--brand-secondary-border);
 }
 .btn.-success{
     background-color:var(--brand-success);
     border-color:var(--brand-success);
 }
-.btn.-success:hover{
-    background-color:var(--brand-success-border);
-    border-color:var(--brand-success-border);
-}
 .btn.-info{
-     background-color:var(--brand-info);
-     border-color:var(--brand-info);
-}
-.btn.-info:hover{
-    background-color:var(--brand-info-border);
-    border-color:var(--brand-info-border);
+    background-color:var(--brand-info);
+    border-color:var(--brand-info);
 }
 .btn.-warning{
     background-color:var(--brand-warning);
     border-color:var(--brand-warning);
 }
-.btn.-warning:hover{
-    background-color:var(--brand-warning-border);
-    border-color:var(--brand-warning-border);
-}
 .btn.-danger{
     background-color:var(--brand-danger);
     border-color:var(--brand-danger);
 }
-.btn.-danger:hover{
-    background-color:var(--brand-danger-border);
-    border-color:var(--brand-danger-border);
+.btn.-primary:hover,
+.btn.-primary.active,
+.btn.-secondary:hover,
+.btn.-secondary.active,
+.btn.-success:hover,
+.btn.-success.active,
+.btn.-info:hover,
+.btn.-info.active,
+.btn.-warning:hover,
+.btn.-warning.active,
+.btn.-danger:hover,
+.btn.-danger.active {
+    opacity: 0.7;
 }
 .btn.-link{
     background:none;
