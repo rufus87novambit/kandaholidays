@@ -96,7 +96,7 @@
 .sub-menu li a {
     padding: 0 10px;
     text-decoration: none;
-    color: #3d4795;
+    color: var(--brand-primary);
     display: block;
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
@@ -106,7 +106,7 @@
     margin-right: 10px;
 }
 .sub-menu li:hover {
-    background-color: #3d4795;
+    background-color: var(--brand-primary);
 }
 .sub-menu li:hover a {
     color: #ececec;

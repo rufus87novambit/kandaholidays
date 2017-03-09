@@ -1,29 +1,3 @@
-:root {
-    --bg-color: #efefef;
-    --border-color:#d8d8d8;
-    --text-color: #373b42;
-    --color-muted: #636c72;
-    --color-light: #fff;
-
-    --gray:#757575;
-    --gray2:#ccc;
-
-    --helper-primary: #5bc0de;
-    --helper-secondary: #ff6500;
-
-    --brand-primary: #3d4795;
-    --brand-success: #5ABD7E;
-    --brand-info: #31b0d5;
-    --brand-warning: #ec971f;
-    --brand-danger: #D8000C;
-
-    --brand-primary-border: #2856b6;
-    --brand-success-border: #449d44;
-    --brand-info-border: #5bc0de;
-    --brand-warning-border: #D0C048;
-    --brand-danger-border: #c9302c;
-}
-
 /*icon fonts*/
 [class^="icon-"], [class*=" icon-"] {
     display:inline-block;
@@ -49,32 +23,28 @@ a{    -webkit-transition:all 0.15s ease;
 }
 /*HELPERS*/
 /*text color*/
-.text-light{color:#fff;}
-.text-dark{	color:#2a4f61;}
-.text-primary{color:#2a4f61;}
-.text-info{color:#18aba9;}
-.text-success{color:#5ABD7E;}
-.text-warning{color:#D0C048;}
-.text-danger{color:#fd5477;}
+.text-primary{color:var(--brand-primary);}
+.text-info{color:var(--brand-success);}
+.text-success{color:var(--brand-success);}
+.text-warning{color:var(--brand-warning);}
+.text-danger{color:var(--brand-danger);}
 
 .text-muted { color: var(--color-muted) !important; }
-.text-light { color: var(--color-light) !important; }
 
 /*background color*/
-.bg-dark{background-color:#2a4f61;}
-.bg-primary{background-color:#2a4f61;}
-.bg-info{background-color:#18aba9;}
-.bg-success{background-color:#5ABD7E;}
-.bg-warning{background-color:#D0C048;}
-.bg-danger{background-color:#fd5477;}
+.bg-primary{background-color:var(--brand-primary);}
+.bg-info{background-color:var(--brand-info);}
+.bg-success{background-color:var(--brand-success);}
+.bg-warning{background-color:var(--brand-warning);}
+.bg-danger{background-color:var(--brand-danger);}
 
 /*border color*/
-.border-default{border-color:var(--gray);}
-.border-primary{border-color:#2a4f61;}
-.border-info{border-color:#18aba9;}
-.border-success{border-color:#5ABD7E;}
-.border-warning{border-color:#D0C048;}
-.border-danger{border-color:#fd5477;}
+.border-default{border-color:var(--color-gray);}
+.border-primary{border-color:var(--brand-primary);}
+.border-info{border-color:var(--brand-info);}
+.border-success{border-color:var(--brand-success);}
+.border-warning{border-color:var(--brand-warning);}
+.border-danger{border-color:var(--brand-danger);}
 
 
 .clearfix::after {

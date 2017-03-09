@@ -52,14 +52,6 @@
     background-color:var(--brand-primary-border);
     border-color:var(--brand-primary-border);
 }
-.btn.-secondary{
-    color: var(--text-color);
-    background:none;
-    border-color: var(--border-color);
-}
-.btn.-secondary:hover{
-    background:var(--border-color);
-}
 .btn.-success{
     background-color:var(--brand-success);
     border-color:var(--brand-success);
@@ -155,6 +147,7 @@
     background: var(--brand-danger);
     border-color:var(--brand-danger-border);
 }
+
 .flash-message {
     transition: opacity .5s;
 }
@@ -164,7 +157,7 @@
 
 /*titles*/
 .page-title{
-    color: #373b42;
+    color: var(--text-color);
     font-size: 1.25rem;
     font-weight: 700;
     text-transform: uppercase;

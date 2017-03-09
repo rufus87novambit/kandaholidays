@@ -15,7 +15,7 @@
     text-decoration: none;
     padding: 0 2px;
     display: inline-block;
-    color: #3d4795;
+    color: var(--brand-primary);
     position: relative;
 }
 .br-theme-kanda-stars .br-widget a .helper {

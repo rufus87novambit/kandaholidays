@@ -315,7 +315,7 @@ works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
 	border: 1px solid #ffffff;
-	background: #3d4795;
+	background: var(--brand-primary);
 	font-weight: bold;
 	color: #ffffff;
 }
@@ -337,8 +337,8 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #3d4795;
-	background: #3d4795;
+	border: 1px solid var(--brand-primary);
+	background: var(--brand-primary);
 	font-weight: bold;
 	color: #ffffff;
 }
@@ -387,18 +387,18 @@ a.ui-button:active,
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-	border: 1px solid #3d4795;
+	border: 1px solid var(--brand-primary);
 	background: #ffffff url("../images/back/jquery-ui/ui-bg_diagonals-small_25_ffffff_40x40.png") 50% 50% repeat;
-	color: #3d4795;
+	color: var(--brand-primary);
 }
 .ui-state-checked {
-	border: 1px solid #3d4795;
+	border: 1px solid var(--brand-primary);
 	background: #ffffff;
 }
 .ui-state-highlight a,
 .ui-widget-content .ui-state-highlight a,
 .ui-widget-header .ui-state-highlight a {
-	color: #3d4795;
+	color: var(--brand-primary);
 }
 .ui-state-error,
 .ui-widget-content .ui-state-error,

@@ -31,6 +31,28 @@ add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
 function kanda_enqueue_styles(){
     wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
     wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
+    wp_add_inline_style('back', '
+        :root {
+            --bg-color: #efefef;
+            --border-color:#d8d8d8;
+            --text-color: #373b42;
+            --color-muted: #636c72;
+            --color-light: #fff;
+            --color-gray:#757575;
+
+            --brand-primary: #3d4795;
+            --brand-success: #5ABD7E;
+            --brand-info: #31b0d5;
+            --brand-warning: #ec971f;
+            --brand-danger: #D8000C;
+
+            --brand-primary-border: #2856b6;
+            --brand-success-border: #449d44;
+            --brand-info-border: #5bc0de;
+            --brand-warning-border: #D0C048;
+            --brand-danger-border: #c9302c;
+        }
+    ' );
 }
 
 /**
