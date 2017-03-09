@@ -13,7 +13,7 @@ body {
     font-size: 14px;
     line-height: 1.5;
     background: var(--body-bg);
-    border-top: 5px solid #fff;
+    border-top: 5px solid var(--bg-color);
 }
 /*********************** Header ***********************/
 .header {
