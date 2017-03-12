@@ -66,6 +66,8 @@ final class Kanda_Customizer {
      */
     private $data = array();
 
+    private $is_customising;
+
     /**
      * Get class instance
      *
@@ -86,6 +88,13 @@ final class Kanda_Customizer {
         $this->sections_path = trailingslashit( KANDA_CUSTOMIZER_PATH . $this->sections_path );
         $this->theme_name = kanda_get_theme_name();
         $this->defaults = include_once ( KANDA_CUSTOMIZER_PATH . 'defaults.php' );
+        $this->is_customising = $should_include = (
+            ( is_admin() && 'customize.php' == basename( $_SERVER['PHP_SELF'] ) )
+            ||
+            ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
+            ||
+            ( ! empty( $_GET['customize_changeset_uuid'] ) || ! empty( $_POST['customize_changeset_uuid'] ) )
+        );
 
         $this->add_config( $this->theme_name, array(
             'capability'    => 'edit_theme_options',
@@ -304,7 +313,8 @@ final class Kanda_Customizer {
      * @return null
      */
     public function get_option( $option_name ) {
-        if( empty( $this->data ) ) {
+
+        if( $this->is_customising || empty( $this->data ) ) {
             $this->data = get_theme_mod( $this->theme_name );
         }
 

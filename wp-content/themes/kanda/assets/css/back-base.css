@@ -39,8 +39,8 @@ a{    -webkit-transition:all 0.15s ease;
 .bg-danger{background-color:var(--brand-danger);}
 
 /*border color*/
-.border-default{border-color:var(--color-gray);}
 .border-primary{border-color:var(--brand-primary);}
+.border-secondary{border-color:var(--brand-secondary);}
 .border-info{border-color:var(--brand-info);}
 .border-success{border-color:var(--brand-success);}
 .border-warning{border-color:var(--brand-warning);}

@@ -165,7 +165,7 @@ body {
 * Avatar upload
 */
 #avatar-upload-ui {
-    border:3px dashed var(--color-gray);
+    border:3px dashed var(--border-color);
     padding: 50px 0;
 }
 #filelist {

@@ -41,5 +41,20 @@ return array(
 
 /** - Section Exchange - **/
     'exchange_update_interval'          => 12,
-    'exchange_active_currencies'        => array( 'USD', 'EUR', 'RUB', 'AMD' )
+    'exchange_active_currencies'        => array( 'USD', 'EUR', 'RUB', 'AMD' ),
+
+/** - Panel Color Scheme - **/
+    /** - Section General - **/
+    'general_body_bg' => '#C5CAE9',
+    'general_info_box_bg' => '#EDE7F6',
+    'general_text_color' => '#373b42',
+    'general_border_color' => '#d8d8d8',
+    'general_primary_color' => '#311B92',
+    'general_primary_border_color' => '#2856b6',
+    'general_secondary_color' => '#673AB7',
+    'general_secondary_border_color' => '#5E35B1',
+    'general_success_color' => '#5ABD7E',
+    'general_success_border_color' => '#449d44',
+    'general_danger_color' => '#D8000C',
+    'general_danger_border_color' => '#c9302c',
 );

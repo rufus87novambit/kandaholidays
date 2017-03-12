@@ -31,35 +31,61 @@ add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
 function kanda_enqueue_styles(){
     wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
     wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
-    wp_add_inline_style('back', '
-        :root {
-            --body-bg: #C5CAE9;
-            --bg-color: #EDE7F6;
-            --border-color:#d8d8d8;
-            --text-color: #373b42;
-            --color-muted: #636c72;
-            --color-light: #fff;
-            --color-gray:#757575;
+    wp_add_inline_style('back', kanda_get_color_scheme() );
+}
 
-            --brand-primary: #311B92;
-            --brand-primary-border: #2856b6;
+/**
+ * Get color scheme styles
+ * @return string
+ */
+function kanda_get_color_scheme() {
+    $general_body_bg = kanda_get_theme_option( 'general_body_bg' );
+    $general_info_box_bg = kanda_get_theme_option( 'general_info_box_bg' );
+    $general_text_color = kanda_get_theme_option( 'general_text_color' );
+    $general_border_color = kanda_get_theme_option( 'general_border_color' );
+    $general_primary_color = kanda_get_theme_option( 'general_primary_color' );
+    $general_primary_border_color = kanda_get_theme_option( 'general_primary_border_color' );
+    $general_secondary_color = kanda_get_theme_option( 'general_secondary_color' );
+    $general_secondary_border_color = kanda_get_theme_option( 'general_secondary_border_color' );
+    $general_success_color = kanda_get_theme_option( 'general_success_color' );
+    $general_success_border_color = kanda_get_theme_option( 'general_success_border_color' );
+    $general_danger_color = kanda_get_theme_option( 'general_danger_color' );
+    $general_danger_border_color = kanda_get_theme_option( 'general_danger_border_color' );
 
-            --brand-secondary: #673AB7;
-            --brand-secondary-border: #5E35B1;
+    return sprintf(
+        ':root {
+            --body-bg: %1$s;
+            --bg-color: %2$s;
+            --text-color: %3$s;
+            --border-color: %4$s;
+            --color-muted: %5$s;
 
-            --brand-success: #5ABD7E;
-            --brand-success-border: #449d44;
+            --brand-primary: %6$s;
+            --brand-primary-border: %7$s;
 
-            --brand-info: #31b0d5;
-            --brand-info-border: #5bc0de;
+            --brand-secondary: %8$s;
+            --brand-secondary-border: %9$s;
 
-            --brand-warning: #ec971f;
-            --brand-warning-border: #D0C048;
+            --brand-success: %10$s;
+            --brand-success-border: %11$s;
 
-            --brand-danger: #D8000C;
-            --brand-danger-border: #c9302c;
-        }
-    ' );
+            --brand-danger: %12$s;
+            --brand-danger-border: %13$s;
+        }',
+        $general_body_bg,
+        $general_info_box_bg,
+        $general_text_color,
+        $general_border_color,
+        '#636c72',
+        $general_primary_color,
+        $general_primary_border_color,
+        $general_secondary_color,
+        $general_secondary_border_color,
+        $general_success_color,
+        $general_success_border_color,
+        $general_danger_color,
+        $general_danger_border_color
+    );
 }
 
 /**

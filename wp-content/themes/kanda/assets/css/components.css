@@ -15,7 +15,7 @@
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
     margin-bottom: 1rem;
     padding:25px 20px;
-    border-top: 4px solid #673AB7;
+    border-top: 4px solid var(--brand-secondary);
 }
 .box.main-content {
     padding: 40px;
