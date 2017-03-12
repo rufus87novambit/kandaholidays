@@ -96,10 +96,26 @@ class Kanda_Fields {
         return $value;
     }
 
+    /**
+     * Make field readonly
+     *
+     * @param $field
+     * @return mixed
+     */
     public function make_readonly( $field ) {
         $field['readonly'] = true;
 
         return $field;
+    }
+
+    /**
+     * Get hotel additional fee
+     *
+     * @param $hotel_post_id
+     * @return mixed|null|void
+     */
+    public function get_hotel_additional_fee( $hotel_post_id ) {
+        return get_field( 'additional_fee', $hotel_post_id );
     }
 
 }

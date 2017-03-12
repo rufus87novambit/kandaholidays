@@ -69,7 +69,7 @@ class Kanda_Service_Response {
                 $this->code = 404;
                 $this->message = $data['errormessage']['error']['errors']['msg'];
             } else {
-                $this->data = IOL_Helper::convert_xml_to_readable( $xml );
+                $this->data = $data;
             }
         }
 

@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'cron_schedules', 'kanda_cron_schedules' );
 function kanda_cron_schedules( $schedules ) {
     $schedules['kanda_exchange'] = array(
-        'interval' => kanda_get_theme_option( 'exchange_update_interval' ),
+        'interval' => kanda_get_theme_option( 'exchange_update_interval' ) * HOUR_IN_SECONDS,
         'display' => esc_html__( 'Exchange update interval', 'kanda' )
     );
     return $schedules;

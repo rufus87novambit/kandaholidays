@@ -130,6 +130,7 @@ class Hotels_Controller extends Base_Controller {
         );
 
         $response = provider_iol()->hotels()->search_by_id( $request_id, $args );
+        $this->currency = isset( $_GET['currency'] ) ? $_GET['currency'] : $response->request['currency'];
 
         if( $response->is_valid() ) {
             $this->response = $response;

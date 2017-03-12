@@ -42,17 +42,21 @@ function kanda_enqueue_styles(){
             --color-gray:#757575;
 
             --brand-primary: #311B92;
-            --brand-secondary: #673AB7;
-            --brand-success: #5ABD7E;
-            --brand-info: #31b0d5;
-            --brand-warning: #ec971f;
-            --brand-danger: #D8000C;
-
             --brand-primary-border: #2856b6;
+
+            --brand-secondary: #673AB7;
             --brand-secondary-border: #5E35B1;
+
+            --brand-success: #5ABD7E;
             --brand-success-border: #449d44;
+
+            --brand-info: #31b0d5;
             --brand-info-border: #5bc0de;
+
+            --brand-warning: #ec971f;
             --brand-warning-border: #D0C048;
+
+            --brand-danger: #D8000C;
             --brand-danger-border: #c9302c;
         }
     ' );

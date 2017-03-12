@@ -7,6 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class IOL_Helper {
 
+    private static $black_list = array();
+
+    public static function init_blacklist( array $tags ) {
+        static::$black_list = $tags;
+    }
     /**
      * Convert multidimensional array key to uppercase / lowercase
      *
@@ -100,19 +105,47 @@ class IOL_Helper {
     }
 
     /**
+     * Remove blacklisted tags
+     *
+     * @param $xmlstr
+     * @return string
+     */
+    private static function blacklist_watchdog( $xmlstr ) {
+        $document = new DOMDocument();
+        $document->loadXML( $xmlstr );
+
+        $dom_elements_to_remove = array();
+        foreach (static::$black_list as $tag_name) {
+            $dom_node_list = $document->getElementsByTagname( $tag_name );
+            foreach ( $dom_node_list as $dom_element ) {
+                $dom_elements_to_remove[] = $dom_element;
+            }
+        }
+
+        foreach( $dom_elements_to_remove as $dom_element ){
+            $dom_element->parentNode->removeChild( $dom_element );
+        }
+
+        return $document->saveXML();
+    }
+
+    /**
      * convert xml string to php array - useful to get a serializable value
      *
      * @param string $xmlstr
      * @return array
      */
     private static function xml_to_array( $xmlstr ) {
-        $doc = new DOMDocument();
-        $doc->recover = true;
-        $doc->loadXML( $xmlstr );
 
-        $root = $doc->documentElement;
+        $xmlstr = static::blacklist_watchdog( $xmlstr );
+
+        $document = new DOMDocument();
+        $document->loadXML( $xmlstr );
+
+        $root = $document->documentElement;
         $output = self::dom_node_to_array( $root );
         $output['@root'] = $root->tagName;
+
         return $output;
     }
 

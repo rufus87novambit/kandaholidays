@@ -129,7 +129,7 @@ class IOL_Master_Data {
                 /** Hotel description */
                 $description = '';
                 if( array_key_exists( 'descriptionlist', $hotel ) && array_key_exists( 'description', $hotel['descriptionlist'] ) ) {
-                    $description = is_array( $hotel['descriptionlist']['description'] ) ? $hotel['descriptionlist']['description'][0] : $hotel['descriptionlist']['description'];
+                    $description = IOL_Helper::is_associative_array( $hotel['descriptionlist']['description'] ) ? $hotel['descriptionlist']['description']['@content'] : $hotel['descriptionlist']['description'][0]['@content'];
                     $description = preg_replace( '/\s+/', ' ', trim( $description ) );
                 }
 
@@ -160,7 +160,7 @@ class IOL_Master_Data {
 
             if ( !empty( $values ) ) {
 
-                $wpdb->delete( $table, array( 'city' => $city ), array( '%s' ) );
+                static::delete_city_data( $city );
 
                 $values = implode(',', $values);
                 $query = "INSERT INTO `{$table}` ( `city`, `code`, `description`, `images` ) VALUES {$values}";
@@ -179,6 +179,18 @@ class IOL_Master_Data {
         }
 
         return $status;
+    }
+
+    /**
+     * Delete provided city data
+     * @param $city
+     */
+    public static function delete_city_data( $city ) {
+        global $wpdb;
+        $table = self::get_table_name();
+        $city = strtoupper( $city );
+
+        $wpdb->delete( $table, array( 'city' => $city ), array( '%s' ) );
     }
 
     /**

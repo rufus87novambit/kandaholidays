@@ -41,7 +41,9 @@ if( ! class_exists( 'IOL_Provider' ) ) {
             add_filter( 'kanda/providers', array( $this, 'register' ), 10 );
             add_action( 'kanda/providers/init', array($this, 'init' ), 10 );
             add_action( 'admin_menu', array( $this, 'add_admin_menu_pages' ), 10 );
-            add_action( 'admin_head', array( $this, 'check_master_sync_request' ), 10 );
+
+            add_action( 'wp_ajax_iol_master_update', array( $this, 'iol_master_update' ), 10 );
+            add_action( 'wp_ajax_iol_master_delete', array( $this, 'iol_master_delete' ), 10 );
         }
 
         /**
@@ -70,58 +72,131 @@ if( ! class_exists( 'IOL_Provider' ) ) {
         }
 
         /**
-         * Check for master sync request
+         * Update master data
          */
-        public function check_master_sync_request() {
+        public function iol_master_update() {
 
-            if( isset( $_POST[ 'iol-master-sync' ] ) ) {
+            $security = isset($_REQUEST['security']) ? $_REQUEST['security'] : '';
+            $is_valid = true;
 
-                $notice = array( 'type' => 'error', 'message' => '' );
-                $security = isset( $_POST['iol-security'] ) ? $_POST['iol-security'] : '';
+            if ( wp_verify_nonce($security, 'iol-master-update') ) {
 
-                if( wp_verify_nonce(  $security, 'iol-master-sync') ) {
-                    $city = isset( $_POST['sync-city'] ) ? $_POST['sync-city'] : '';
-                    if( array_key_exists( $city, IOL_Config::get( 'cities' ) ) ) {
+                $city = isset($_REQUEST['city']) ? $_REQUEST['city'] : '';
 
-                        $response = $this->hotels()->get_master_data( array( 'city' => $city ) );
-                        if( $response->is_valid() ) {
-                            $data = $response->data;
-                            $hotels = $data[ 'masterdatadetails' ][ 'hotel' ];
+                if ( array_key_exists($city, IOL_Config::get('cities') ) ) {
 
-                            $status =  IOL_Master_Data::save( $city, $hotels );
-                            if( $status ) {
-                                $notice['message'] = __( 'Updated', 'success' );
-                                $notice['type'] = 'success';
-                            } else {
-                                $notice['message'] = sprintf( 'Cannot get master data for %s', $city );
-                            }
+                    IOL_Helper::init_blacklist(array('Location'));
+
+                    set_time_limit( 3000 );
+
+                    $response = $this->hotels()->get_master_data( array( 'city' => $city ) );
+                    if ($response->is_valid()) {
+                        $data = $response->data;
+                        $hotels = $data['masterdatadetails']['hotel'];
+
+                        $status = IOL_Master_Data::save( $city, $hotels );
+
+                        if ($status) {
+                            $message = __('Updated', 'success');
+                            $last_updated = get_option( sprintf( '%1$s_%2$s_last_update', IOL_Config::get( 'id' ), $city ), false );
                         } else {
-                            $log = sprintf( 'Cannot get master data for %s', $city );
-                            kanda_logger()->log( $log );
+                            $is_valid = false;
+                            $message = sprintf('Cannot get master data for %s', $city);
+                        }
+                    } else {
+                        $log = sprintf('Cannot get master data for %s', $city);
+                        kanda_logger()->log($log);
 
-                            $notice['message'] = $log;
+                        $is_valid = false;
+                        $message = $log;
+                    }
+
+                } else {
+                    $is_valid = false;
+                    $message = __('Invalid city', 'kanda');
+                }
+            } else {
+                $is_valid = false;
+                $message = __('Invalid request', 'kanda');
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( array(
+                    'message' => $message,
+                    'last_updated' => $last_updated
+                ) );
+            } else {
+                wp_send_json_error( array(
+                    'message' => $message
+                ) );
+            }
+
+        }
+
+        /**
+         * Delete master data
+         */
+        public function iol_master_delete() {
+            $security = isset($_REQUEST['security']) ? $_REQUEST['security'] : '';
+            $is_valid = true;
+
+            if ( wp_verify_nonce( $security, 'iol-master-delete' ) ) {
+
+                $city = isset($_REQUEST['city']) ? $_REQUEST['city'] : '';
+
+                if (array_key_exists($city, IOL_Config::get('cities'))) {
+
+                    $city = strtoupper( $city );
+                    IOL_Master_Data::delete_city_data( $city );
+
+                    global $wpdb;
+                    $query = "SELECT `post_id` FROM `{$wpdb->postmeta}` WHERE `meta_key` = 'hotelcity' AND `meta_value` = '{$city}'";
+                    $hotel_post_ids = $wpdb->get_col( $query );
+
+                    if( empty( $hotel_post_ids ) ) {
+                        $message = __( 'Noting to delete', 'kanda' );
+                    } else {
+
+                        foreach ($hotel_post_ids as $index => $hotel_post_id) {
+                            $hotel_post_ids[$index] = sprintf('\'%d\'', $hotel_post_id);
                         }
 
-                    } else {
-                        $notice['message'] = __('Invalid city', 'kanda');
+                        $hotel_post_ids = implode(',', $hotel_post_ids);
+
+                        /** delete data from postmeta */
+                        $query = "DELETE FROM `{$wpdb->postmeta}` WHERE `post_id` IN ( " . $hotel_post_ids . " )";
+                        $wpdb->query($query);
+
+                        /** delete data from posts */
+                        $query = "DELETE FROM `{$wpdb->posts}` WHERE `ID` IN ( " . $hotel_post_ids . " )";
+                        $wpdb->query($query);
+
+                        delete_option( sprintf( '%1$s_%2$s_last_update', IOL_Config::get( 'id' ), $city ) );
+
+                        $message = __( 'Deleted', 'kanda' );
                     }
+
+                    $last_updated = __( 'Never', 'kanda' );
+
                 } else {
-                    $notice['message'] = __('Invalid request', 'kanda');
+                    $is_valid = false;
+                    $message = __('Invalid city', 'kanda');
                 }
 
-                $_SESSION['kanda-admin-notice'] = $notice;
+            } else {
+                $is_valid = false;
+                $message = __('Invalid request', 'kanda');
+            }
 
-                add_action( 'admin_notices', function(){
-                    if( isset( $_SESSION['kanda-admin-notice'] ) && (bool)$_SESSION['kanda-admin-notice'] ) {
-                        $type = $_SESSION['kanda-admin-notice']['type'];
-                        $message = $_SESSION['kanda-admin-notice']['message'];
-
-                        printf( '<div class="notice notice-%1$s is-dismissible"><p>%2$s</p></div>', $type, $message );
-                        $_SESSION['kanda-admin-notice'] = false;
-                    }
-
-                } );
-
+            if( $is_valid ) {
+                wp_send_json_success( array(
+                    'message' => $message,
+                    'last_updated' => $last_updated
+                ) );
+            } else {
+                wp_send_json_error( array(
+                    'message' => $message
+                ) );
             }
         }
 
@@ -167,23 +242,26 @@ if( ! class_exists( 'IOL_Provider' ) ) {
                     width: 80%;
                 }
             </style>
-            <div class="wrap">
+            <div class="wrap" id="iol-master-data-sync">
                 <h1><?php printf( __( '%s Master Data', 'kanda' ), IOL_Config::get( 'name' ) ) ?></h1>
-                <div class="sync-rows" method="post" action="<?php admin_url( 'tool.php?page=iol-master-data' ); ?>">
+                <div class="sync-rows">
                     <div class="row heading">
                         <div class="th first"><h3><?php _e( 'City', 'kanda' ); ?></h3></div>
                         <div class="th second"><h3><?php _e( 'Last updated', 'kanda' ); ?></h3></div>
                         <div class="th third"><h3><?php _e( 'Actions', 'kanda' ); ?></h3></div>
                     </div>
-                    <?php foreach( IOL_Config::get( 'cities' ) as $city_code => $city_name ) { ?>
+                    <?php
+                        foreach( IOL_Config::get( 'cities' ) as $city_code => $city_name ) {
+                            $update_url = add_query_arg( array( 'action' => 'iol_master_update', 'security' => wp_create_nonce( 'iol-master-update' ), 'city' => $city_code ) , admin_url( 'admin-ajax.php' ) );
+                            $delete_url = add_query_arg( array( 'action' => 'iol_master_delete', 'security' => wp_create_nonce( 'iol-master-delete' ), 'city' => $city_code ) , admin_url( 'admin-ajax.php' ) );
+                            $last_updated = get_option( sprintf( '%1$s_%2$s_last_update', IOL_Config::get( 'id' ), $city_code ), false ); ?>
                     <div class="row">
-                        <form method="post">
-                            <input type="hidden" name="sync-city" value="<?php echo $city_code ?>" />
-                            <input type="hidden" name="iol-security" value="<?php echo wp_create_nonce( 'iol-master-sync' ); ?>" />
-                            <div class="td first"><strong><?php echo $city_name; ?></strong></div>
-                            <div class="td second"><?php echo get_option( sprintf( '%1$s_%2$s_last_update', IOL_Config::get( 'id' ), $city_code ), __( 'Never', 'kanda' ) ); ?></div>
-                            <div class="td third"><?php submit_button( __( 'Update now', 'kanda' ), 'primary', 'iol-master-sync', false ); ?></div>
-                        </form>
+                        <div class="td first"><strong><?php echo $city_name; ?></strong></div>
+                        <div class="td second last-updated"><?php echo $last_updated ? $last_updated :  __( 'Never', 'kanda' ); ?></div>
+                        <div class="td third">
+                            <a href="<?php echo $update_url; ?>" class="button button-primary button-update"><?php esc_html_e( 'Update Now', 'kanda' ); ?></a>
+                            <a href="<?php echo $delete_url; ?>" class="button button-secondary button-delete <?php echo $last_updated ? '' : 'kanda_hidden'; ?>"><?php esc_html_e( 'Delete', 'kanda' ); ?></a>
+                        </div>
                     </div>
                     <?php } ?>
                 </div>

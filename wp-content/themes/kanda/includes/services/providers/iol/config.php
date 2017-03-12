@@ -84,7 +84,7 @@ class IOL_Config {
         'ALAZ'  => 'Al Ain',
         'DXB'   => 'Dubai',
         'FUJA'  => 'Fujairah',
-        'RASK ' => 'Ras al Khaimah'
+        'RASK' => 'Ras al Khaimah'
     );
 
     /**

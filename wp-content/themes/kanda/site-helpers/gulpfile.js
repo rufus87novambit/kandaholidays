@@ -184,7 +184,7 @@ gulp.task('js-admin', function () {
         .pipe(concat('admin.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('../js/'))
-        .pipe(notify("Done! JS Admin"));
+        .pipe(notify( "Done! JS Admin" ));
 });
 
 /**

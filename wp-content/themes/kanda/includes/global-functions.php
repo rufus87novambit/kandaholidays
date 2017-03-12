@@ -173,6 +173,8 @@ function kanda_get_exchange_rates ( $force = false ) {
             $rates = json_decode( json_encode( $rates ), true );
             set_transient( 'kanda_exchange_rates', $rates, kanda_get_theme_option( 'exchange_update_interval' ) * HOUR_IN_SECONDS );
 
+            update_option( 'kanda_exchange_last_update', current_time( 'mysql' ) );
+
         } else {
 
             $message = "Hi developer.\n";
@@ -554,11 +556,79 @@ function kanda_upload_file( $key, $parent_post_id = 0 ) {
  *
  * @param $price
  * @param $hotel_code
- * @param $currency
+ * @param $exit_currency
+ * @param $input_currency
+ * @param int $multiply_index
  * @return string
  */
-function kanda_generate_price( $price, $hotel_code, $currency ) {
-    return sprintf( '%1$s %2$s', $price, $currency );
+function kanda_generate_price( $price, $hotel_code, $exit_currency, $input_currency, $multiply_index = 1 ) {
+    $additional_fee = kanda_get_hotel_additional_fee($hotel_code);
+    $price += $additional_fee * $multiply_index;
+
+    if( $input_currency != $exit_currency ) {
+        $converted_price = kanda_covert_currency_to( $price, $exit_currency, $input_currency );
+
+        $price = $converted_price['amount'];
+        $currency = $converted_price['currency'];
+    } else {
+        $currency = $exit_currency;
+    }
+
+    return sprintf('%1$s %2$s', number_format( $price, 2 ), $currency );
+}
+
+/**
+ * Get specific hotel additional fee
+ *
+ * @param $hotel_code
+ * @return float
+ */
+function kanda_get_hotel_additional_fee( $hotel_code ) {
+    global $wpdb;
+    $query = "SELECT `pm1`.`post_id`, `pm2`.`meta_value` AS `rating`
+                FROM `{$wpdb->postmeta}` AS `pm1`
+                LEFT JOIN `{$wpdb->postmeta}` AS `pm2` ON `pm2`.`post_id` = `pm1`.`post_id` AND `pm2`.`meta_key` = 'hotelstarrating'
+                WHERE `pm1`.`meta_key` = 'hotelcode' AND `pm1`.`meta_value` = '{$hotel_code}'";
+
+    $hotel_metadata = $wpdb->get_row( $query );
+
+    $additional_fee = 0;
+    if( $hotel_metadata ) {
+        $additional_fee = kanda_fields()->get_hotel_additional_fee( $hotel_metadata->post_id );
+        if( ! $additional_fee ) {
+            $option_name = sprintf( 'kanda_additional_fee_for_%s_star_hotel', $hotel_metadata->rating );
+            $additional_fee = kanda_get_theme_option( $option_name );
+        }
+    }
+
+    return floatval( $additional_fee );
+}
+
+/**
+ * Convert currency
+ *
+ * @param $amount
+ * @param $exit_currency
+ * @param string $input_currency
+ * @return array
+ */
+function kanda_covert_currency_to( $amount, $exit_currency, $input_currency = 'USD' ) {
+    $exchange = kanda_get_exchange();
+
+    if( array_key_exists( $exit_currency, $exchange ) ) {
+        $amount = ( $exchange[ $input_currency ][ 'Rate' ] * $amount ) / $exchange[ $exit_currency ][ 'Rate' ];
+        $currency = $exit_currency;
+    } elseif( $exit_currency == 'AMD' ) {
+        $currency = $exit_currency;
+        $amount = $exchange[ $input_currency ][ 'Rate' ] * $amount;
+    } else {
+        $currency = $input_currency;
+    }
+
+    return array(
+        'amount'    => $amount,
+        'currency'  => $currency
+    );
 }
 
 /**

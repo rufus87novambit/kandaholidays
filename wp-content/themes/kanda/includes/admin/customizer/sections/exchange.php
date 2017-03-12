@@ -50,7 +50,7 @@ return array(
             'multiple'      => 999,
             'priority'      => 11,
             'default'       => $kanda_customizer_defaults[ 'exchange_active_currencies' ],
-//            'choices'       => kanda_get_currency_iso_array(),
+            'choices'       => kanda_get_currency_iso_array(),
         ),
     )
 );

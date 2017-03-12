@@ -37,7 +37,7 @@ class Kanda_Logger {
      */
     private function get_and_set_or_create_log() {
         $date = date( 'Y-m-d', current_time( 'timestamp', true ) );
-        $folder = trailingslashit( KANDA_THEME_PATH . 'log' );
+        $folder = trailingslashit( KANDA_THEME_PATH . 'logs' );
 
         $path = $folder . $date;
         $file = trailingslashit( $path ) . 'log.log';

@@ -23,3 +23,6 @@
 .kirki-reset-section {
     display: none;
 }
+.kanda_hidden {
+    display: none !important;
+}

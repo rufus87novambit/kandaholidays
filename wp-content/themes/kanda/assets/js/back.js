@@ -887,10 +887,11 @@
         $('.show-booking-details').on( 'click', function(){
 
             var _this = $(this),
-                _target = _this.attr( 'href' );
+                _target = _this.attr( 'href' )
+                _animation_duration = 300;
 
             if( $(_this).hasClass( 'active' ) ) {
-                $(_target).slideUp(500, function(){
+                $(_target).slideUp( _animation_duration, function(){
                     $(_target).removeClass('active');
                     _this.removeClass('active');
                 });
@@ -902,9 +903,9 @@
 
                 $('html, body').animate({
                     scrollTop: $(_this).closest('li').offset().top - parseInt( $(_this).closest('li').css( 'marginBottom' ) )
-                }, 500);
+                }, _animation_duration);
 
-                $(_target).slideDown(500, function(){
+                $(_target).slideDown(_animation_duration, function(){
                     $(_target).addClass('active');
                     _this.addClass('active');
                 });
@@ -919,7 +920,7 @@
                 _content = _this.closest('.users-table').clone(),
                 _popup_content = '';
 
-            _content.find( '.book-btn' ).remove();
+            _content.find( '.actions' ).remove();
 
             _popup_content = '<p class="text-center">Are you sure you want to proccess with following details?</p>' + _content[0].outerHTML;
             confirmation_popup( _popup_content, 'Booking confirmation' );
