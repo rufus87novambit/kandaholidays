@@ -400,7 +400,7 @@
         <div class="col-sm-6 occupants occupants-cloneable" data-index="1">
             <div class="row">
                 <div class="col-lg-11">
-                    <div class="box">
+                    <div class="box body-bg">
                         <legend><?php printf( __( 'ROOM <span>%d</span> OCCUPANTS', 'kanda' ), 1 ); ?></legend>
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Adults', 'kanda' ); ?>:</label>

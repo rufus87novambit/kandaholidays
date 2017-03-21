@@ -43,8 +43,7 @@ return array(
     'exchange_update_interval'          => 12,
     'exchange_active_currencies'        => array( 'USD', 'EUR', 'RUB', 'AMD' ),
 
-/** - Panel Color Scheme - **/
-    /** - Section General - **/
+/** - Section Color Scheme - **/
     'general_body_bg' => '#C5CAE9',
     'general_info_box_bg' => '#EDE7F6',
     'general_text_color' => '#373b42',
@@ -57,4 +56,11 @@ return array(
     'general_success_border_color' => '#449d44',
     'general_danger_color' => '#D8000C',
     'general_danger_border_color' => '#c9302c',
+
+/** - Section Pricing - **/
+    'pricing_additional_fee_for_0_star_hotel' => 5,
+    'pricing_additional_fee_for_2_star_hotel' => 5,
+    'pricing_additional_fee_for_3_star_hotel' => 5,
+    'pricing_additional_fee_for_4_star_hotel' => 5,
+    'pricing_additional_fee_for_5_star_hotel' => 5,
 );

@@ -7,7 +7,7 @@
     var destroyCustomSelectsOn = function( node ){
         node
             .find( 'span.kandaSelect').remove().end()
-            .find( 'select.hasCustomSelect' ).removeAttr( 'style' )
+            .find( 'select.hasCustomSelect' ).removeAttr( 'style').removeClass( '.hasCustomSelect' );
     }
 
     /**
@@ -190,7 +190,8 @@
                     destroyCustomSelectsOn( clone );
 
                     clone.insertAfter( $('.occupants:last') );
-                    initCustomSelectOn( $('.occupants:last .kanda-select') );
+
+                    initCustomSelectOn( $('.occupants:last .kanda-select-late-init, .occupants:last .kanda-select') );
                 }
             } else if( count < existing_count ) {
                 $('.occupants').slice( count - existing_count).remove();
@@ -253,14 +254,14 @@
     /**
      * Tabs in popup
      */
-    $('body').on( 'click', '.popup-tabs .tab-headings a', function( e ){
+    $('body').on( 'click', '.tab-headings a', function( e ){
         var _this = $(this),
             _tabs = _this.closest( '.tabs' ),
             _headings = _this.siblings( '.tab-heading' ),
             _contents = _tabs.find( '.tab-contents .tab-content'),
             _target = _this.data('target'),
-            _active_class = '-warning',
-            _static_class = '-info';
+            _active_class = '-primary',
+            _static_class = '-secondary';
 
         if( _this.hasClass( _active_class ) ) {
             return;
@@ -553,7 +554,7 @@
     var confirmation_popup = function( message, headline, cb ) {
         var _dialog = '';
 
-        _dialog += '<div class="mfp-with-anim white-popup confirmation">';
+        _dialog += '<div class="mfp-with-anim static-popup confirmation">';
         _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
         if (headline) {
             _dialog += '<h2 class="text-center">' + headline + '</h2>';
@@ -668,7 +669,7 @@
                     if( ! mfpResponse.data ) {
                         mfpResponse.data = kanda.translatable.invalid_request
                     }
-                    mfpResponse.data = '<div class="white-popup ' + _popup_class + '">' + mfpResponse.data.data + '</div>';
+                    mfpResponse.data = '<div class="static-popup ' + _popup_class + '">' + mfpResponse.data.data + '</div>';
                 },
                 ajaxContentAdded : function(){
                     $( this.content ).find( '.hotel-gallery').slick({

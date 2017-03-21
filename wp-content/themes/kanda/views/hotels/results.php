@@ -79,7 +79,7 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
     <li>
         <h4 class="article-title">
             <span><?php echo $hotel['hotelname'] ?> - <?php echo $hotel['propertytype'] ?></span>
-            <span class="pull-right"><?php echo str_repeat( '<i class="icon icon-star-o"></i>', $hotel['starrating'] ); ?></span>
+            <span class="pull-right"><?php echo $hotel['starrating'] ? str_repeat( '<i class="icon icon-star-o"></i>', $hotel['starrating'] ) : 'N/A'; ?></span>
         </h4>
 
         <div class="row">
@@ -134,61 +134,43 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
         <div class="booking-details-wrap">
             <div class="booking-details-box" id="<?php echo $hotel['hotelcode']; ?>">
                 <?php
-                    $rooms = $hotel['roomtypedetails']['rooms']['room'];
-                    foreach( $rooms as $room ) { ?>
-                    <div class="users-table table">
-                        <header class="thead">
-                            <div class="th" style="width: 25%"><?php esc_html_e( 'Property type', 'kanda' ); ?></div>
-                            <div class="th">
-                                <?php esc_html_e( 'Property value', 'kanda' ); ?>
-                                <div class="actions pull-right">
-                                    <a href="javascript:void(0);" class="btn -sm -secondary book-btn"><?php esc_html_e( 'Book', 'kanda' ); ?></a>
-                                    <a href="<?php echo $this->get_cancellation_policy_url( $hotel['hotelcode'], $room['roomtypecode'], $room['contracttokenid'], $start_date, $end_date ); ?>" class="btn -sm -secondary ajax-popup" data-popup="confirmation"><?php esc_html_e( 'Cancellation policy', 'kanda' ); ?></a>
+                    if(
+                        array_key_exists( 'roomtypedetails', $hotel ) &&
+                        array_key_exists( 'rooms', $hotel['roomtypedetails'] ) &&
+                        array_key_exists( 'room', $hotel['roomtypedetails']['rooms'] )
+                    ) {
+                        $rooms = IOL_Helper::is_associative_array( $hotel['roomtypedetails']['rooms']['room'] ) ? array( $hotel['roomtypedetails']['rooms']['room'] ) : $hotel['roomtypedetails']['rooms']['room'];
+                        // Render as tabs as we have multiple rooms
+                        if( $this->response->request['rooms_count'] > 1 ) {
+                            ?>
+                            <div class="tabs">
+                                <div class="tab-headings">
+                                <?php for( $i = 1; $i <= $this->response->request['rooms_count']; $i++ ) { ?>
+                                <a href="javascript:void(0);" data-target=".hotel-<?php echo $hotel['hotelcode']; ?>-room-<?php echo $i; ?>" class="btn -sm <?php echo $i == 1 ? '-primary' : '-secondary'; ?> tab-heading"><?php printf( '%s %d', esc_html_e( 'Room', 'kanda' ), $i ); ?></a>
+                                <?php } ?>
+                                </div>
+                                <div class="tab-contents editor-content">
+                                    <?php for( $i = 1; $i <= $this->response->request['rooms_count']; $i++ ) { ?>
+                                    <div class="tab-content hotel-<?php echo $hotel['hotelcode']; ?>-room-<?php echo $i; ?> <?php echo $i == 1 ? '' : 'hidden'; ?>">
+                                        <?php
+                                        foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
+                                            IOL_Helper::render_room_details( $room, array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, 'currency' => $this->currency, 'nights_count' => $this->response->request['nights_count'] ) );
+                                        }
+                                        ?>
+                                    </div>
+                                    <?php } ?>
                                 </div>
                             </div>
-                        </header>
-                        <div class="tbody">
                             <?php
-                            $properties = array(
-                                'roomtype' => esc_html__( 'Room Type', 'kanda' ),
-                                'mealplan' => esc_html__( 'Meal Plan', 'kanda' ),
-                                'rate' => esc_html__( 'Rate', 'kanda' ),
-                            );
-                            foreach( $properties as $property => $property_label ) {
-                                if( isset( $room[ $property ] ) && $room[ $property ] ) {
-                                    if( $property === 'rate' ) {
-                                        $room[ $property ] = kanda_generate_price( $room[ $property ], $hotel['hotelcode'], $this->currency, $room['currcode'], $this->response->request['nights_count'] );
-                                    }
-                                    ?>
-                            <div class="tr">
-                                <div class="td"><?php echo $property_label; ?></div>
-                                <div class="td"><?php echo $room[ $property ]; ?></div>
-                            </div>
-                                <?php }
+                        }
+                        // render as single room
+                        else {
+                            foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
+                                IOL_Helper::render_room_details( $room, array( 'hotelcode' => $args['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, 'currency' => $this->currency, 'nights_count' => $this->response->request['nights_count'] ) );
                             }
-
-                            if( (bool)$room['discountdetails'] ) {
-                                $room_discounts = $room['discountdetails']['discount'];
-                                foreach( $room_discounts as $discount ) {
-                                    $properties = array(
-                                        'discountname' => esc_html__( 'Discount Name', 'kanda' ),
-                                        'discounttype' => esc_html__( 'Discount Type', 'kanda' ),
-                                        'discountnotes' => esc_html__( 'Discount Notes', 'kanda' ),
-                                        'totaldiscountrate' => esc_html__( 'Discount Total Rate', 'kanda' ),
-                                    );
-                                    foreach( $properties as $property => $property_label ) {
-                                        if( isset( $discount[ $property ] ) && $discount[ $property ] ) { ?>
-                                    <div class="tr">
-                                        <div class="td"><?php echo $property_label; ?></div>
-                                        <div class="td"><?php echo $discount[ $property ]; ?></div>
-                                    </div>
-                                        <?php }
-                                    }
-                                }
-                            } ?>
-                        </div>
-                    </div>
-                <?php } ?>
+                        }
+                    }
+                ?>
             </div>
         </div>
     </li>
@@ -217,7 +199,7 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
 ?>
 </div>
 
-<div id="popup-criteria" class="white-popup mfp-hide">
+<div id="popup-criteria" class="static-popup mfp-hide">
     <?php
         add_filter( 'custom-select-classname', function(){ return 'kanda-select-late-init'; } );
         $args = array(

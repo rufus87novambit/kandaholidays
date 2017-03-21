@@ -562,8 +562,11 @@ function kanda_upload_file( $key, $parent_post_id = 0 ) {
  * @return string
  */
 function kanda_generate_price( $price, $hotel_code, $exit_currency, $input_currency, $multiply_index = 1 ) {
-    $additional_fee = kanda_get_hotel_additional_fee($hotel_code);
-    $price += $additional_fee * $multiply_index;
+
+    if( current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
+        $additional_fee = kanda_get_hotel_additional_fee( $hotel_code );
+        $price += $additional_fee * $multiply_index;
+    }
 
     if( $input_currency != $exit_currency ) {
         $converted_price = kanda_covert_currency_to( $price, $exit_currency, $input_currency );
@@ -596,7 +599,11 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
     if( $hotel_metadata ) {
         $additional_fee = kanda_fields()->get_hotel_additional_fee( $hotel_metadata->post_id );
         if( ! $additional_fee ) {
-            $option_name = sprintf( 'kanda_additional_fee_for_%s_star_hotel', $hotel_metadata->rating );
+            $rating = absint( $hotel_metadata->rating );
+            if( $rating > 5 || ! $rating ) {
+                $rating = 0;
+            }
+            $option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
             $additional_fee = kanda_get_theme_option( $option_name );
         }
     }
@@ -727,5 +734,5 @@ function kanda_get_loading_popup() {
  * @return string
  */
 function kanda_get_error_popup() {
-    return '<div id="error-popup" class="white-popup text-center mfp-hide"></div>';
+    return '<div id="error-popup" class="static-popup text-center mfp-hide"></div>';
 }

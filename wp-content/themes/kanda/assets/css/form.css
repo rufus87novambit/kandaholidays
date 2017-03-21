@@ -118,7 +118,7 @@ textarea.form-control{
     display: inline-block;
     vertical-align:middle;
     font-weight:bold;
-    font-size:12px;
+    font-size:.875rem;
 }
 .ctrl-inp{
     display: none;

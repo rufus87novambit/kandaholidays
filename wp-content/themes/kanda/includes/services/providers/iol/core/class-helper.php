@@ -265,4 +265,89 @@ class IOL_Helper {
         return isset( $cities[ $code ] ) ? $cities[ $code ] : null;
     }
 
+    public static function render_room_details( $room, $args ) {
+        ?>
+        <div class="users-table table">
+            <header class="thead">
+                <div class="th"
+                     style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
+                <div class="th">
+                    <?php esc_html_e('Property value', 'kanda'); ?>
+                    <div class="actions pull-right">
+                        <a href="javascript:void(0);"
+                           class="btn -sm -secondary book-btn"><?php esc_html_e('Book', 'kanda'); ?></a>
+                        <a href="<?php echo static::get_cancellation_policy_url($args['hotelcode'], $room['roomtypecode'], $room['contracttokenid'], $args['start_date'], $args['end_date']); ?>"
+                           class="btn -sm -secondary ajax-popup"
+                           data-popup="confirmation"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
+                    </div>
+                </div>
+            </header>
+            <div class="tbody">
+                <?php if (isset($room['roomtype']) && $room['roomtype']) { ?>
+                    <div class="tr">
+                        <div class="td"><?php esc_html_e('Room Type', 'kanda'); ?></div>
+                        <div class="td"><?php echo $room['roomtype']; ?></div>
+                    </div>
+                <?php }
+                if (isset($room['mealplan']) && $room['mealplan']) { ?>
+                    <div class="tr">
+                        <div class="td"><?php esc_html_e('Meal Plan', 'kanda'); ?></div>
+                        <div class="td"><?php echo $room['mealplan']; ?></div>
+                    </div>
+                <?php }
+                if (isset($room['rate']) && $room['rate']) { ?>
+                    <div class="tr">
+                        <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
+                        <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['nights_count']); ?></div>
+                    </div>
+                <?php }
+
+                if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
+                    $room_discounts = $room['discountdetails']['discount'];
+                    $room_discounts = IOL_Helper::is_associative_array($room_discounts) ? array($room_discounts) : $room_discounts;
+                    foreach ($room_discounts as $discount) {
+                        if (isset($discount['discountname']) && $discount['discountname']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Discount Name', 'kanda'); ?></div>
+                                <div class="td"><?php echo $discount['discountname']; ?></div>
+                            </div>
+                        <?php }
+                        if (isset($discount['discounttype']) && $discount['discounttype']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Discount Type', 'kanda'); ?></div>
+                                <div class="td"><?php echo $discount['discounttype']; ?></div>
+                            </div>
+                        <?php }
+                        if (isset($discount['discountnotes']) && $discount['discountnotes']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Discount Notes', 'kanda'); ?></div>
+                                <div class="td"><?php echo $discount['discountnotes']; ?></div>
+                            </div>
+                        <?php }
+                        if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
+                                <div class="td"><?php echo absint( $discount['totaldiscountrate'] ); ?></div>
+                            </div>
+                        <?php }
+                    }
+                } ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    public static function get_cancellation_policy_url( $hotel_code, $roomtypecode, $contracttokenid, $start_date, $end_date ) {
+        return add_query_arg( array(
+            'action'        => 'hotel_cancellation_policy',
+            'code'          => $hotel_code,
+            'roomtype'      => $roomtypecode,
+            'token'         => $contracttokenid,
+            'start_date'    => $start_date,
+            'end_date'      => $end_date,
+            'security'      => wp_create_nonce( 'kanda-get-hotel-cancellation-policy' )
+        ), admin_url( 'admin-ajax.php' )
+        );
+    }
+
 }

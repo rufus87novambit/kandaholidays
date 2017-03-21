@@ -13,9 +13,6 @@
                 <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
             </a>
         </h1>
-        <button class="menu-btn" id="menuBtn">
-            <span class="burger-icon"></span>
-        </button><!-- .menu-btn -->
 
         <?php wp_nav_menu( array(
             'theme_location' => 'main_nav',
@@ -26,16 +23,9 @@
         ) ); ?>
 
         <div class="head-side">
-            <div class="currency">
-                <a href="#"><i class="icon icon-currency-usd"></i></a>
-                <nav class="sub-menu">
-                    <ul>
-                        <?php foreach( kanda_get_exchange() as $iso => $rate ) { ?>
-                            <li><span><?php echo $iso; ?> <?php echo number_format( $rate['Rate'], 2 ); ?></span></li>
-                        <?php } ?>
-                    </ul>
-                </nav>
-            </div>
+            <button class="menu-btn" id="menuBtn">
+                <span class="burger-icon"></span>
+            </button><!-- .menu-btn -->
             <div class="agency-logo">
                 <a href="<?php echo kanda_url_to( 'profile' ); ?>" class="avatar"><?php echo kanda_get_user_avatar( false, 'user-avatar', array('class' => 'user-avatar', 'data-default' => kanda_get_user_avatar_url() ) ); ?></a>
                 <div class="sub-menu">

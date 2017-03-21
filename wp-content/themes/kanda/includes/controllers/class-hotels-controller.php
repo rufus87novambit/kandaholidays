@@ -385,27 +385,4 @@ class Hotels_Controller extends Base_Controller {
         );
     }
 
-    /**
-     * Get hotel booking cancellation policy url
-     *
-     * @param $hotel_code
-     * @param $roomtypecode
-     * @param $contracttokenid
-     * @param $start_date
-     * @param $end_date
-     * @return string
-     */
-    public function get_cancellation_policy_url( $hotel_code, $roomtypecode, $contracttokenid, $start_date, $end_date ) {
-        return add_query_arg( array(
-                'action'        => 'hotel_cancellation_policy',
-                'code'          => $hotel_code,
-                'roomtype'      => $roomtypecode,
-                'token'         => $contracttokenid,
-                'start_date'    => $start_date,
-                'end_date'      => $end_date,
-                'security'      => wp_create_nonce( 'kanda-get-hotel-cancellation-policy' )
-            ), admin_url( 'admin-ajax.php' )
-        );
-    }
-
 }

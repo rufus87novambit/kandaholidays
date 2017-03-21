@@ -19,7 +19,6 @@ body {
 .header {
     position: relative;
     background: var(--brand-primary);
-    padding: 1.25rem;
     box-shadow: 0px 5px 19px var(--brand-primary);
     z-index: 11;
     margin-bottom: 50px;
@@ -33,6 +32,7 @@ body {
 .header .back-logo {
     width: 250px;
     float: left;
+    padding: 1.25rem;
 }
 .header .back-logo img {
     margin-top: 3px;
@@ -42,7 +42,7 @@ body {
 /*********************** Profile logo ***********************/
 .head-side{
     float:right;
-    margin:10px 0 0 10px;
+    margin: 8px 1.25rem 0px 0px;
 }
 .agency-logo {
     display:inline-block;
@@ -64,40 +64,10 @@ body {
 }
 .agency-logo img {
     border-radius: 50%;
-    max-width: 4rem;
+    max-width: 6rem;
     border: 2px solid #ececec;
 }
 /*********************** /end Profile logo ***********************/
-.currency {
-    display:inline-block;
-    vertical-align: middle;
-    position: relative;
-    color: var(--brand-primary);
-    margin-right:0.5rem;
-}
-.currency a {
-    font-size: 2rem;
-    line-height:0;
-}
-.currency .sub-menu {
-    left: -52px;
-    padding-left: 20px;
-    padding-right: 20px;
-    min-width: auto;
-    width: 120px;
-}
-.currency .sub-menu li:hover {
-    background: none;
-}
-.currency .sub-menu li:hover a {
-    color: var(--brand-primary);
-}
-.currency .sub-menu li span {
-    text-align: left;
-}
-.currency .sub-menu i {
-    margin-right: 20px;
-}
 
 /*Main*/
 .main{
