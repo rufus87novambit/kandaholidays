@@ -154,7 +154,17 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                     <div class="tab-content hotel-<?php echo $hotel['hotelcode']; ?>-room-<?php echo $i; ?> <?php echo $i == 1 ? '' : 'hidden'; ?>">
                                         <?php
                                         foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
-                                            IOL_Helper::render_room_details( $room, array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, 'currency' => $this->currency, 'nights_count' => $this->response->request['nights_count'] ) );
+                                            IOL_Helper::render_room_details(
+                                                $room,
+                                                array(
+                                                    'hotelcode' => $hotel['hotelcode'],
+                                                    'start_date' => $start_date,
+                                                    'end_date' => $end_date,
+                                                    'currency' => $this->currency,
+                                                    'roomnumber' => $i,
+                                                    'request' => $this->response->request
+                                                )
+                                            );
                                         }
                                         ?>
                                     </div>
@@ -166,7 +176,17 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                         // render as single room
                         else {
                             foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
-                                IOL_Helper::render_room_details( $room, array( 'hotelcode' => $args['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, 'currency' => $this->currency, 'nights_count' => $this->response->request['nights_count'] ) );
+                                IOL_Helper::render_room_details(
+                                    $room,
+                                    array(
+                                        'hotelcode' => $args['hotelcode'],
+                                        'start_date' => $start_date,
+                                        'end_date' => $end_date,
+                                        'currency' => $this->currency,
+                                        'roomnumber' => 1,
+                                        'request' => $this->response->request
+                                    )
+                                );
                             }
                         }
                     }

@@ -136,7 +136,7 @@ class IOL_Hotels {
      *
      * @return array
      */
-    private function get_search_request_detault_args() {
+    private function get_search_request_default_args() {
         return array(
             'page'      => 1,
             'limit'     => IOL_Config::get('sql_limit->search'),
@@ -154,7 +154,7 @@ class IOL_Hotels {
      */
     public function search( $request_args, $args = array() ) {
 
-        $args = wp_parse_args( $args, $this->get_search_request_detault_args() );
+        $args = wp_parse_args( $args, $this->get_search_request_default_args() );
 
         $cache_instance = $this->get_cache_instance();
         $cached = $cache_instance->get( $request_args );
@@ -251,7 +251,7 @@ class IOL_Hotels {
      */
     public function search_by_id( $request_id, $args = array() ) {
 
-        $args = wp_parse_args( $args, $this->get_search_request_detault_args() );
+        $args = wp_parse_args( $args, $this->get_search_request_default_args() );
 
         $cache_instance = $this->get_cache_instance();
         $cached = $cache_instance->get( $request_id );
@@ -457,6 +457,110 @@ class IOL_Hotels {
         ) );
 
         $xml = $this->generate_master_data_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
+    }
+
+    private function generate_hotel_availability_request_xml( $args ) {
+
+        $xml = $this->request_instance->get_basic_xml( 'hotel-search-request' );
+
+        $search_criteria = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'search-criteria' )
+        );
+
+        $room_configuration = $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'room-configuration' )
+        );
+
+        $room = $room_configuration->addChild(
+            IOL_Helper::parse_xml_key( 'room' )
+        );
+
+        $room->addChild(
+            IOL_Helper::parse_xml_key( 'adults' ),
+            $args['adults']
+        );
+
+        if( (bool)$args['children'] ) {
+            foreach( $args['children'][ 'age' ] as $age ) {
+                $child = $room->addChild(
+                    IOL_Helper::parse_xml_key( 'child' )
+                );
+
+                $child->addChild(
+                    IOL_Helper::parse_xml_key( 'age' ),
+                    intval( $age )
+                );
+            }
+        }
+
+        $room->addChild(
+            IOL_Helper::parse_xml_key( 'room-type-code' ),
+            $args['adults']
+        );
+
+        $room->addChild(
+            IOL_Helper::parse_xml_key( 'contract-token-id' ),
+            $args['contracttokenid']
+        );
+
+        $room->addChild(
+            IOL_Helper::parse_xml_key( 'room-configuration-id' ),
+            $args['roomconfigurationid']
+        );
+
+        $room->addChild(
+            IOL_Helper::parse_xml_key( 'meal-plan-code' ),
+            $args['mealplancode']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'start-date' ),
+            $args['start_date']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'end-date' ),
+            $args['end_date']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'city' ),
+            $args['city']
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'hotel-code' ),
+            $args['hotelcode']
+        );
+
+//        $search_criteria->addChild(
+//            IOL_Helper::parse_xml_key( 'include-on-request' ),
+//            IOL_Helper::bool_to_string( true )
+//        );
+//
+//        $search_criteria->addChild(
+//            IOL_Helper::parse_xml_key( 'optional-supplement-Y-N' ),
+//            IOL_Helper::bool_to_string( true )
+//        );
+//
+//        $search_criteria->addChild(
+//            IOL_Helper::parse_xml_key( 'cancellation-policy' ),
+//            IOL_Helper::bool_to_string( false )
+//        );
+//
+//        $search_criteria->addChild(
+//            IOL_Helper::parse_xml_key( 'include-hotel-data' ),
+//            IOL_Helper::bool_to_string( false )
+//        );
+
+        return $xml->asXML();
+
+    }
+
+    public function hotel_availability_request( $args ) {
+        $xml = $this->generate_hotel_availability_request_xml( $args );
 
         return $this->request_instance->process( $xml, $args );
     }

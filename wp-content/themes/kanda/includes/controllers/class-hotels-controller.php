@@ -273,6 +273,135 @@ class Hotels_Controller extends Base_Controller {
         $this->show_404();
     }
 
+    public function check_hotel_availability() {
+        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+            $security = isset( $_REQUEST['security'] ) ? $_REQUEST['security'] : '';
+
+            $is_valid = true;
+            if( wp_verify_nonce( $security, 'kanda-hotel-availability-request' ) ) {
+
+                $roomtypecode = isset( $_REQUEST['roomtypecode'] ) ? $_REQUEST['roomtypecode'] : '';
+                if( ! $roomtypecode ) {
+                    $is_valid = false;
+                    $message = __( 'Room Type is required', 'kanda' );
+                }
+
+                $contracttokenid = isset( $_REQUEST['contracttokenid'] ) ? $_REQUEST['contracttokenid'] : '';
+                if( ! $contracttokenid ) {
+                    $is_valid = false;
+                    $message = __( 'Contract token ID is required', 'kanda' );
+                }
+
+                $roomconfigurationid = isset( $_REQUEST['roomconfigurationid'] ) ? $_REQUEST['roomconfigurationid'] : '';
+                if( ! $roomconfigurationid ) {
+                    $is_valid = false;
+                    $message = __( 'Room Configuration ID is required', 'kanda' );
+                }
+
+                $mealplancode = isset( $_REQUEST['mealplancode'] ) ? $_REQUEST['mealplancode'] : '';
+                if( ! $mealplancode ) {
+                    $is_valid = false;
+                    $message = __( 'Meal Plan Code is required', 'kanda' );
+                }
+
+                $start_date = isset( $_REQUEST['start_date'] ) ? $_REQUEST['start_date'] : '';
+                if( ! $start_date ) {
+                    $is_valid = false;
+                    $message = __( 'Start date is required', 'kanda' );
+                }
+
+                $end_date = isset( $_REQUEST['end_date'] ) ? $_REQUEST['end_date'] : '';
+                if( ! $end_date ) {
+                    $is_valid = false;
+                    $message = __( 'End date is required', 'kanda' );
+                }
+
+                $city = isset( $_REQUEST['city'] ) ? $_REQUEST['city'] : '';
+                if( ! $city ) {
+                    $is_valid = false;
+                    $message = __( 'City is required', 'kanda' );
+                }
+
+                $hotelcode = isset( $_REQUEST['hotelcode'] ) ? $_REQUEST['hotelcode'] : '';
+                if( ! $hotelcode ) {
+                    $message = __( 'Hotel Code is required', 'kanda' );
+                }
+
+                $adults = isset( $_REQUEST['adults'] ) ? $_REQUEST['adults'] : '';
+                if( ! $adults ) {
+                    $is_valid = false;
+                    $message = __( 'Adults count is required', 'kanda' );
+                }
+
+                $children_count = isset( $_REQUEST['child'] ) ? $_REQUEST['child'] : 0;
+                $children = array();
+                for( $i = 0; $i < $children_count; $i++ ) {
+                    if( isset( $_REQUEST['age' . ($i + 1)] ) ) {
+                        $children['age'][] = $_REQUEST['age' . ($i + 1)];
+                    } else {
+                        $message = __( 'One of children ages is missed', 'kanda' );
+                        $is_valid = false;
+                        break;
+                    }
+                }
+
+                if( $is_valid ) {
+
+                    $response = provider_iol()->hotels()->hotel_availability_request( array(
+                        'roomtypecode' => $roomtypecode,
+                        'contracttokenid' => $contracttokenid,
+                        'roomconfigurationid' => $roomconfigurationid,
+                        'mealplancode' => $mealplancode,
+                        'start_date' => $start_date,
+                        'end_date' => $end_date,
+                        'city' => $city,
+                        'hotelcode' => $hotelcode,
+                        'adults' => $adults,
+                        'children' => $children
+                    ) );
+
+                    echo '<pre>'; var_dump(123, $response); echo '</pre>'; die;
+
+                    if( ! $response->is_valid() ) {
+                        $is_valid = false;
+                        $message = $response->message;
+                    } else {
+
+                        $template = KANDA_THEME_PATH . 'views/partials/hotel-details.php';
+                        if( file_exists( $template ) ) {
+                            $data = $response->data;
+                            $hotel = $data['details'];
+
+                            $cached_hotel = provider_iol()->cache()->get_data_by( 'code', $code );
+
+                            ob_start();
+                            include( $template );
+                            $content = ob_get_clean();
+
+                        } else {
+                            $is_valid = false;
+                            $message = __( 'Internal server error', 'kanda' );
+                        }
+
+                    }
+
+                }
+
+            } else {
+                $is_valid = false;
+                $message = __( 'Invalid request', 'kanda' );
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( array( 'content' => $content ) );
+            } else {
+                wp_send_json_error( array( 'message' => $message ) );
+            }
+
+        }
+        $this->show_404();
+    }
+
     /************************************************** Helper methods **************************************************/
 
     public function get_cancellation_policy() {

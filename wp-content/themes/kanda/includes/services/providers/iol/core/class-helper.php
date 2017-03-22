@@ -265,7 +265,33 @@ class IOL_Helper {
         return isset( $cities[ $code ] ) ? $cities[ $code ] : null;
     }
 
+    /**
+     * Helper method to render room details for search result
+     *
+     * @param $room
+     * @param $args
+     */
     public static function render_room_details( $room, $args ) {
+        $room_occupants = $args['request']['room_occupants'][ $args['roomnumber'] ];
+        $availability_request_url = static::get_availability_request_url( array(
+            'roomtypecode' => $room['roomtypecode'],
+            'contracttokenid' => $room['contracttokenid'],
+            'roomconfigurationid' => $room['roomconfigurationid'],
+            'mealplancode' => $room['mealplancode'],
+            'adults' => $room_occupants['adults'],
+            'child' => $room_occupants['child'],
+            'start_date' => $args['start_date'],
+            'end_date' => $args['end_date'],
+            'city' => $args['request']['city'],
+            'hotelcode' => $args['hotelcode']
+        ) );
+        $cancellation_policy_url = static::get_cancellation_policy_url( array(
+            'hotel_code'        => $args['hotelcode'],
+            'roomtypecode'      => $room['roomtypecode'],
+            'contracttokenid'   => $room['contracttokenid'],
+            'start_date'        => $args['start_date'],
+            'end_date'          => $args['end_date']
+        ) );
         ?>
         <div class="users-table table">
             <header class="thead">
@@ -274,11 +300,9 @@ class IOL_Helper {
                 <div class="th">
                     <?php esc_html_e('Property value', 'kanda'); ?>
                     <div class="actions pull-right">
-                        <a href="javascript:void(0);"
-                           class="btn -sm -secondary book-btn"><?php esc_html_e('Book', 'kanda'); ?></a>
-                        <a href="<?php echo static::get_cancellation_policy_url($args['hotelcode'], $room['roomtypecode'], $room['contracttokenid'], $args['start_date'], $args['end_date']); ?>"
-                           class="btn -sm -secondary ajax-popup"
-                           data-popup="confirmation"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
+                        <a href="javascript:void(0);" class="btn -sm -secondary book-btn"><?php esc_html_e('Book', 'kanda'); ?></a>
+                        <a href="<?php echo $availability_request_url; ?>" class="btn -sm -secondary ajax-popup"><?php esc_html_e( 'Availability', 'kanda' ); ?></a>
+                        <a href="<?php echo $cancellation_policy_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="confirmation"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
                     </div>
                 </div>
             </header>
@@ -298,7 +322,7 @@ class IOL_Helper {
                 if (isset($room['rate']) && $room['rate']) { ?>
                     <div class="tr">
                         <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
-                        <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['nights_count']); ?></div>
+                        <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']); ?></div>
                     </div>
                 <?php }
 
@@ -337,17 +361,54 @@ class IOL_Helper {
         <?php
     }
 
-    public static function get_cancellation_policy_url( $hotel_code, $roomtypecode, $contracttokenid, $start_date, $end_date ) {
+    /**
+     * Generate hotel cancellation policy request url
+     *
+     * @param $args
+     * @return string
+     */
+    public static function get_cancellation_policy_url( $args ) {
         return add_query_arg( array(
             'action'        => 'hotel_cancellation_policy',
-            'code'          => $hotel_code,
-            'roomtype'      => $roomtypecode,
-            'token'         => $contracttokenid,
-            'start_date'    => $start_date,
-            'end_date'      => $end_date,
+            'code'          => $args['hotel_code'],
+            'roomtype'      => $args['roomtypecode'],
+            'token'         => $args['contracttokenid'],
+            'start_date'    => $args['start_date'],
+            'end_date'      => $args['end_date'],
             'security'      => wp_create_nonce( 'kanda-get-hotel-cancellation-policy' )
         ), admin_url( 'admin-ajax.php' )
         );
     }
 
+    /**
+     * Generate hotel availability request url
+     *
+     * @param $args
+     * @return string
+     */
+    public static function get_availability_request_url( $args ) {
+        $children_count = isset( $args['child']['age'] ) ? count( $args['child']['age'] ) : 0;
+        $query_args = array(
+            'action'                => 'hotel_availability',
+            'roomtypecode'          => $args['roomtypecode'],
+            'contracttokenid'       => $args['contracttokenid'],
+            'roomconfigurationid'   => $args['roomconfigurationid'],
+            'mealplancode'          => $args['mealplancode'],
+            'adults'                => $args['adults'],
+            'child'                 => $children_count,
+            'start_date'            => $args['start_date'],
+            'end_date'              => $args['end_date'],
+            'city'                  => $args['city'],
+            'hotelcode'             => $args['hotelcode'],
+            'security'              => wp_create_nonce( 'kanda-hotel-availability-request' )
+        );
+
+        if( $children_count ) {
+            for( $i = 0; $i < $children_count; $i++ ) {
+                $key = 'age' . ( $i + 1 );
+                $query_args[ $key ] = $args['child']['age'][ $i ];
+            }
+        }
+        return add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) );
+    }
 }
