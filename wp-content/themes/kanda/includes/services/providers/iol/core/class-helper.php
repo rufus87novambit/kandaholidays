@@ -301,8 +301,8 @@ class IOL_Helper {
                     <?php esc_html_e('Property value', 'kanda'); ?>
                     <div class="actions pull-right">
                         <a href="javascript:void(0);" class="btn -sm -secondary book-btn"><?php esc_html_e('Book', 'kanda'); ?></a>
-                        <a href="<?php echo $availability_request_url; ?>" class="btn -sm -secondary ajax-popup"><?php esc_html_e( 'Availability', 'kanda' ); ?></a>
-                        <a href="<?php echo $cancellation_policy_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="confirmation"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
+                        <a href="<?php echo $availability_request_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e( 'Availability', 'kanda' ); ?></a>
+                        <a href="<?php echo $cancellation_policy_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
                     </div>
                 </div>
             </header>
@@ -410,5 +410,24 @@ class IOL_Helper {
             }
         }
         return add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) );
+    }
+
+    public static function room_status_data( $status ) {
+        $status = strtolower( $status );
+        $variations = array(
+            'ok' => array(
+                'icon'      => '<span class="text-success"><i class="icon icon-checkmark"></i></span>',
+                'message'   => __( 'Available', 'kanda' )
+            ),
+            'rq' => array(
+                'icon'      => '<span class="text-primary"><i class="icon icon-question"></i></span>',
+                'message'   => __( 'On Request', 'kanda' )
+            ),
+            'xx' => array(
+                'icon'      => '<span class="text-danger"><i class="icon icon-cross"></i></span>',
+                'message'   =>__( 'Not Available', 'kanda' )
+            )
+        );
+        return array_key_exists( $status, $variations ) ? $variations[ $status ] : false;
     }
 }

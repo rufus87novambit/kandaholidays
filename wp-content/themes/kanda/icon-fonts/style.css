@@ -90,6 +90,9 @@
 .icon-room:before {
   content: "\e912";
 }
+.icon-question:before {
+  content: "\e919";
+}
 .icon-location:before {
   content: "\e916";
 }

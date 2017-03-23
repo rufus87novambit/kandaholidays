@@ -350,7 +350,7 @@ class Hotels_Controller extends Base_Controller {
                     $response = provider_iol()->hotels()->hotel_availability_request( array(
                         'roomtypecode' => $roomtypecode,
                         'contracttokenid' => $contracttokenid,
-                        'roomconfigurationid' => $roomconfigurationid,
+                        'roomconfigurationid' => 1,
                         'mealplancode' => $mealplancode,
                         'start_date' => $start_date,
                         'end_date' => $end_date,
@@ -360,23 +360,21 @@ class Hotels_Controller extends Base_Controller {
                         'children' => $children
                     ) );
 
-                    echo '<pre>'; var_dump(123, $response); echo '</pre>'; die;
-
                     if( ! $response->is_valid() ) {
                         $is_valid = false;
                         $message = $response->message;
                     } else {
 
-                        $template = KANDA_THEME_PATH . 'views/partials/hotel-details.php';
+                        $template = KANDA_THEME_PATH . 'views/partials/hotel-availability.php';
                         if( file_exists( $template ) ) {
-                            $data = $response->data;
-                            $hotel = $data['details'];
 
-                            $cached_hotel = provider_iol()->cache()->get_data_by( 'code', $code );
-
-                            ob_start();
-                            include( $template );
-                            $content = ob_get_clean();
+                            $content = $this->render_template( $template, array(
+                                'availability' => $response->data['hotels']['hotel']['roomtypedetails']['rooms']['room']['roomstatusdetails']['status'],
+                                'period' => array(
+                                    'start_date' => $response->request['start_date'],
+                                    'end_date'   => $response->request['end_date']
+                                )
+                            ) );
 
                         } else {
                             $is_valid = false;
@@ -393,9 +391,9 @@ class Hotels_Controller extends Base_Controller {
             }
 
             if( $is_valid ) {
-                wp_send_json_success( array( 'content' => $content ) );
+                wp_send_json_success( $content );
             } else {
-                wp_send_json_error( array( 'message' => $message ) );
+                wp_send_json_error( $message );
             }
 
         }

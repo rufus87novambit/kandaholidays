@@ -497,7 +497,7 @@ class IOL_Hotels {
 
         $room->addChild(
             IOL_Helper::parse_xml_key( 'room-type-code' ),
-            $args['adults']
+            $args['roomtypecode']
         );
 
         $room->addChild(
@@ -535,25 +535,25 @@ class IOL_Hotels {
             $args['hotelcode']
         );
 
-//        $search_criteria->addChild(
-//            IOL_Helper::parse_xml_key( 'include-on-request' ),
-//            IOL_Helper::bool_to_string( true )
-//        );
-//
-//        $search_criteria->addChild(
-//            IOL_Helper::parse_xml_key( 'optional-supplement-Y-N' ),
-//            IOL_Helper::bool_to_string( true )
-//        );
-//
-//        $search_criteria->addChild(
-//            IOL_Helper::parse_xml_key( 'cancellation-policy' ),
-//            IOL_Helper::bool_to_string( false )
-//        );
-//
-//        $search_criteria->addChild(
-//            IOL_Helper::parse_xml_key( 'include-hotel-data' ),
-//            IOL_Helper::bool_to_string( false )
-//        );
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'include-on-request' ),
+            IOL_Helper::bool_to_string( true )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'optional-supplement-Y-N' ),
+            IOL_Helper::bool_to_string( true )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'cancellation-policy' ),
+            IOL_Helper::bool_to_string( false )
+        );
+
+        $search_criteria->addChild(
+            IOL_Helper::parse_xml_key( 'include-hotel-data' ),
+            IOL_Helper::bool_to_string( false )
+        );
 
         return $xml->asXML();
 

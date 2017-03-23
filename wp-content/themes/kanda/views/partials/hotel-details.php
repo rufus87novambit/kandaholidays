@@ -2,30 +2,30 @@
     <div class="col-sm-6 hotel-detailed-information">
         <ul>
             <li>
-                <a href="callto:<?php echo $hotel['hotelphone']; ?>" class="btn -sm -primary">
+                <a href="callto:<?php echo $hotel['hotelphone']; ?>" class="btn -sm -primary -block">
                     <i class="icon icon-phone"></i>
                     <?php echo $hotel['hotelphone']; ?>
                 </a>
             </li>
             <li>
-                <a href="mailto:<?php echo $hotel['hotelemail']; ?>" class="btn -sm -primary">
+                <a href="mailto:<?php echo $hotel['hotelemail']; ?>" class="btn -sm -primary -block">
                     <i class="icon icon-envelope"></i>
                     <?php echo $hotel['hotelemail']; ?>
                 </a>
             </li>
             <li>
-                <a href="<?php echo 'http://' . strtr( $hotel['hotelweb'], array( 'http://' => '', 'https://' => '', 'www.' => '' ) ); ?>" class="btn -sm -primary" target="_blank">
+                <a href="<?php echo 'http://' . strtr( $hotel['hotelweb'], array( 'http://' => '', 'https://' => '', 'www.' => '' ) ); ?>" class="btn -sm -primary -block" target="_blank">
                     <i class="icon icon-globe"></i>
                     <?php echo $hotel['hotelweb']; ?>
                 </a>
             </li>
             <li>
-                <p><?php echo $hotel['hoteladdress']; ?></p>
+                <p><a href="javascript:void(0);" class="btn -sm -primary -block"><?php echo $hotel['hoteladdress']; ?></a></p>
                 <?php
                     $map_url = ( $cached_hotel && isset( $cached_hotel['geolocation'] ) ) ? $this->get_hotel_google_map_url( $cached_hotel['geolocation'] ) : false;
                     if( $map_url ) {
                 ?>
-                <a href="<?php echo $map_url ? $map_url : 'javascript:void(0)'; ?>" class="btn -sm -primary <?php echo $map_url ? 'iframe-popup' : ''; ?>">
+                <a href="<?php echo $map_url ? $map_url : 'javascript:void(0)'; ?>" class="btn -sm -primary -block <?php echo $map_url ? 'iframe-popup' : ''; ?>">
                     <i class="icon icon-location"></i>
                     <?php esc_html_e( 'View on map', 'kanda' ); ?>
                 </a>

@@ -121,6 +121,15 @@ class Base_Controller {
         return $title;
     }
 
+    public function render_template( $template, $params ) {
+        ob_start();
+        extract( $params, EXTR_SKIP );
+        include( $template );
+
+        return ob_get_clean();
+
+    }
+
     /**
      * Render available content
      *

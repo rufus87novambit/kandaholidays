@@ -554,7 +554,7 @@
     var confirmation_popup = function( message, headline, cb ) {
         var _dialog = '';
 
-        _dialog += '<div class="mfp-with-anim static-popup confirmation">';
+        _dialog += '<div class="mfp-with-anim static-popup -sm">';
         _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
         if (headline) {
             _dialog += '<h2 class="text-center">' + headline + '</h2>';
@@ -669,6 +669,7 @@
                     if( ! mfpResponse.data ) {
                         mfpResponse.data = kanda.translatable.invalid_request
                     }
+
                     mfpResponse.data = '<div class="static-popup ' + _popup_class + '">' + mfpResponse.data.data + '</div>';
                 },
                 ajaxContentAdded : function(){

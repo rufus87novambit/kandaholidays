@@ -191,6 +191,12 @@
 .static-popup.confirmation {
     width: 600px;
 }
+.static-popup.-md {
+    width: 800px;
+}
+.static-popup.-sm {
+    width: 800px;
+}
 .loading-popup {
     background-image: url("../images/back/ripple.svg");
     background-position: center center;
