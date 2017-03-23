@@ -187,9 +187,7 @@ function kanda_get_exchange_rates ( $force = false ) {
 
     }
 
-    if( ! defined( 'DOING_CRON' ) ) {
-        return $rates;
-    }
+    return $rates;
 }
 
 /**
@@ -207,7 +205,11 @@ function kanda_get_exchange() {
  * @return array
  */
 function kanda_get_currency_iso_array() {
-    $rates = array_keys( kanda_get_exchange_rates() );
+    $exchange_rates = kanda_get_exchange_rates();
+
+    kanda_logger()->log( json_encode( $exchange_rates ) );
+
+    $rates = array_keys( $exchange_rates );
     $rates[] = 'AMD';
 
     sort( $rates );
