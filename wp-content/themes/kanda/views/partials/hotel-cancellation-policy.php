@@ -11,12 +11,14 @@
             <div class="th"><?php esc_html_e( 'Charge', 'kanda' ); ?></div>
         </header>
         <div class="tbody">
-            <?php foreach( $cancellation_policies as $policy ) { ?>
-            <div class="tr">
-                <?php
+            <?php
+                foreach( $cancellation_policies as $policy ) {
                     $from_timestamp = max( strtotime( $policy['fromdate'] ), time() );
                     $to_timestamp = min( strtotime( $policy['todate'] ), strtotime( $request['end_date'] ) );
-                ?>
+                    if( $to_timestamp <= time() ) {
+                        continue;
+                    } ?>
+            <div class="tr">
                 <div class="td"><?php echo date( Kanda_Config::get( 'display_date_format' ), $from_timestamp ); ?></div>
                 <div class="td"><?php echo date( Kanda_Config::get( 'display_date_format' ), $to_timestamp ); ?></div>
                 <div class="td"><?php echo ( strtolower( $policy['percentoramt'] ) == 'a' ) ? sprintf( '%1$d %2$s', $policy['nighttocharge'], _n( 'night', 'nights', $policy['nighttocharge'], 'kanda' ) ) : sprintf( '%1$d%%', intval( $policy['value'] ) ); ?></div>
