@@ -74,6 +74,24 @@ return array(
             'default'     => $kanda_customizer_defaults[ 'user_page_profile' ],
             'priority'    => 14,
         ),
+        'user_page_hotel' => array(
+            'type'        => 'dropdown-pages',
+            'settings'    => $theme_name . '[user_page_hotel]',
+            'label'       => esc_html__( 'Page for "Hotel"', 'kanda' ),
+            'description' => esc_html__( 'Choose page to use for "Hotel" actions', 'kanda' ),
+            'section'     => $section_id,
+            'default'     => $kanda_customizer_defaults[ 'user_page_hotel' ],
+            'priority'    => 15,
+        ),
+        'user_page_booking' => array(
+            'type'        => 'dropdown-pages',
+            'settings'    => $theme_name . '[user_page_booking]',
+            'label'       => esc_html__( 'Page for "Booking"', 'kanda' ),
+            'description' => esc_html__( 'Choose page to use for "Booking" actions', 'kanda' ),
+            'section'     => $section_id,
+            'default'     => $kanda_customizer_defaults[ 'user_page_booking' ],
+            'priority'    => 16,
+        )
         //other fields go here
     )
 );

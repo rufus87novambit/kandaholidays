@@ -4,6 +4,9 @@
 .visible {
     display: block !important;
 }
+.invisible {
+    visibility: hidden !important;
+}
 .link{
     color:var(--brand-primary);
 }
@@ -23,6 +26,16 @@
 }
 .box.main-content {
     padding: 40px;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .occupants .box {
+        min-height: 352px;
+    }
+}
+@media (min-width: 991px) {
+    .occupants .box {
+        min-height: 258px;
+    }
 }
 
 
@@ -196,6 +209,12 @@
 }
 .static-popup.-sm {
     width: 800px;
+}
+.static-popup .actions {
+    font-size: 0;
+}
+.static-popup .actions .btn {
+    margin: 0 2px;
 }
 .loading-popup {
     background-image: url("../images/back/ripple.svg");

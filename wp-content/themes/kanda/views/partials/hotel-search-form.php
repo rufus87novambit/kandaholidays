@@ -396,49 +396,64 @@
         </div>
     </fieldset>
 
+
     <fieldset class="fieldset row">
-        <div class="col-sm-6 occupants occupants-cloneable" data-index="1">
+        <?php
+            for( $i = 1; $i <= $rooms_count; $i++ ) {
+                $room_occupants = isset( $room_occupants ) ? $room_occupants : array( 1 => array( 'adults' => 1, 'child' => 0 ) );
+                $adults = $room_occupants[ $i ][ 'adults' ];
+                $children = $room_occupants[ $i ][ 'child' ];
+                $has_children = is_array( $children );
+                $children_ages = $has_children ? $children[ 'age' ] : array();
+                $children_count = $has_children ? count( $room_occupants[ $i ][ 'child' ][ 'age' ] ) : 0; ?>
+        <div class="col-md-6 occupants <?php echo $i == 1 ? 'occupants-cloneable' : ''; ?>" data-index="<?php echo $i; ?>">
             <div class="row">
                 <div class="col-lg-11">
                     <div class="box body-bg">
-                        <legend><?php printf( __( 'ROOM <span>%d</span> OCCUPANTS', 'kanda' ), 1 ); ?></legend>
+                        <legend><?php printf( __( 'ROOM <span>%d</span> OCCUPANTS', 'kanda' ), $i ); ?></legend>
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Adults', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
-                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="room_occupants[1][adults]">
-                                    <option value="1"><?php esc_html_e( '1 Adult - Single', 'kanda' ); ?></option>
-                                    <option value="2"><?php esc_html_e( '2 Adults - Double', 'kanda' ); ?></option>
-                                    <option value="3"><?php esc_html_e( '3 Adults - Triple', 'kanda' ); ?></option>
-                                    <option value="4"><?php esc_html_e( '4 Adults - Quad', 'kanda' ); ?></option>
-                                    <option value="5"><?php esc_html_e( '5 Adults', 'kanda' ); ?></option>
-                                    <option value="6"><?php esc_html_e( '6 Adults', 'kanda' ); ?></option>
-                                    <option value="7"><?php esc_html_e( '7 Adults', 'kanda' ); ?></option>
-                                    <option value="8"><?php esc_html_e( '8 Adults', 'kanda' ); ?></option>
-                                    <option value="9"><?php esc_html_e( '9 Adults', 'kanda' ); ?></option>
-                                    <option value="10"><?php esc_html_e( '10 Adults', 'kanda' ); ?></option>
+                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="room_occupants[<?php echo $i; ?>][adults]">
+                                    <option value="1" <?php selected( $adults, 1 ); ?>><?php esc_html_e( '1 Adult - Single', 'kanda' ); ?></option>
+                                    <option value="2" <?php selected( $adults, 2 ); ?>><?php esc_html_e( '2 Adults - Double', 'kanda' ); ?></option>
+                                    <option value="3" <?php selected( $adults, 3 ); ?>><?php esc_html_e( '3 Adults - Triple', 'kanda' ); ?></option>
+                                    <option value="4" <?php selected( $adults, 4 ); ?>><?php esc_html_e( '4 Adults - Quad', 'kanda' ); ?></option>
+                                    <option value="5" <?php selected( $adults, 5 ); ?>><?php esc_html_e( '5 Adults', 'kanda' ); ?></option>
+                                    <option value="6" <?php selected( $adults, 6 ); ?>><?php esc_html_e( '6 Adults', 'kanda' ); ?></option>
+                                    <option value="7" <?php selected( $adults, 7 ); ?>><?php esc_html_e( '7 Adults', 'kanda' ); ?></option>
+                                    <option value="8" <?php selected( $adults, 8 ); ?>><?php esc_html_e( '8 Adults', 'kanda' ); ?></option>
+                                    <option value="9" <?php selected( $adults, 9 ); ?>><?php esc_html_e( '9 Adults', 'kanda' ); ?></option>
+                                    <option value="10" <?php selected( $adults, 10 ); ?>><?php esc_html_e( '10 Adults', 'kanda' ); ?></option>
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Children', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
-                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?> children-presence" name="room_occupants[1][child]">
-                                    <option value="0"><?php esc_html_e( 'Without children', 'kanda' ); ?></option>
-                                    <option value="1"><?php esc_html_e( '1 Child', 'kanda' ); ?></option>
-                                    <option value="2"><?php esc_html_e( '2 Children', 'kanda' ); ?></option>
-                                    <option value="3"><?php esc_html_e( '3 Children', 'kanda' ); ?></option>
-                                    <option value="4"><?php esc_html_e( '4 Children', 'kanda' ); ?></option>
+                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?> children-presence" name="room_occupants[<?php echo $i; ?>][child]">
+                                    <option value="0" <?php selected( $children_count, 0 ); ?>><?php esc_html_e( 'Without children', 'kanda' ); ?></option>
+                                    <option value="1" <?php selected( $children_count, 1 ); ?>><?php esc_html_e( '1 Child', 'kanda' ); ?></option>
+                                    <option value="2" <?php selected( $children_count, 2 ); ?>><?php esc_html_e( '2 Children', 'kanda' ); ?></option>
+                                    <option value="3" <?php selected( $children_count, 3 ); ?>><?php esc_html_e( '3 Children', 'kanda' ); ?></option>
+                                    <option value="4" <?php selected( $children_count, 4 ); ?>><?php esc_html_e( '4 Children', 'kanda' ); ?></option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row clearfix text-center children-age-box hidden">
+                        <div class="form-group row clearfix text-center children-age-box <?php echo $has_children ? '' : 'hidden'; ?>">
                             <small class="form-text text-muted"><?php esc_html_e( 'Please Specify Ages Of Children', 'kanda' ); ?></small>
-                            <div class="children-ages"></div>
+                            <div class="children-ages">
+                                <?php for( $j = 0; $j < $children_count; $j++ ) { ?>
+                                    <input type="number" name="room_occupants[ <?php echo $i; ?> ][ child ][ age ][ <?php echo $j; ?> ]" class="form-control" value="<?php echo $children_ages[ $j ]; ?>" min="0" max="12">
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <?php } ?>
 
     </fieldset>
 

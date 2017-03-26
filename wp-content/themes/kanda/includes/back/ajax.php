@@ -143,6 +143,9 @@ function kanda_get_city_hotels_list( $city = false ) {
 
 }
 
+/**
+ * Get hotel availability
+ */
 add_action( 'wp_ajax_hotel_availability', 'kanda_check_hotel_availability' );
 function kanda_check_hotel_availability() {
     if( ! class_exists( 'Hotels_Controller' ) ) {
@@ -152,3 +155,4 @@ function kanda_check_hotel_availability() {
     $controller = new Hotels_Controller();
     $controller->check_hotel_availability();
 }
+

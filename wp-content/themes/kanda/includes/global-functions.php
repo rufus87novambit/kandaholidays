@@ -136,6 +136,8 @@ function kanda_user_has_avatar( $user_id = false ) {
  */
 function kanda_get_active_currencies() {
     $currencies = kanda_get_theme_option( 'exchange_active_currencies' );
+    $currencies[] = 'AED';
+
     return $currencies;
 }
 
@@ -351,6 +353,9 @@ function kanda_url_to( $name, $params = array() ) {
             break;
         case 'hotels':
             $url = home_url( '/hotels' );
+            break;
+        case 'booking':
+            $url = home_url( '/booking' );
             break;
         default:
             $url = false;
@@ -736,5 +741,5 @@ function kanda_get_loading_popup() {
  * @return string
  */
 function kanda_get_error_popup() {
-    return '<div id="error-popup" class="static-popup text-center mfp-hide"></div>';
+    return sprintf( '<div id="error-popup" class="static-popup text-center mfp-hide"><h2 class="text-center">%s</h2><div class="popup-content"></div></div>', __( 'Error', 'kanda' ) );
 }

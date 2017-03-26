@@ -28,7 +28,7 @@ class IOL_Config {
      * @var string
      */
 
-    private static $mode = 'live';
+    private static $mode = 'test';
 
     /**
      * Access details

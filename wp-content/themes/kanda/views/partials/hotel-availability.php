@@ -1,4 +1,8 @@
-<?php
+<h2 class="text-center"><?php esc_html_e( 'Room Availability', 'kanda' ); ?></h2>
+
+<?php if( ! $availability ) { ?>
+    <p class="text-center"><?php _e( 'Data is not available', 'kanda' ); ?></p>
+<?php } else {
 $full_period = array();
 $chunk_size = 7;
 $index = 0;
@@ -19,7 +23,6 @@ foreach ( $life_period as $lp ) {
 }
 $period_chunks = array_chunk( $full_period, $chunk_size ); ?>
 
-<h2 class="text-center"><?php esc_html_e( 'Room Availability', 'kanda' ); ?></h2>
 <p class="text-center">
 <?php
     printf(
@@ -47,3 +50,4 @@ $period_chunks = array_chunk( $full_period, $chunk_size ); ?>
     </div>
     <?php } ?>
 </div>
+<?php } ?>

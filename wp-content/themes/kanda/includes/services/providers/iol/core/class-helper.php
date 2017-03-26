@@ -232,7 +232,7 @@ class IOL_Helper {
      * @return string
      */
     public static function array_to_savable_format( array $array ){
-        return serialize( $array );
+        return addslashes( serialize( $array ) );
     }
 
     /**
@@ -242,7 +242,7 @@ class IOL_Helper {
      * @return mixed
      */
     public static function savable_format_to_array( $data ) {
-        return maybe_unserialize( $data );
+        return maybe_unserialize( stripslashes( $data ) );
     }
 
     /**
@@ -292,15 +292,16 @@ class IOL_Helper {
             'start_date'        => $args['start_date'],
             'end_date'          => $args['end_date']
         ) );
+
+        $unique_id = uniqid();
         ?>
         <div class="users-table table">
             <header class="thead">
-                <div class="th"
-                     style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
+                <div class="th" style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
                 <div class="th">
                     <?php esc_html_e('Property value', 'kanda'); ?>
                     <div class="actions pull-right">
-                        <a href="javascript:void(0);" class="btn -sm -secondary book-btn"><?php esc_html_e('Book', 'kanda'); ?></a>
+                        <a href="#<?php echo $unique_id; ?>" class="btn -sm -secondary open-popup"><?php esc_html_e('Book', 'kanda'); ?></a>
                         <a href="<?php echo $availability_request_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e( 'Availability', 'kanda' ); ?></a>
                         <a href="<?php echo $cancellation_policy_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
                     </div>
@@ -359,6 +360,96 @@ class IOL_Helper {
             </div>
         </div>
         <?php
+
+        static::render_room_booking_confirmation_popup( $unique_id, $room, $args );
+    }
+
+    /**
+     * Render room booking confirmation popup
+     *
+     * @param $popup_id
+     * @param $room
+     * @param $args
+     */
+    public static function render_room_booking_confirmation_popup( $popup_id, $room, $args ) {
+        $booking_create_url = static::get_booking_create_url( array(
+            'hotel_code'            => $args['hotelcode'],
+            'city_code'             => $args['request']['city'],
+            'room_number'           => $args['roomnumber'],
+            'request_id'            => $args['request']['request_id'],
+            'room_type_code'        => $room['roomtypecode'],
+            'contract_token_id'     => $room['contracttokenid'],
+            'room_configuration_id' => $room['roomconfigurationid'],
+            'meal_plan_code'        => $room['mealplancode'],
+        ) )
+        ?>
+        <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
+            <h2 class="text-center"><?php _e( 'Booking confirmation', 'kanda' ); ?></h2>
+            <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
+
+            <div class="users-table table">
+                <header class="thead">
+                    <div class="th" style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
+                    <div class="th"><?php esc_html_e('Property value', 'kanda'); ?></div>
+                </header>
+                <div class="tbody">
+                    <?php if (isset($room['roomtype']) && $room['roomtype']) { ?>
+                        <div class="tr">
+                            <div class="td"><?php esc_html_e('Room Type', 'kanda'); ?></div>
+                            <div class="td"><?php echo $room['roomtype']; ?></div>
+                        </div>
+                    <?php }
+                    if (isset($room['mealplan']) && $room['mealplan']) { ?>
+                        <div class="tr">
+                            <div class="td"><?php esc_html_e('Meal Plan', 'kanda'); ?></div>
+                            <div class="td"><?php echo $room['mealplan']; ?></div>
+                        </div>
+                    <?php }
+                    if (isset($room['rate']) && $room['rate']) { ?>
+                        <div class="tr">
+                            <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
+                            <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']); ?></div>
+                        </div>
+                    <?php }
+
+                    if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
+                        $room_discounts = $room['discountdetails']['discount'];
+                        $room_discounts = IOL_Helper::is_associative_array($room_discounts) ? array($room_discounts) : $room_discounts;
+                        foreach ($room_discounts as $discount) {
+                            if (isset($discount['discountname']) && $discount['discountname']) { ?>
+                                <div class="tr">
+                                    <div class="td"><?php esc_html_e('Discount Name', 'kanda'); ?></div>
+                                    <div class="td"><?php echo $discount['discountname']; ?></div>
+                                </div>
+                            <?php }
+                            if (isset($discount['discounttype']) && $discount['discounttype']) { ?>
+                                <div class="tr">
+                                    <div class="td"><?php esc_html_e('Discount Type', 'kanda'); ?></div>
+                                    <div class="td"><?php echo $discount['discounttype']; ?></div>
+                                </div>
+                            <?php }
+                            if (isset($discount['discountnotes']) && $discount['discountnotes']) { ?>
+                                <div class="tr">
+                                    <div class="td"><?php esc_html_e('Discount Notes', 'kanda'); ?></div>
+                                    <div class="td"><?php echo $discount['discountnotes']; ?></div>
+                                </div>
+                            <?php }
+                            if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
+                                <div class="tr">
+                                    <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
+                                    <div class="td"><?php echo absint( $discount['totaldiscountrate'] ); ?></div>
+                                </div>
+                            <?php }
+                        }
+                    } ?>
+                </div>
+            </div>
+
+            <div class="actions text-center">
+                <a href="<?php echo $booking_create_url; ?>" class="btn -sm -secondary" target="_blank"><?php _e( 'Process', 'kanda' ); ?></a>
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -412,6 +503,23 @@ class IOL_Helper {
         return add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) );
     }
 
+    /**
+     * Generate booking creating url
+     * @param $args
+     * @return string
+     */
+    public static function get_booking_create_url( $args ) {
+        $args = array_merge( $args, array(
+            'security' => wp_create_nonce( 'kanda-create-booking' )
+        ) );
+        return add_query_arg( $args, kanda_url_to( 'booking', array( 'create' ) ) );
+    }
+
+    /**
+     * Room status data converter
+     * @param $status
+     * @return bool
+     */
     public static function room_status_data( $status ) {
         $status = strtolower( $status );
         $variations = array(

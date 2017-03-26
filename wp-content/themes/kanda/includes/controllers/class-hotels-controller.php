@@ -134,6 +134,7 @@ class Hotels_Controller extends Base_Controller {
 
         if( $response->is_valid() ) {
             $this->response = $response;
+            $this->request_id = $request_id;
         } else {
             $this->show_404();
         }
@@ -368,8 +369,13 @@ class Hotels_Controller extends Base_Controller {
                         $template = KANDA_THEME_PATH . 'views/partials/hotel-availability.php';
                         if( file_exists( $template ) ) {
 
+                            if( isset( $response->data['hotels']['hotel']['roomtypedetails']['rooms']['room']['roomstatusdetails']['status'] ) ) {
+                                $availability = (array) $response->data['hotels']['hotel']['roomtypedetails']['rooms']['room']['roomstatusdetails']['status'];
+                            } else {
+                                $availability = false;
+                            }
                             $content = $this->render_template( $template, array(
-                                'availability' => $response->data['hotels']['hotel']['roomtypedetails']['rooms']['room']['roomstatusdetails']['status'],
+                                'availability' => $availability,
                                 'period' => array(
                                     'start_date' => $response->request['start_date'],
                                     'end_date'   => $response->request['end_date']

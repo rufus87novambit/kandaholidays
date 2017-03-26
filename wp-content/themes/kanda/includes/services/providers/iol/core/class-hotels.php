@@ -270,6 +270,11 @@ class IOL_Hotels {
 
     }
 
+    public function get_request_data( $request_id ) {
+        $cache_instance = $this->get_cache_instance();
+        return $cache_instance->get( $request_id );
+    }
+
     /**
      * Generate hotel details XML
      *

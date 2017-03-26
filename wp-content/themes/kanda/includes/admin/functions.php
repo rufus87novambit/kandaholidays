@@ -96,3 +96,18 @@ function kanda_hide_permalinks( $html ){
     }
     return $html;
 }
+
+/**
+ * Prevent agency role access to admin panel
+ */
+add_action( 'admin_init', 'kanda_prevent_agency_access_to_admin', 10, 1 );
+function kanda_prevent_agency_access_to_admin() {
+    if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+        return;
+    }
+
+    if ( current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
+        $redirect = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : home_url( '/' );
+        exit( wp_redirect( $redirect ) );
+    }
+}

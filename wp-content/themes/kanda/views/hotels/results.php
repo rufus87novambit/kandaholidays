@@ -162,7 +162,10 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                                     'end_date' => $end_date,
                                                     'currency' => $this->currency,
                                                     'roomnumber' => $i,
-                                                    'request' => $this->response->request
+                                                    'request' => array_merge(
+                                                        $this->response->request,
+                                                        array( 'request_id' => $this->request_id )
+                                                    ),
                                                 )
                                             );
                                         }
@@ -175,11 +178,11 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                         }
                         // render as single room
                         else {
-                            foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
+                            foreach (wp_list_filter( $rooms, array( 'roomnumber' => 1 ) ) as $room) {
                                 IOL_Helper::render_room_details(
                                     $room,
                                     array(
-                                        'hotelcode' => $args['hotelcode'],
+                                        'hotelcode' => $hotel['hotelcode'],
                                         'start_date' => $start_date,
                                         'end_date' => $end_date,
                                         'currency' => $this->currency,

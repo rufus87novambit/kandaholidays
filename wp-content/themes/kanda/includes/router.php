@@ -85,17 +85,17 @@ function kanda_add_rewrite_rule() {
         /******************************************** 2. Hotels Controller ********************************************/
         array(
             'regex' => 'hotels\/result\/([a-zA-Z0-9]*)(\/([0-9]*))?(\/)?([a-zA-Z0-9]*)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&k_rid=$matches[1]&k_page=$matches[3]&unwanted=$matches[5]', 123, 'hotels', 'results' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&k_rid=$matches[1]&k_page=$matches[3]&unwanted=$matches[5]', (int)kanda_get_theme_option( 'user_page_hotel' ), 'hotels', 'results' ),
             'after' => 'top'
         ),
         array(
             'regex' => 'hotels\/view\/([a-zA-Z0-9-]*)(\/)?([a-zA-Z0-9]*)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hcode=$matches[1]&unwanted=$matches[3]', 123, 'hotels', 'view_hotel' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&hcode=$matches[1]&unwanted=$matches[3]', (int)kanda_get_theme_option( 'user_page_hotel' ), 'hotels', 'view_hotel' ),
             'after' => 'top'
         ),
         array(
             'regex' => 'hotels(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 123, 'hotels', 'index' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'user_page_hotel' ), 'hotels', 'index' ),
             'after' => 'top'
         ),
         /******************************************** /end Hotels Controller ********************************************/
@@ -124,7 +124,7 @@ function kanda_add_rewrite_rule() {
         ),
         array(
             'regex' => 'profile(\/)?',
-            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', 172, 'profiles', 'edit' ),
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s', (int)kanda_get_theme_option( 'user_page_profile' ), 'profiles', 'edit' ),
             'after' => 'top'
         ),
         /******************************************** /end Profiles Controller ********************************************/
@@ -137,6 +137,16 @@ function kanda_add_rewrite_rule() {
         ),
 
         /******************************************** /end Dashboard Controller ********************************************/
+
+        /******************************************** 5. Booking Controller ********************************************/
+
+        array(
+            'regex' => 'booking\/create(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&unwanted=$matches[2]', (int)kanda_get_theme_option( 'user_page_booking' ), 'booking', 'create' ),
+            'after' => 'top'
+        ),
+
+        /******************************************** /end Booking Controller ********************************************/
 
         // other rules should go here
     );

@@ -15,6 +15,8 @@ return array(
     'auth_page_forgot'      => 0,
     'auth_page_reset'       => 0,
     'user_page_profile'     => 0,
+    'user_page_hotel'       => 0,
+    'user_page_booking'     => 0,
 
     /** - Section Admin Notifications - */
     'admin_notifications_events' => array( 'on_user_login', 'on_user_register', 'on_user_forgot_password', 'on_user_password_reset' ),

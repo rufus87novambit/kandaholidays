@@ -214,6 +214,7 @@
             } else {
                 children_box.addClass('hidden');
             }
+
         } );
     }
 
@@ -537,7 +538,7 @@
     var error_popup = function( content ) {
         $.magnificPopup.close();
 
-        $('#error-popup').html( content );
+        $('#error-popup .popup-content').html( content );
 
         $.magnificPopup.open({
             items: {
@@ -550,61 +551,6 @@
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         });
     }
-
-    var confirmation_popup = function( message, headline, cb ) {
-        var _dialog = '';
-
-        _dialog += '<div class="mfp-with-anim static-popup -sm">';
-        _dialog += '<button title="Close (Esc)" type="button" class="mfp-close">&#215;</button>';
-        if (headline) {
-            _dialog += '<h2 class="text-center">' + headline + '</h2>';
-        }
-        _dialog += '<div class="content">' + message + '</div>';
-        _dialog += '<div class="actions text-center">';
-        _dialog += '<button type="button" class="btn -sm -secondary">Submit</button> ';
-        _dialog += '<button type="button" class="btn -sm -danger">Cancel</button>';
-        _dialog += '</div>';
-        _dialog += '</div>';
-
-        $.magnificPopup.open({
-            items: {
-                src: _dialog
-            },
-            showCloseBtn : true,
-            closeOnBgClick : false,
-            enableEscapeKey : true,
-            midClick: true,
-            callbacks: {
-                open: function() {
-                    var _content = $(this.content);
-
-                    _content.on('click', '.-secondary', function() {
-                        if (typeof cb == 'function') {
-                            cb();
-                        }
-                        $.magnificPopup.close();
-                        $(document).off('keydown', confirmationPopupkeydownHandler);
-                    });
-
-                    _content.on('click', '.-danger', function() {
-                        $.magnificPopup.close();
-                        $(document).off('keydown', confirmationPopupkeydownHandler);
-                    });
-
-                    var confirmationPopupkeydownHandler = function (e) {
-                        if (e.keyCode == 13) {
-                            _content.find('.-secondary').trigger( 'click' );
-                            return false;
-                        } else if (e.keyCode == 27) {
-                            _content.find('.-danger').trigger( 'click' );
-                            return false;
-                        }
-                    };
-                    $(document).on('keydown', confirmationPopupkeydownHandler);
-                }
-            }
-        });
-    };
 
     $('body').on( 'click', '.iframe-popup', function() {
         var _src = $(this).attr('href');
@@ -824,6 +770,7 @@
                 },
                 error : function(){
                     $.magnificPopup.close();
+                    error_popup( 'Servive is currently not available. Please try again later' );
                 }
             });
 
@@ -917,18 +864,6 @@
             return false;
         } );
 
-        $('.book-btn').on('click', function(){
-            var _this = $(this),
-                _content = _this.closest('.users-table').clone(),
-                _popup_content = '';
-
-            _content.find( '.actions' ).remove();
-
-            _popup_content = '<p class="text-center">Are you sure you want to proccess with following details?</p>' + _content[0].outerHTML;
-            confirmation_popup( _popup_content, 'Booking confirmation' );
-
-            return false;
-        });
     }
 
     /********************************************** /end Hotel Search Results *******************************************/
