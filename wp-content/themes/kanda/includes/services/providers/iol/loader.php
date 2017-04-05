@@ -288,6 +288,12 @@ if( ! class_exists( 'IOL_Provider' ) ) {
             return new IOL_Hotels();
         }
 
+        public function bookings() {
+            $this->load_dependant( $this->core, 'class-bookings', 'IOL_Bookings' );
+
+            return new IOL_Bookings();
+        }
+
     }
 
     /**

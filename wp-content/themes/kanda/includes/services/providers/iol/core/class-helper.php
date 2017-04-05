@@ -130,6 +130,53 @@ class IOL_Helper {
     }
 
     /**
+     * Get title from string
+     * @param $string
+     * @return bool|string
+     */
+    public static function str_to_title( $string ) {
+        $string = strtolower( $string );
+
+        if( $string === 'mr' ) {
+            return 'Mr';
+        }
+
+        if( $string === 'mrs' ) {
+            return 'Mrs';
+        }
+
+        if( $string === 'miss' ) {
+            return 'Miss';
+        }
+
+        if( $string === 'ms' ) {
+            return 'Ms';
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Get occupant type ( adult | child )
+     * @param $type
+     * @return bool|string
+     */
+    public static function convert_passenger_type( $type ) {
+        $type = strtolower( $type );
+
+        if( $type === 'adult' ) {
+            return 'ADT';
+        }
+
+        if( $type === 'child' ) {
+            return 'CHD';
+        }
+
+        return false;
+    }
+
+    /**
      * convert xml string to php array - useful to get a serializable value
      *
      * @param string $xmlstr
@@ -381,7 +428,7 @@ class IOL_Helper {
             'contract_token_id'     => $room['contracttokenid'],
             'room_configuration_id' => $room['roomconfigurationid'],
             'meal_plan_code'        => $room['mealplancode'],
-        ) )
+        ) );
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
             <h2 class="text-center"><?php _e( 'Booking confirmation', 'kanda' ); ?></h2>

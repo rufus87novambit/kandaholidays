@@ -14,7 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Remove admin bar for non admins
  */
 if ( ! current_user_can( 'administrator' ) ) {
-    add_filter('show_admin_bar', '__return_false');
+    $hide = true;
+
+    $user_switching_instance = $GLOBALS['user_switching'];
+    if( $user_switching_instance ) {
+        if( $user_switching_instance::get_old_user() ) {
+            $hide = false;
+        }
+    }
+    if( $hide ) {
+        add_filter('show_admin_bar', '__return_false');
+    }
 }
 
 /**

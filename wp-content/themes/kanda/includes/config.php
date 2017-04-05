@@ -218,11 +218,11 @@ class Kanda_Config {
                     // key => input_id
                     'start_date' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'jquery_ui_datepicker' => esc_html__( 'Invalid date from config', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
                     ),
                     'end_date' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'jquery_ui_datepicker' => esc_html__( 'Invalid date from config', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
                     ),
                     'nights_count' => array(
                         'required'   => esc_html__( 'Required', 'kanda' )
@@ -230,6 +230,29 @@ class Kanda_Config {
                     'rooms_count' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
                     )
+                ),
+                'form_create_booking' => array(
+                    // key => input_id
+                    'title' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
+                    ),
+                    'first_name' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
+                    ),
+                    'last_name' => array(
+                        'required'   => esc_html__( 'Required', 'kanda' )
+                    ),
+                    'date_of_birth' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'gender' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
+                    'nationality' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                    ),
                 ),
             )
         );

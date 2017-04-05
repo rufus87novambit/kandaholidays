@@ -187,7 +187,10 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                         'end_date' => $end_date,
                                         'currency' => $this->currency,
                                         'roomnumber' => 1,
-                                        'request' => $this->response->request
+                                        'request' => array_merge(
+                                            $this->response->request,
+                                            array( 'request_id' => $this->request_id )
+                                        )
                                     )
                                 );
                             }

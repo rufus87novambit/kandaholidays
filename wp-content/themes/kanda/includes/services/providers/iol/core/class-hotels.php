@@ -270,6 +270,11 @@ class IOL_Hotels {
 
     }
 
+    /**
+     * Get request data by request ID
+     * @param $request_id
+     * @return array|null|object|void
+     */
     public function get_request_data( $request_id ) {
         $cache_instance = $this->get_cache_instance();
         return $cache_instance->get( $request_id );

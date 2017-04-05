@@ -46,6 +46,22 @@ class Index_Controller extends Base_Controller {
     public function dashboard() {
         $this->dashboard_add_hooks();
 
+        $this->bookings = new WP_Query( array(
+            'post_type'         => 'booking',
+            'post_status'       => 'publish',
+            'order'             => 'DESC',
+            'order_by'          => 'date',
+            'author'            => get_current_user_id(),
+            'posts_per_page'    => 5,
+            'meta_query' => array(
+                array(
+                    'key' => 'start_date',
+                    'value' => date('Ymd'),
+                    'compare' => '>',
+                    'type' => 'DATE'
+                )
+            ),
+        ) );
         $this->view = 'dashboard';
     }
 
