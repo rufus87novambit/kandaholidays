@@ -58,7 +58,6 @@ class Base_Controller {
         $this->has_content = true;
         add_filter( 'the_title', array( $this, 'change_title' ), 10, 2 );
         add_filter( 'the_content', array( $this, 'render' ), 10, 1 );
-        kanda_start_session();
     }
 
     /**

@@ -10,6 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
+add_action( 'init', 'kanda_register_session' );
+function kanda_register_session() {
+    kanda_start_session();
+}
+
 /**
  * Deny role access
  */

@@ -146,6 +146,12 @@ function kanda_add_rewrite_rule() {
             'after' => 'top'
         ),
 
+        array(
+            'regex' => 'booking\/send-email\/([a-zA-Z0-9-]*)(\/)?([a-zA-Z0-9]*)?',
+            'query' => sprintf( 'index.php?page_id=%1$s&controller=%2$s&action=%3$s&k_booking_slug=$matches[1]&unwanted=$matches[3]', (int)kanda_get_theme_option( 'user_page_booking' ), 'booking', 'send_details_email' ),
+            'after' => 'top'
+        ),
+
         /******************************************** /end Booking Controller ********************************************/
 
         // other rules should go here
@@ -168,6 +174,7 @@ function kanda_query_vars( $public_query_vars ) {
         'ksecurity',
         'k_rid',
         'k_page',
+        'k_booking_slug',
         'hcode',
         'unwanted'
         // other variables should go here

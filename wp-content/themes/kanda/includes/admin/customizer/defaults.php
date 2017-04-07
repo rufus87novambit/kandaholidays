@@ -36,6 +36,8 @@ return array(
     'email_forgot_password_body'        => '',
     'email_profile_activation_title'    => esc_html__( 'Profile Activated', 'kanda' ),
     'email_profile_activation_body'     => '',
+    'email_booking_details_title'       => esc_html__( 'Booking Details', 'kanda' ),
+    'email_booking_details_body'        => '',
 
 /** - Section Front Page - **/
     'front_pages_slider_animation_delay' => 7,

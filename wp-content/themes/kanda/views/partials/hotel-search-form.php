@@ -213,6 +213,6 @@
 
     <footer class="form-footer clearfix">
         <input type="hidden" name="security" value="<?php echo wp_create_nonce( 'kanda-hotel-search' ); ?>" />
-        <input type="submit" name="kanda_search" value="Search hotel" class="btn -secondary pull-right">
+        <input type="submit" name="kanda_search" value="<?php _e( 'Search hotel', 'kanda' ); ?>" class="btn -secondary pull-right">
     </footer>
 </form>

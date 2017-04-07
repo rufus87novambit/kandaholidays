@@ -325,4 +325,15 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         return $data ? IOL_Helper::savable_format_to_array( $data ) : null;
     }
 
+    public function get_user_search_history( $user_id, $limit = -1 ) {
+        global $wpdb;
+        $table = $this->get_search_table();
+
+        $query = "SELECT * FROM `{$table}` WHERE `user_id` = {$user_id} ORDER BY `created_at` DESC";
+        if( $limit && $limit != -1 ) {
+            $query .= " LIMIT 0," . $limit;
+        }
+        return $wpdb->get_results( $query );
+    }
+
 }

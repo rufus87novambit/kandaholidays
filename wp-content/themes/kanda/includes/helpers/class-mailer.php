@@ -32,6 +32,10 @@ class Kanda_Mailer {
         $this->layout_path = trailingslashit( KANDA_THEME_PATH . 'views/email' );
     }
 
+    public static function get_layout_path() {
+        return trailingslashit( KANDA_THEME_PATH . 'views/email' );
+    }
+
     /**
      * Get always present variables actual values for email
      *

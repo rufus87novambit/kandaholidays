@@ -43,16 +43,20 @@ class Index_Controller extends Base_Controller {
         return '</div><div>' . $content;
     }
 
+
     public function dashboard() {
+
         $this->dashboard_add_hooks();
 
+        $user_id = get_current_user_id();
+        $limit = 5;
         $this->bookings = new WP_Query( array(
             'post_type'         => 'booking',
             'post_status'       => 'publish',
             'order'             => 'DESC',
             'order_by'          => 'date',
-            'author'            => get_current_user_id(),
-            'posts_per_page'    => 5,
+            'author'            => $user_id,
+            'posts_per_page'    => $limit,
             'meta_query' => array(
                 array(
                     'key' => 'start_date',
@@ -62,6 +66,7 @@ class Index_Controller extends Base_Controller {
                 )
             ),
         ) );
+
         $this->view = 'dashboard';
     }
 

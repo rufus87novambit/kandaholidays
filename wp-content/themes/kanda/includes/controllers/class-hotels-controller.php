@@ -73,6 +73,8 @@ class Hotels_Controller extends Base_Controller {
 
             if( wp_verify_nonce( $security, 'kanda-hotel-search' ) ) {
 
+                unset( $criteria['security'] );
+
                 if( $criteria ) {
                     $response = provider_iol()->hotels()->search( $criteria );
                     if( $response->is_valid() ) {
