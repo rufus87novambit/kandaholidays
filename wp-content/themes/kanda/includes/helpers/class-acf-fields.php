@@ -46,6 +46,9 @@ class Kanda_Fields {
             add_filter('acf/prepare_field/name=hotelweb', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkintime', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
+
+            add_filter('acf/prepare_field/name=hotel_city', array( $this, 'get_city_name' ) );
+            add_filter('acf/prepare_field/name=hotelcity', array( $this, 'get_city_name' ) );
         }
 
     }
@@ -105,6 +108,23 @@ class Kanda_Fields {
     public function make_readonly( $field ) {
         $field['readonly'] = true;
 
+        return $field;
+    }
+
+    /**
+     * Get city human value
+     *
+     * @param $field
+     * @return mixed
+     */
+    public function get_city_name( $field ) {
+
+        if( $field['value'] ) {
+            $city_name = IOL_Helper::get_city_name_from_code( $field['value'] );
+            if( $city_name ) {
+                $field['value'] = $city_name;
+            }
+        }
         return $field;
     }
 

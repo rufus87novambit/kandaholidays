@@ -11,6 +11,12 @@
             <td><?php esc_html_e( 'Hotel Name', 'kanda' ); ?></td>
             <td><?php the_field( 'hotel_name', $booking_id ); ?></td>
         </tr>
+        <?php if( $city_code = get_field( 'hotel_city' ) ) { ?>
+        <tr>
+            <td><?php esc_html_e( 'City', 'kanda' ); ?></td>
+            <td><?php echo IOL_Helper::get_city_name_from_code( $city_code ); ?></td>
+        </tr>
+        <?php } ?>
         <tr>
             <td><?php esc_html_e( 'Room Type', 'kanda' ); ?></td>
             <td><?php the_field( 'room_type', $booking_id ); ?></td>

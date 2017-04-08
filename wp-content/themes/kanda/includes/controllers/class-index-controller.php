@@ -59,9 +59,9 @@ class Index_Controller extends Base_Controller {
             'posts_per_page'    => $limit,
             'meta_query' => array(
                 array(
-                    'key' => 'start_date',
+                    'key' => 'end_date',
                     'value' => date('Ymd'),
-                    'compare' => '>',
+                    'compare' => '>=',
                     'type' => 'DATE'
                 )
             ),

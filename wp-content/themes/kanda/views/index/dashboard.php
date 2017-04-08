@@ -10,6 +10,7 @@
                 <div class="th"><?php esc_html_e( 'End Date', 'kanda' ); ?></div>
                 <div class="th"><?php esc_html_e( 'Actions', 'kanda' ); ?></div>
             </header>
+
             <div class="tbody">
                 <?php while( $this->bookings->have_posts() ) { $this->bookings->the_post(); ?>
                 <div class="tr">
@@ -20,6 +21,7 @@
                 </div>
                 <?php } ?>
             </div>
+
         </div>
     </div>
     <?php } else { ?>

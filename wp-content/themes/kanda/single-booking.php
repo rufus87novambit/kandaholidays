@@ -23,6 +23,12 @@ get_header(); ?>
                                 <div class="td"><?php esc_html_e( 'Hotel Name', 'kanda' ); ?></div>
                                 <div class="td"><?php the_field( 'hotel_name' ); ?></div>
                             </div>
+                            <?php if( $city_code = get_field( 'hotel_city' ) ) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e( 'City', 'kanda' ); ?></div>
+                                <div class="td"><?php echo IOL_Helper::get_city_name_from_code( $city_code ); ?></div>
+                            </div>
+                            <?php } ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Room Type', 'kanda' ); ?></div>
                                 <div class="td"><?php the_field( 'room_type' ); ?></div>

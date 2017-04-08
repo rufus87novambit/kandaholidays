@@ -254,6 +254,13 @@ class Kanda_Config {
                         'required' => esc_html__( 'Required', 'kanda' ),
                     ),
                 ),
+                'form_booking_email_details' => array(
+                    // key => input_id
+                    'email_address' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'email' => esc_html__( 'Invalid Email Adrress', 'kanda' ),
+                    ),
+                )
             )
         );
         self::$controller_map = array(

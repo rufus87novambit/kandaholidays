@@ -195,6 +195,8 @@ class Booking_Controller extends Base_Controller {
 
                         if( $cancellation_response->is_valid() ) {
 
+
+
                             $repeaters = array(
                                 'adults'                => array(),
                                 'children'              => array(),
@@ -252,11 +254,33 @@ class Booking_Controller extends Base_Controller {
                                 $real_price = number_format( $real_price, 2 );
                                 $agency_price = number_format( $agency_price, 2 );
 
+                                //$data['hoteldetails']['hotelcode'];
+                                $hotels_query = new WP_Query(array(
+                                    'post_type' => 'hotel',
+                                    'post_status' => 'publish',
+                                    'posts_per_page' => 1,
+                                    'meta_query' => array(
+                                        array(
+                                            'key'     => 'hotelcode',
+                                            'value'   => $data['hoteldetails']['hotelcode'],
+                                            'compare' => '=',
+                                        )
+                                    )
+                                ));
+                                if( $hotels_query->have_posts() ) {
+                                    $hotels = $hotels_query->get_posts();
+                                    $hotel = $hotels[0];
+                                    $hotel_city = kanda_get_post_meta( $hotel->ID, 'hotelcity' );
+                                } else {
+                                    $hotel_city = '';
+                                }
+
                                 $meta_data = array(
                                     'start_date'            => $start_date->format( 'Ymd' ),
                                     'end_date'              => $end_date->format( 'Ymd' ),
                                     'hotel_name'            => $data['hoteldetails']['hotelname'],
                                     'hotel_code'            => $data['hoteldetails']['hotelcode'],
+                                    'hotel_city'            => $hotel_city,
                                     'real_price'            => $real_price,
                                     'agency_price'          => $agency_price,
                                     'earnings'              => $earnings,
@@ -285,6 +309,7 @@ class Booking_Controller extends Base_Controller {
                                 );
 
                                 $passengers = $data['bookingdetails']['passengerdetails']['passenger'];
+                                $passengers = IOL_Helper::is_associative_array( $passengers ) ? array( $passengers ) : $passengers;
 
                                 /** adults repeater */
                                 $adults = wp_list_filter( $passengers, array(

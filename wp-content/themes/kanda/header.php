@@ -10,7 +10,7 @@
     <header class="header clearfix">
         <h1 class="back-logo">
             <a href="<?php echo home_url( '/' ); ?>">
-                <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php echo esc_html__( 'logo', 'kanda' ); ?>" />
+                <?php the_custom_logo(); ?>
             </a>
         </h1>
 

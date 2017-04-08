@@ -1046,4 +1046,39 @@
     }
     /********************************************** /end Booking create *******************************************/
 
+    /********************************************** booking email *******************************************/
+    if( $('#form_booking_email_details').length > 0 ) {
+
+        var kanda_back_form_booking_email_details = $('#form_booking_email_details'),
+            kanda_back_form_booking_email_details_validation_args = {
+                rules : {
+                    email_address : {
+                        required : true,
+                        email : true
+                    }
+                },
+                messages : {
+                    email_address : {
+                        required : booking.validation.email_address.required,
+                        email : booking.validation.email_address.email,
+                    }
+                }
+            };
+
+        kanda_back_form_booking_email_details_validation_args = Object.assign(
+            kanda_back_form_validation_default_args,
+            kanda_back_form_booking_email_details_validation_args
+        );
+
+        kanda_back_form_booking_email_details.validate( kanda_back_form_booking_email_details_validation_args );
+
+        kanda_back_form_booking_email_details.on( 'submit', function() {
+            if ( ! $( this ).valid() ) {
+                return false;
+            }
+        } );
+
+    }
+    /********************************************** /end booking email *******************************************/
+
 })(jQuery);

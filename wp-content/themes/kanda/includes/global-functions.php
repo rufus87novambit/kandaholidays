@@ -1010,3 +1010,19 @@ function kanda_get_nationality_choices() {
 function kanda_get_error_popup() {
     return sprintf( '<div id="error-popup" class="static-popup text-center mfp-hide"><h2 class="text-center">%s</h2><div class="popup-content"></div></div>', __( 'Error', 'kanda' ) );
 }
+
+function kanda_get_paged(){
+    global $paged;
+    if( is_front_page() ){
+        $paged = absint( get_query_var( 'page' ) ) ? absint( get_query_var( 'page' ) ) : 1;
+    }else{
+        if( get_query_var( 'paged' ) ) {
+            $paged = absint( get_query_var( 'paged' ) );
+        } elseif( get_query_var( 'page' ) ) {
+            $paged = absint( get_query_var( 'page' ) );
+        } else {
+            $paged = 1;
+        }
+    }
+    return $paged;
+}

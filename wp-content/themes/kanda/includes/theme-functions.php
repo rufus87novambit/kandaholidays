@@ -67,6 +67,14 @@ function kanda_setup_theme() {
      */
     add_theme_support( 'title-tag' );
 
+    /**
+     * Theme custom logo
+     */
+    add_theme_support( 'custom-logo', array(
+        'width' => 210,
+        'header-text' => array( 'site-title', 'site-description' ),
+    ) );
+
     /*
      * Enable support for Post Thumbnails on posts and pages.
      *
