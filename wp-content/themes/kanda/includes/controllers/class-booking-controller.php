@@ -362,7 +362,11 @@ class Booking_Controller extends Base_Controller {
                                     'post_title' => sprintf( '%1$s - #%2$s', $data['hoteldetails']['hotelname'], $data['bookingdetails']['bookingnumber'] ),
                                     'post_name' => kanda_generate_random_string( 20 ),
                                     'post_status' => 'publish',
-                                    'post_type' => 'booking'
+                                    'post_type' => 'booking',
+                                    'meta_input' => array(
+                                        'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
+                                        'source' => $data['bookingdetails']['source']
+                                    )
                                 ), true );
 
                                 if( is_wp_error( $booking_id ) ) {
@@ -504,6 +508,79 @@ class Booking_Controller extends Base_Controller {
 
         }
         kanda_to( 404 );
+    }
+
+    public function cancel_booking() {
+        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+
+            $is_valid = true;
+
+            $security = isset($_REQUEST['security']) ? $_REQUEST['security'] : '';
+
+            if (wp_verify_nonce($security, 'kanda-cancel-booking')) {
+
+                $booking_id = (int)( isset( $_REQUEST['booking_id'] ) ? $_REQUEST['booking_id'] : '' );
+                if( $booking_id && $booking = get_post( $booking_id ) ) {
+
+                    if( $booking->post_author == get_current_user_id() ) {
+
+                        $sub_res_no = kanda_get_post_meta($booking_id, 'subresno');
+                        $source = kanda_get_post_meta($booking_id, 'source');
+                        $booking_number = kanda_get_post_meta($booking_id, 'booking_number');
+
+                        $response = provider_iol()->bookings()->cancel(array(
+                            'sub_res_no' => $sub_res_no,
+                            'source' => $source,
+                            'booking_number' => $booking_number
+                        ));
+
+                        if ($response->is_valid()) {
+                            $data = $response->data;
+
+                            if( $data['currency'] ) {
+                                $cancellation_total_amount_converted = kanda_covert_currency_to($data['totalamount'], 'USD', $data['currency']);
+                                $cancellation_total_amount = $cancellation_total_amount_converted['amount'] . ' ' . $cancellation_total_amount_converted['currency'];
+                            } else {
+                                $cancellation_total_amount = $data['totalamount'];
+                            }
+
+                            update_post_meta( $booking_id, 'booking_status', 'cancelled' );
+                            update_post_meta( $booking_id, 'cancellation_total_amount', $cancellation_total_amount );
+
+                            do_action( 'kanda/booking/cancel', $booking_id );
+
+                            $redirect_to = get_permalink( $booking_id );
+
+                        } else {
+                            $is_valid = false;
+                            $message = $response->message;
+                        }
+                    } else {
+                        $is_valid = false;
+                        $message = esc_html__( 'Invalid request', 'kanda' );
+                    }
+
+                } else {
+                    $is_valid = false;
+                    $message = esc_html__( 'Invalid request', 'kanda' );
+                }
+
+            } else {
+                $is_valid = false;
+                $message = esc_html__( 'Invalid request', 'kanda' );
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( array(
+                    'redirect_to' => $redirect_to
+                ) );
+            } else {
+                wp_send_json_error( array(
+                    'message' => $message
+                ) );
+            }
+        }
+        $this->show_404();
     }
 
 }

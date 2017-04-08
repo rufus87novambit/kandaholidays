@@ -19,7 +19,14 @@ return array(
     'user_page_booking'     => 0,
 
     /** - Section Admin Notifications - */
-    'admin_notifications_events' => array( 'on_user_login', 'on_user_register', 'on_user_forgot_password', 'on_user_password_reset' ),
+    'admin_notifications_events' => array(
+        'on_user_login',
+        'on_user_register',
+        'on_user_forgot_password',
+        'on_user_password_reset',
+        'on_booking_create',
+        'on_booking_cancel'
+    ),
 
     /** - Section 404 Page - **/
     '404_page_guest_page'    => 0,

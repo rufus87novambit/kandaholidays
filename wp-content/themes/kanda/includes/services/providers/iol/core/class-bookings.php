@@ -210,4 +210,44 @@ class IOL_Bookings {
 
     }
 
+    private function get_cancel_booking_xml( $args ) {
+        $xml = $this->request_instance->get_basic_xml( 'cancel_hotel_booking_request' );
+
+        $booking_details = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'booking_details' )
+        );
+
+        $source = $booking_details->addChild(
+            IOL_Helper::parse_xml_key( 'source' ),
+            $args['source']
+        );
+
+        $booking_number = $booking_details->addChild(
+            IOL_Helper::parse_xml_key( 'booking_number' ),
+            $args['booking_number']
+        );
+
+        $sub_res_no = $booking_details->addChild(
+            IOL_Helper::parse_xml_key( 'sub_res_no' ),
+            $args['sub_res_no']
+        );
+
+        return $xml->asXML();
+
+    }
+
+    /**
+     * Cancel booking
+     *
+     * @param $args
+     * @return Kanda_Service_Response
+     */
+    public function cancel( $args ) {
+
+        $xml = $this->get_cancel_booking_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
+
+    }
+
 }

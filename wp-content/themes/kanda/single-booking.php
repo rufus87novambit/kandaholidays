@@ -12,6 +12,7 @@ get_header(); ?>
 
                     <?php the_title( '<h1 class="page-title">', '</h1>' ); ?>
 
+                    <?php $booking_status = kanda_get_post_meta( get_the_ID(), 'booking_status' ); ?>
                     <h4><?php esc_html_e( 'Booking details', 'kanda' ); ?></h4>
                     <div class="users-table table">
                         <header class="thead">
@@ -19,9 +20,14 @@ get_header(); ?>
                             <div class="th"><?php esc_html_e( 'Property Value', 'kanda' ); ?></div>
                         </header>
                         <div class="tbody">
+                            <?php
+                                $hotel_name = get_field( 'hotel_name' );
+                                $hotel_code = kanda_get_post_meta( get_the_ID(), 'hotel_code' );
+                                $hotel_permalink = kanda_get_single_hotel_url( array( 'hotelcode' => $hotel_code, 'start_date' => get_field( 'start_date', false, false ), 'end_date' => get_field( 'end_date', false, false ) ) );
+                            ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Hotel Name', 'kanda' ); ?></div>
-                                <div class="td"><?php the_field( 'hotel_name' ); ?></div>
+                                <div class="td"><a href="<?php echo $hotel_permalink; ?>" target="_blank" class="link"><?php echo $hotel_name; ?></a></div>
                             </div>
                             <?php if( $city_code = get_field( 'hotel_city' ) ) { ?>
                             <div class="tr">
@@ -178,6 +184,9 @@ get_header(); ?>
                         <div class="col-lg-12">
                             <div class="actions pull-right">
                                 <a href="#send-email-popup" class="open-popup btn -sm -primary"><?php _e( 'Send Email', 'kanda' ); ?></a>
+                                <?php if( $booking_status != 'cancelled' ) { ?>
+                                <a href="#cancel-booking-popup" class="open-popup btn -sm -danger"><?php _e( 'Cancel Booking', 'kanda' ); ?></a>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -199,6 +208,28 @@ get_header(); ?>
                     </footer>
                 </form>
             </div>
+
+            <?php if( $booking_status != 'cancelled' ) { ?>
+                <div id="cancel-booking-popup" class="static-popup -sm mfp-hide">
+                    <h2 class="text-center"><?php _e('Booking Cancellation', 'kanda'); ?></h2>
+
+                    <p class="text-center"><?php _e('Are you sure you want to cancel booking', 'kanda'); ?></p>
+
+                    <form class="form-block"
+                          action="<?php echo kanda_url_to('booking', array('send-email', get_queried_object()->post_name)); ?>"
+                          id="form_booking_email_details" method="post">
+                        <footer class="form-footer clearfix text-center">
+                            <a id="btn-cancel-booking"
+                               href="<?php echo add_query_arg(array('booking_id' => get_the_ID(), 'security' => wp_create_nonce('kanda-cancel-booking')), admin_url('admin-ajax.php')); ?>"
+                               class="btn -sm -secondary"><?php _e('Cancel Booking', 'kanda'); ?></a>
+                        </footer>
+                    </form>
+                </div>
+                <?php
+                echo kanda_get_loading_popup();
+                echo kanda_get_error_popup();
+            }
+            ?>
         </div>
         <?php get_sidebar(); ?>
     </div>

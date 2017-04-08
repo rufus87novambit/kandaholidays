@@ -158,10 +158,20 @@ function kanda_check_hotel_availability() {
 
 add_action( 'wp_ajax_create_booking', 'kanda_hotel_create_booking' );
 function kanda_hotel_create_booking() {
-    if( ! class_exists( 'Hotels_Controller' ) ) {
+    if( ! class_exists( 'Booking_Controller' ) ) {
         require_once ( KANDA_CONTROLLERS_PATH . 'class-booking-controller.php' );
     }
 
     $controller = new Booking_Controller();
     $controller->create_booking();
+}
+
+add_action( 'wp_ajax_cancel_booking', 'kanda_cancel_booking' );
+function kanda_cancel_booking() {
+    if( ! class_exists( 'Booking_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-booking-controller.php' );
+    }
+
+    $controller = new Booking_Controller();
+    $controller->cancel_booking();
 }

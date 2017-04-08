@@ -41,6 +41,8 @@ return array(
                 'on_user_register'          => esc_attr__( 'On user register', 'kanda' ),
                 'on_user_forgot_password'   => esc_attr__( 'On user forgot password request', 'kanda' ),
                 'on_user_password_reset'    => esc_attr__( 'On user password reset', 'kanda' ),
+                'on_booking_create'         => esc_attr__( 'On booking create', 'kanda' ),
+                'on_booking_cancel'         => esc_attr__( 'On booking cancellation', 'kanda' ),
             ),
         ),
         //other fields go here

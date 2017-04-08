@@ -114,8 +114,13 @@ function kanda_get_back_localize() {
 /**
  * Send admin notification on new booking
  */
-add_action( 'kanda/booking/create', 'kanda_send_notification_to_admin', 10, 1 );
-function kanda_send_notification_to_admin( $booking_id ) {
+add_action( 'kanda/booking/create', 'kanda_booking_create_send_admin_notification', 10, 1 );
+function kanda_booking_create_send_admin_notification( $booking_id ) {
+    $sent = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
+    if( ! $sent ) {
+        return;
+    }
+
     $subject = esc_html__( 'New Booking', 'kanda' );
 
     $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
@@ -127,5 +132,30 @@ function kanda_send_notification_to_admin( $booking_id ) {
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
         kanda_logger()->log( sprintf( 'Error sending email to admin for new booking. booking_id=%d' ), $booking_id );
+    }
+}
+
+/**
+ * Send admin notification on booking cancellation
+ */
+add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_admin_notification' );
+function kanda_booking_cancel_send_admin_notification( $booking_id ) {
+
+    $sent = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
+    if( ! $sent ) {
+        return;
+    }
+
+    $subject = esc_html__( 'Booking Cancellation', 'kanda' );
+
+    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'Booking has been cancelled at {{SITE_NAME}}.', 'kanda' ) );
+
+    $message .= '<p></p>';
+    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
+    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
+
+    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+        kanda_logger()->log( sprintf( 'Error sending email to admin for booking cancellation. booking_id=%d' ), $booking_id );
     }
 }

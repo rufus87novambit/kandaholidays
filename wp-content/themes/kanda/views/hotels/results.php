@@ -74,7 +74,7 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
 <ul class="articles-list">
     <?php
         foreach( $this->response->data as $hotel ) {
-            $hotel_permalink = $this->get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date, $this->response->request ) ); ?>
+            $hotel_permalink = kanda_get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date ) ); ?>
 
     <li>
         <h4 class="article-title">

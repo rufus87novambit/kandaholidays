@@ -1026,3 +1026,13 @@ function kanda_get_paged(){
     }
     return $paged;
 }
+
+function kanda_get_single_hotel_url( $args ) {
+    return add_query_arg(
+        array(
+            'start_date'    => $args['start_date'],
+            'end_date'      => $args['end_date']
+        ),
+        kanda_url_to( 'hotels', array( 'view', $args['hotelcode'] ) )
+    );
+}

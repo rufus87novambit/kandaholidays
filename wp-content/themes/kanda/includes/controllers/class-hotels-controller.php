@@ -504,20 +504,4 @@ class Hotels_Controller extends Base_Controller {
         return false;
     }
 
-    /**
-     * Get hotel details request URL
-     *
-     * @param $args
-     * @return string
-     */
-    public function get_single_hotel_url( $args ) {
-        return add_query_arg(
-            array(
-                'start_date'    => $args['start_date'],
-                'end_date'      => $args['end_date']
-            ),
-            kanda_url_to( 'hotels', array( 'view', $args['hotelcode'] ) )
-        );
-    }
-
 }
