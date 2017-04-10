@@ -127,10 +127,11 @@
         background: none;
         border: 0;
         position: absolute;
-        right: 15px;
-        top: 9px;
+        right: 80px;
+        top: 40px;
         z-index: 10;
     }
+
     .burger-icon {
         position: relative;
         margin-top: 8px;
@@ -166,6 +167,10 @@
     /*menu*/
     body.menu-opened{
         overflow:hidden;
+    }
+    .menu-opened .menu-btn{
+        top: 9px;
+        right: 15px;
     }
     .menu-opened.admin-bar .menu-btn{
         top:55px;
@@ -207,12 +212,12 @@
         top:0;
         bottom: 0;
         right:-100%;
-        width: 100%;
+        width: 250px;
         height:100%;
-        padding:40px 0 20px;
+        padding:80px 0 20px;
         margin-top:0;
         background:var(--brand-primary);
-        text-align:center;
+        text-align:right;
         overflow:auto;
         -webkit-transition:all 0.7s;
         -moz-transition: all 0.7s;
@@ -278,5 +283,12 @@
         border-right: 4px solid transparent;
         border-top: 4px solid #fff;
         cursor: pointer;
+    }
+}
+
+@media screen and (max-width:480px){
+    .menu-btn{
+        right: 62px;
+        top: 32px;
     }
 }

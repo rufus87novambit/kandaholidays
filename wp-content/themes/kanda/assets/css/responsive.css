@@ -15,7 +15,9 @@
 	.users-table{
 		font-size:13px;
 	}
-
+	.agency-logo img{
+		max-width: 4rem;
+	}
 }
 
 @media (max-width: 543px) {
