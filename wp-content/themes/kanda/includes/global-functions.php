@@ -584,7 +584,7 @@ function kanda_generate_price( $price, $hotel_code, $exit_currency, $input_curre
         $currency = $exit_currency;
     }
 
-    if( current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
+    if( false && current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
         $additional_fee = kanda_get_hotel_additional_fee( $hotel_code );
         $price += $additional_fee * $multiply_index;
     }

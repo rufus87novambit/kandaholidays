@@ -58,6 +58,7 @@ get_header(); ?>
                             <?php
                             $total_rate = 0;
                             $hotel_rate = get_field( 'agency_price' );
+                            $total_rate += floatval( preg_replace('/[^\d.]/', '', $hotel_rate) );
                             ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Hotel Rate', 'kanda' ); ?></div>
@@ -65,7 +66,7 @@ get_header(); ?>
                             </div>
                             <?php
                                 $visa_rate = get_field( 'visa_rate' );
-                                $total_rate += $visa_rate;
+                                $total_rate += floatval( preg_replace('/[^\d.]/', '', $visa_rate) );;
                             ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Visa Rate', 'kanda' ); ?></div>
@@ -73,7 +74,7 @@ get_header(); ?>
                             </div>
                             <?php
                                 $transfer_rate = get_field( 'transfer_rate' );
-                                $total_rate += $transfer_rate;
+                                $total_rate += floatval( preg_replace('/[^\d.]/', '', $transfer_rate) );;
                             ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Transfer Rate', 'kanda' ); ?></div>
@@ -81,7 +82,7 @@ get_header(); ?>
                             </div>
                             <?php
                                 $other_rate = get_field( 'other_rate' );
-                                $total_rate += $other_rate;
+                                $total_rate += floatval( preg_replace('/[^\d.]/', '', $other_rate) );;
                             ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Other Rate', 'kanda' ); ?></div>

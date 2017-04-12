@@ -159,3 +159,17 @@ function kanda_booking_cancel_send_admin_notification( $booking_id ) {
         kanda_logger()->log( sprintf( 'Error sending email to admin for booking cancellation. booking_id=%d' ), $booking_id );
     }
 }
+
+/**
+ * Order by price
+ *
+ * @param $a
+ * @param $b
+ * @return int
+ */
+function kanda_price_order( $a, $b ) {
+    if ( $a['rate'] == $b['rate'] ) {
+        return 0;
+    }
+    return ( $a['rate'] < $b['rate'] ) ? -1 : 1;
+}

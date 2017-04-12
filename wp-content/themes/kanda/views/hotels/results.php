@@ -140,6 +140,8 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                         array_key_exists( 'room', $hotel['roomtypedetails']['rooms'] )
                     ) {
                         $rooms = IOL_Helper::is_associative_array( $hotel['roomtypedetails']['rooms']['room'] ) ? array( $hotel['roomtypedetails']['rooms']['room'] ) : $hotel['roomtypedetails']['rooms']['room'];
+                        usort( $rooms, "kanda_price_order" );
+
                         // Render as tabs as we have multiple rooms
                         if( $this->response->request['rooms_count'] > 1 ) {
                             ?>
