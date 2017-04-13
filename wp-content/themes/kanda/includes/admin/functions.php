@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
+require_once KANDA_ADMIN_PATH . 'page-booking-search.php';
+
 /**
  * Remove additional capabilities
  */

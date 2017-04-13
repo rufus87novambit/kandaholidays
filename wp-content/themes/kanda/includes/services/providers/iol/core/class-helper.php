@@ -309,7 +309,7 @@ class IOL_Helper {
     public static function get_city_name_from_code( $code ) {
         $cities = self::get_cities();
 
-        return isset( $cities[ $code ] ) ? $cities[ $code ] : null;
+        return isset( $cities[ $code ] ) ? $cities[ $code ] : $code;
     }
 
     /**

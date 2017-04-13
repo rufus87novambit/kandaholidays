@@ -144,26 +144,24 @@
         </div>
     </fieldset>
 
-    <h4><?php _e( 'Additional Information' ); ?></h4>
+    <?php
+        $group_fields = acf_get_fields_by_id( 2719 );
+        $additional_information = array_values( wp_list_filter( $group_fields, array( 'name' => 'additional_requests' ) ) );
+        $additional_information_choices = $additional_information[0]['choices'];
+    ?>
+    <h4><?php _e( 'Additional Requests' ); ?></h4>
     <fieldset class="fieldset row">
+        <?php foreach( $additional_information_choices as $value => $label ) { ?>
         <div class="col-md-6">
             <div class="ctrl-group">
                 <label class="ctrl-field -chbox">
-                    <input type='checkbox' class="ctrl-inp" name="" checked>
+                    <input type='checkbox' class="ctrl-inp" name="additional_requests[<?php echo $value ?>]" value="1">
                     <span class="ctrl-btn"></span>
-                    <span class="ctrl-label">Please note that Guests are a Honeymoon Couple</span>
+                    <span class="ctrl-label"><?php echo $label; ?></span>
                 </label>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="ctrl-group">
-                <label class="ctrl-field -chbox">
-                    <input type='checkbox' class="ctrl-inp" name="" checked>
-                    <span class="ctrl-btn"></span>
-                    <span class="ctrl-label">Please note that Guests are a Honeymoon Couple</span>
-                </label>
-            </div>
-        </div>
+        <?php } ?>
     </fieldset>
 
     <footer class="form-footer clearfix">

@@ -20,6 +20,10 @@ get_header(); ?>
                             <div class="th"><?php esc_html_e( 'Property Value', 'kanda' ); ?></div>
                         </header>
                         <div class="tbody">
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e( 'Supplier Reference', 'kanda' ); ?></div>
+                                <div class="td"><?php echo ( $reference = get_field( 'supplier_reference' ) ) ? $reference : 'N/A'; ?></div>
+                            </div>
                             <?php
                                 $hotel_name = get_field( 'hotel_name' );
                                 $hotel_code = kanda_get_post_meta( get_the_ID(), 'hotel_code' );
@@ -98,11 +102,27 @@ get_header(); ?>
                             </div>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Payment Status', 'kanda' ); ?></div>
-                                <div class="td"><?php the_field( 'payment_status' ); ?></div>
+                                <div class="td"><?php echo ucwords( get_field( 'payment_status' ) ); ?></div>
                             </div>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e( 'Booking Status', 'kanda' ); ?></div>
-                                <div class="td"><?php the_field( 'booking_status' ); ?></div>
+                                <div class="td"><?php echo ucwords( get_field( 'booking_status' ) ); ?></div>
+                            </div>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e( 'Additional Requests', 'kanda' ); ?></div>
+                                <div class="td">
+                                    <?php
+                                        $additional_requests = get_field( 'additional_requests' );
+                                        if( $additional_requests ) {
+                                            $field_object = get_field_object( 'additional_requests' );
+                                        }
+                                    ?>
+                                    <ul class="list-disc">
+                                        <?php foreach( $additional_requests as $request ) { ?>
+                                        <li><?php echo $field_object['choices'][$request]; ?></li>
+                                        <?php } ?>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

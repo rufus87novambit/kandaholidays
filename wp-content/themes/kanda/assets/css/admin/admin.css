@@ -26,3 +26,12 @@
 .kanda_hidden {
     display: none !important;
 }
+.clearfix::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+.list-table-form-row label {
+    min-width: 200px;
+    display: inline-block;
+}

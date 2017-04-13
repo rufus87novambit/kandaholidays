@@ -295,7 +295,8 @@ class Booking_Controller extends Base_Controller {
                                     'other_rate'            => 0,
                                     'adults'                => '',
                                     'children'              => '',
-                                    'cancellation_policy'   => ''
+                                    'cancellation_policy'   => '',
+                                    'additional_requests'   => array_keys( $details['additional_requests'] )
                                 );
 
                                 $nationalities = kanda_get_nationality_choices();
