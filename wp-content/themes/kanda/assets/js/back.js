@@ -110,7 +110,8 @@
             end_date_picker = $('.datepicker-end-date' ),
             min_checkin = new Date(),
             checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin,
-            min_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() )),
+            //min_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() )),
+            min_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( 1 )),
             checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
 
         /**
