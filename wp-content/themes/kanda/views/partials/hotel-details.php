@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li>
-                <p><a href="javascript:void(0);" class="btn -sm -primary -block"><?php echo $hotel['hoteladdress']; ?></a></p>
+                <p><a href="javascript:void(0);" class="btn -sm -primary -block -normal-wrap"><?php echo $hotel['hoteladdress']; ?></a></p>
                 <?php
                     $map_url = ( $cached_hotel && isset( $cached_hotel['geolocation'] ) ) ? $this->get_hotel_google_map_url( $cached_hotel['geolocation'] ) : false;
                     if( $map_url ) {

@@ -94,7 +94,10 @@
             changeMonth: true,
             changeYear: true,
             yearRange: 'c-100:c',
-            defaultDate: '-1Y'
+            defaultDate: '-1Y',
+            onSelect: function(){
+                $(this).trigger( 'blur' );
+            }
         });
     }
 

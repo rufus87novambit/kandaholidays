@@ -131,6 +131,9 @@
     display:block;
     width:100%;
 }
+.btn.-normal-wrap {
+    white-space: normal;
+}
 
 /*alerts*/
 .alert {
