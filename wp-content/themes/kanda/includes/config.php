@@ -61,6 +61,13 @@ class Kanda_Config {
     public static $providers = array();
 
     /**
+     * Spare days count for cancellation policy dates
+     *
+     * @var int
+     */
+    public static $spare_days_count = 2;
+
+    /**
      * Get configuration value
      *
      * @param string $property

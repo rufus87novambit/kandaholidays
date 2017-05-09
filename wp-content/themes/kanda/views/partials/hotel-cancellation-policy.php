@@ -13,8 +13,11 @@
         <div class="tbody">
             <?php
                 foreach( $cancellation_policies as $policy ) {
-                    $from_timestamp = max( strtotime( $policy['fromdate'] ), time() );
-                    $to_timestamp = min( strtotime( $policy['todate'] ), strtotime( $request['end_date'] ) );
+
+                    $spare = Kanda_Config::get( 'spare_days_count' ) * 86400;
+
+                    $from_timestamp = max( strtotime( $policy['fromdate'] ), time() ) - $spare;
+                    $to_timestamp = min( strtotime( $policy['todate'] ), strtotime( $request['end_date'] ) ) - $spare;
                     if( $to_timestamp <= time() ) {
                         continue;
                     } ?>

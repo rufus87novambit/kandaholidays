@@ -458,7 +458,7 @@ class Hotels_Controller extends Base_Controller {
                         $template = KANDA_THEME_PATH . 'views/partials/hotel-cancellation-policy.php';
                         if( file_exists( $template ) ) {
                             $data = $response->data;
-                            $cancellation_policies = ( array_key_exists( 'cancellationdetails', $data ) && isset( $data['cancellationdetails']['cancellation'] ) ) ? $data['cancellationdetails']['cancellation'] : array();
+                            $cancellation_policies = ( array_key_exists( 'cancellationdetails', $data ) && isset( $data['cancellationdetails']['cancellation'] ) ) ? ( IOL_Helper::is_associative_array( $data['cancellationdetails']['cancellation'] ) ? array( $data['cancellationdetails']['cancellation'] ) : $data['cancellationdetails']['cancellation'] ) : array();
                             $request = $response->request;
 
                             ob_start();
