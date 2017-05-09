@@ -175,3 +175,13 @@ function kanda_cancel_booking() {
     $controller = new Booking_Controller();
     $controller->cancel_booking();
 }
+
+add_action( 'wp_ajax_view_voucher', 'kanda_view_voucher' );
+function kanda_view_voucher() {
+    if( ! class_exists( 'Booking_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-booking-controller.php' );
+    }
+
+    $controller = new Booking_Controller();
+    $controller->view_voucher();
+}

@@ -25,6 +25,9 @@ function kanda_additional_capabilities_display(){
  */
 add_action( 'admin_enqueue_scripts', 'kanda_admin_enqueue_styles' );
 function kanda_admin_enqueue_styles() {
+    if( get_current_screen()->id == 'booking_page_search_bookings' ) {
+        wp_enqueue_style( 'jquery-ui', 'http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css' );
+    }
     wp_enqueue_style( 'kanda-admin', KANDA_THEME_URL . 'css/admin.min.css', array(), null);
 }
 
@@ -33,6 +36,9 @@ function kanda_admin_enqueue_styles() {
  */
 add_action( 'admin_enqueue_scripts', 'kanda_admin_enqueue_scripts' );
 function kanda_admin_enqueue_scripts() {
+    if( get_current_screen()->id == 'booking_page_search_bookings' ) {
+        wp_enqueue_script( 'jquery-ui-datepicker' );
+    }
     wp_enqueue_script( 'kanda-admin', KANDA_THEME_URL . 'js/admin.min.js', array('jquery'), null);
 }
 

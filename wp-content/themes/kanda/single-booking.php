@@ -205,6 +205,7 @@ get_header(); ?>
                         <div class="col-lg-12">
                             <div class="actions pull-right">
                                 <a href="#send-email-popup" class="open-popup btn -sm -primary"><?php _e( 'Send Email', 'kanda' ); ?></a>
+                                <a href="<?php echo add_query_arg( array( 'action' => 'view_voucher', 'security' => wp_create_nonce( 'kanda-view-voucher' ),'id' => get_the_ID() ), admin_url( 'admin-ajax.php' ) ); ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php _e( 'View Voucher', 'kanda' ); ?></a>
                                 <?php if( $booking_status != 'cancelled' ) { ?>
                                 <a href="#cancel-booking-popup" class="open-popup btn -sm -danger"><?php _e( 'Cancel Booking', 'kanda' ); ?></a>
                                 <?php } ?>

@@ -32,7 +32,7 @@
                             </div>
                         </div>
 
-                        <?php $star_rating = isset( $star_rating ) ? $star_rating : 3; ?>
+                        <?php $star_rating = isset( $star_rating ) ? $star_rating : ''; ?>
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Rating', 'kanda' ); ?></label>
                             <div class="select-wrap col-lg-7">

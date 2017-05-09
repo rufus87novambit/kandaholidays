@@ -312,6 +312,7 @@ class Booking_Controller extends Base_Controller {
                                 $passengers = $data['bookingdetails']['passengerdetails']['passenger'];
                                 $passengers = IOL_Helper::is_associative_array( $passengers ) ? array( $passengers ) : $passengers;
 
+                                $passengers_meta = array();
                                 /** adults repeater */
                                 $adults = wp_list_filter( $passengers, array(
                                     'passengertype' => 'ADT'
@@ -332,6 +333,7 @@ class Booking_Controller extends Base_Controller {
 
                                         $adult[ $meta_key ] = $meta_value;
                                     }
+                                    $passengers_meta[] = sprintf( '%1$s %2$s', $adult['first_name'], $adult['last_name'] );
                                     $repeaters['adults'][] = $adult;
                                 }
                                 /** /end adults repeater */
@@ -346,14 +348,17 @@ class Booking_Controller extends Base_Controller {
                                 for( $i = 0; $i < count( $children ); $i++ ) {
                                     $child = array();
                                     foreach( $keymap as $meta_key => $response_key ) {
-                                        if( $response_key == 'nationality' ) {
-                                            $meta_value = $nationalities[ $children[$i][$response_key] ];
-                                        } else {
-                                            $meta_value = $children[$i][$response_key];
+                                        switch( $response_key ) {
+                                            case 'nationality':
+                                                $meta_value = $nationalities[ $children[$i][$response_key] ];
+                                                break;
+                                            default:
+                                                $meta_value = $children[$i][$response_key];
+                                                break;
                                         }
-
                                         $child[ $meta_key ] = $meta_value;
                                     }
+                                    $passengers_meta[] = sprintf( '%1$s %2$s', $child['first_name'], $child['last_name'] );
                                     $repeaters['children'][] = $child;
                                 }
                                 /** /end children repeater */
@@ -366,7 +371,8 @@ class Booking_Controller extends Base_Controller {
                                     'post_type' => 'booking',
                                     'meta_input' => array(
                                         'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
-                                        'source' => $data['bookingdetails']['source']
+                                        'source' => $data['bookingdetails']['source'],
+                                        'passenger_names' => implode( '##', $passengers_meta )
                                     )
                                 ), true );
 
@@ -582,6 +588,74 @@ class Booking_Controller extends Base_Controller {
             }
         }
         $this->show_404();
+    }
+
+    function view_voucher() {
+        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+            $security = isset($_REQUEST['security']) ? $_REQUEST['security'] : '';
+            $is_valid = true;
+
+            if (wp_verify_nonce($security, 'kanda-view-voucher')) {
+
+                if( !( isset( $_REQUEST['id'] ) && $_REQUEST['id'] ) ) {
+                    $is_valid = false;
+                    $message = __( 'Invalid Booking', 'kanda' );
+                }
+
+            } else {
+                $is_valid = false;
+                $message = esc_html__( 'Invalid request', 'kanda' );
+            }
+
+            if( $is_valid ) {
+
+                $template = KANDA_THEME_PATH . 'views/partials/booking-travel-voucher.php';
+                if( file_exists( $template ) ) {
+
+                    // set variables
+                    $content = $this->render_template($template, array(
+                        'booking_id' => $_REQUEST['id']
+                    ));
+                } else {
+                    $is_valid = false;
+                    $message = __( 'Internal server error', 'kanda' );
+                }
+
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( $content );
+            } else {
+                wp_send_json_error( $message );
+            }
+        }
+        $this->show_404();
+    }
+
+    function download_voucher( $args ) {
+        $booking = get_post( (int)$args[ 'k_booking_id' ] );
+
+        if( $booking ) {
+
+            $template = KANDA_THEME_PATH . 'views/partials/booking-travel-voucher-pdf.php';
+            if( file_exists( $template ) ) {
+
+                // set variables
+                $content = $this->render_template($template, array(
+                    'booking_id' => $args['k_booking_id']
+                ));
+
+                require_once( KANDA_INCLUDES_PATH . 'vendor/mpdf/mpdf.php' );
+                $mpdf = new mPDF();
+                $mpdf->WriteHTML( $content );
+
+                $mpdf->Output( $booking->post_name . '.pdf', 'D');
+                die;
+            }
+
+        } else {
+            $this->show_404();
+        }
     }
 
 }

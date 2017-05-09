@@ -93,6 +93,16 @@
             return false;
         });
 
+        if( $('.datepicker').length ) {
+                $('.datepicker').datepicker({
+                showOn: 'focus',
+                defaultDate: new Date(),
+                dateFormat: 'dd MM, yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: 'c-10:c+10'
+            });
+        }
     });
 
 })(jQuery);

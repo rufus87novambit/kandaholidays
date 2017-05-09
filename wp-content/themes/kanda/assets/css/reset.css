@@ -57,8 +57,6 @@ img {
 }
 
 input, textarea, button {
-    -webkit-appearance: none;
-    appearance: none;
     -webkit-border-radius: 0;
 }
 button{

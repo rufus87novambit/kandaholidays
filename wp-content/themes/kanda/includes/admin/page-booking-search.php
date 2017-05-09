@@ -77,75 +77,7 @@ if( ! class_exists( 'WP_List_Table' ) ){
 class Booking_Search_List_Table extends WP_List_Table {
 
     private $per_page;
-    private $page;
 
-    /** ************************************************************************
-     * Normally we would be querying data from a database and manipulating that
-     * for use in your list table. For this example, we're going to simplify it
-     * slightly and create a pre-built array. Think of this as the data that might
-     * be returned by $wpdb->query()
-     *
-     * In a real-world scenario, you would make your own custom query inside
-     * this class' prepare_items() method.
-     *
-     * @var array
-     **************************************************************************/
-    var $example_data = array(
-        array(
-            'ID'        => 1,
-            'title'     => '300',
-            'rating'    => 'R',
-            'director'  => 'Zach Snyder'
-        ),
-        array(
-            'ID'        => 2,
-            'title'     => 'Eyes Wide Shut',
-            'rating'    => 'R',
-            'director'  => 'Stanley Kubrick'
-        ),
-        array(
-            'ID'        => 3,
-            'title'     => 'Moulin Rouge!',
-            'rating'    => 'PG-13',
-            'director'  => 'Baz Luhrman'
-        ),
-        array(
-            'ID'        => 4,
-            'title'     => 'Snow White',
-            'rating'    => 'G',
-            'director'  => 'Walt Disney'
-        ),
-        array(
-            'ID'        => 5,
-            'title'     => 'Super 8',
-            'rating'    => 'PG-13',
-            'director'  => 'JJ Abrams'
-        ),
-        array(
-            'ID'        => 6,
-            'title'     => 'The Fountain',
-            'rating'    => 'PG-13',
-            'director'  => 'Darren Aronofsky'
-        ),
-        array(
-            'ID'        => 7,
-            'title'     => 'Watchmen',
-            'rating'    => 'R',
-            'director'  => 'Zach Snyder'
-        ),
-        array(
-            'ID'        => 8,
-            'title'     => '2001',
-            'rating'    => 'G',
-            'director'  => 'Stanley Kubrick'
-        ),
-    );
-
-
-    /** ************************************************************************
-     * REQUIRED. Set up a constructor that references the parent constructor. We
-     * use the parent reference to set some default configs.
-     ***************************************************************************/
     function __construct(){
         global $status, $page;
 
@@ -211,18 +143,39 @@ class Booking_Search_List_Table extends WP_List_Table {
 
         //Build row actions
         $actions = array(
-            'edit'      => sprintf('<a href="?page=%s&action=%s&movie=%s">Edit</a>',$_REQUEST['page'],'edit',$item['ID']),
-            'delete'    => sprintf('<a href="?page=%s&action=%s&movie=%s">Delete</a>',$_REQUEST['page'],'delete',$item['ID']),
+            'edit'      => sprintf( '<a href="%s">Edit</a>', get_edit_post_link( $item->ID ) ),
+            'delete'    => sprintf('<a href="%s">Delete</a>',get_delete_post_link( $item->ID ) ),
         );
 
         //Return the title contents
         return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
-            /*$1%s*/ $item['title'],
-            /*$2%s*/ $item['ID'],
-            /*$3%s*/ $this->row_actions($actions)
+            /*$1%s*/ $item->post_title,
+            /*$2%s*/ $item->ID,
+            /*$3%s*/ $this->row_actions( $actions )
         );
     }
 
+    function column_checkin($item) {
+        $checkin = kanda_get_post_meta( $item->ID, 'start_date' );
+
+        return date( Kanda_Config::get( 'display_date_format' ), strtotime( $checkin ) );
+    }
+
+    function column_checkout($item) {
+        $checkout = kanda_get_post_meta( $item->ID, 'end_date' );
+
+        return date( Kanda_Config::get( 'display_date_format' ), strtotime( $checkout ) );
+    }
+
+    function column_booked_date($item) {
+        $booking_date = kanda_get_post_meta( $item->ID, 'booking_date' );
+
+        return date( Kanda_Config::get( 'display_date_format' ), strtotime( $booking_date ) );
+    }
+
+    function column_passenger_names($item) {
+        return strtr( kanda_get_post_meta( $item->ID, 'passenger_names' ), array( '##' => ', ' ) );
+    }
 
     /** ************************************************************************
      * REQUIRED if displaying checkboxes or using bulk actions! The 'cb' column
@@ -237,7 +190,7 @@ class Booking_Search_List_Table extends WP_List_Table {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
-            /*$2%s*/ $item['ID']                //The value of the checkbox should be the record's id
+            /*$2%s*/ $item->ID                //The value of the checkbox should be the record's id
         );
     }
 
@@ -257,36 +210,14 @@ class Booking_Search_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_columns(){
         $columns = array(
-            'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
-            'title'     => 'Title',
-            'rating'    => 'Rating',
-            'director'  => 'Director'
+            'cb'                => '<input type="checkbox" />', //Render a checkbox instead of text
+            'title'             => 'Title',
+            'checkin'           => 'Check In',
+            'checkout'          => 'Check Out',
+            'booked_date'       => 'Booked Date',
+            'passenger_names'   => 'Passenger Names'
         );
         return $columns;
-    }
-
-
-    /** ************************************************************************
-     * Optional. If you want one or more columns to be sortable (ASC/DESC toggle),
-     * you will need to register it here. This should return an array where the
-     * key is the column that needs to be sortable, and the value is db column to
-     * sort by. Often, the key and value will be the same, but this is not always
-     * the case (as the value is a column name from the database, not the list table).
-     *
-     * This method merely defines which columns should be sortable and makes them
-     * clickable - it does not handle the actual sorting. You still need to detect
-     * the ORDERBY and ORDER querystring variables within prepare_items() and sort
-     * your data accordingly (usually by modifying your query).
-     *
-     * @return array An associative array containing all the columns that should be sortable: 'slugs'=>array('data_values',bool)
-     **************************************************************************/
-    function get_sortable_columns() {
-        $sortable_columns = array(
-            'title'     => array('title',false),     //true means it's already sorted
-            'rating'    => array('rating',false),
-            'director'  => array('director',false)
-        );
-        return $sortable_columns;
     }
 
 
@@ -345,7 +276,6 @@ class Booking_Search_List_Table extends WP_List_Table {
      * @uses $this->set_pagination_args()
      **************************************************************************/
     function prepare_items() {
-        global $wpdb; //This is used only if making any database queries
 
         /**
          * First, lets decide how many records per page to show
@@ -420,17 +350,7 @@ class Booking_Search_List_Table extends WP_List_Table {
          * without filtering. We'll need this later, so you should always include it
          * in your own package classes.
          */
-        $total_items = count($data);
-
-
-        /**
-         * The WP_List_Table class does not handle pagination for us, so we need
-         * to ensure that the data is trimmed to only the current page. We can use
-         * array_slice() to
-         */
-        $data = array_slice($data,(($current_page-1)*$this->per_page),$this->per_page);
-
-
+        $total_items = $query_result['total'];
 
         /**
          * REQUIRED. Now we can add our *sorted* data to the items property, where
@@ -460,13 +380,30 @@ class Booking_Search_List_Table extends WP_List_Table {
         );
 
         $meta_query = array();
-//        if( isset( $_REQUEST['pfn'] ) && $_REQUEST['pfn'] ) {
-//
-//        }
-//
-//        if( isset( $_REQUEST['pln'] ) && $_REQUEST['pln'] ) {
-//
-//        }
+        if( isset( $_REQUEST['booking_status'] ) && $_REQUEST['booking_status'] ) {
+            $meta_query[] = array(
+                'key'       => 'booking_status',
+                'value'     => $_REQUEST['booking_status'],
+                'compare'   => '='
+            );
+        }
+
+        $passenger_name = array();
+        if( isset( $_REQUEST['pfn'] ) && $_REQUEST['pfn'] ) {
+            $passenger_name[] = $_REQUEST['pfn'];
+        }
+
+        if( isset( $_REQUEST['pln'] ) && $_REQUEST['pln'] ) {
+            $passenger_name[] = $_REQUEST['pln'];
+        }
+
+        if( ! empty( $passenger_name ) ) {
+            $meta_query[] = array(
+                'key'       => 'passenger_names',
+                'value'     => implode( ' ', $passenger_name ),
+                'compare'   => 'LIKE'
+            );
+        }
 
         if( isset( $_REQUEST['city'] ) && $_REQUEST['city'] ) {
             $meta_query[] = array(
@@ -493,10 +430,9 @@ class Booking_Search_List_Table extends WP_List_Table {
         }
 
         if( isset( $_REQUEST['bdate'] ) && $_REQUEST['bdate'] ) {
-
             $meta_query[] = array(
                 'key'       => 'booking_date',
-                'value'     => DateTime::createFromFormat( 'Ymd', $_REQUEST['bdate'] )->format( 'Ymd' ),
+                'value'     => DateTime::createFromFormat( 'd F, Y', $_REQUEST['bdate'] )->format( 'Ymd' ),
                 'compare'   => '='
             );
         }
@@ -504,7 +440,7 @@ class Booking_Search_List_Table extends WP_List_Table {
         if( isset( $_REQUEST['chidate'] ) && $_REQUEST['chidate'] ) {
             $meta_query[] = array(
                 'key'       => 'start_date',
-                'value'     => DateTime::createFromFormat( 'Ymd', $_REQUEST['chidate'] )->format( 'Ymd' ),
+                'value'     => DateTime::createFromFormat( 'd F, Y', $_REQUEST['chidate'] )->format( 'Ymd' ),
                 'compare'   => '='
             );
         }
@@ -538,7 +474,8 @@ class Booking_Search_List_Table extends WP_List_Table {
  * menu item to the bottom of the admin menus.
  */
 function kanda_add_menu_items(){
-    add_menu_page(
+    add_submenu_page(
+        'edit.php?post_type=booking',
         __( 'Booking Search', 'kanda' ),
         __( 'Booking Search', 'kanda' ),
         'activate_plugins',
@@ -574,8 +511,22 @@ function search_bookings_render_list_page(){
         <h2><?php _e( 'Booking Search', 'kanda' ); ?></h2>
 
         <!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
-        <form id="movies-filter" method="get">
+        <form id="movies-filter" method="get" action="<?php echo add_query_arg( array( 'post_type' => 'booking', 'page' => 'search_bookings' ), admin_url( 'edit.php' ) ); ?>">
+            <input type="hidden" name="post_type" value="booking">
+            <input type="hidden" name="page" value="search_bookings">
             <div class="clearfix">
+                <div class="list-table-form-row">
+                    <label><?php _e( 'Passenger First Name', 'kanda' ); ?>:</label>
+                    <?php $selected = isset( $_REQUEST['booking_status'] ) ? $_REQUEST['booking_status'] : ''; ?>
+                    <select name="booking_status">
+                        <option value="" <?php selected( $selected, '' ); ?>>---</option>
+                        <option value="requested" <?php selected( $selected, 'requested' ); ?>><?php _e( 'On Request', 'kanda' ); ?></option>
+                        <option value="option" <?php selected( $selected, 'option' ); ?>><?php _e( 'Option', 'kanda' ); ?></option>
+                        <option value="confirmed" <?php selected( $selected, 'confirmed' ); ?>><?php _e( 'Confirmed', 'kanda' ); ?></option>
+                        <option value="cancelled" <?php selected( $selected, 'cancelled' ); ?>><?php _e( 'Cancelled', 'kanda' ); ?></option>
+                        <option value="paid" <?php selected( $selected, 'paid' ); ?>><?php _e( 'Paid', 'kanda' ); ?></option>
+                    </select>
+                </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Passenger First Name', 'kanda' ); ?>:</label>
                     <input type="text" name="pfn" value="<?php echo isset( $_REQUEST['pfn'] ) ? $_REQUEST['pfn'] : ''; ?>" />
@@ -598,19 +549,22 @@ function search_bookings_render_list_page(){
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="bdate" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
+                    <input type="text" name="bdate" class="datepicker" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Check In Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="chidate" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
+                    <input type="text" name="chidate" class="datepicker" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
-                    <?php submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking' ); ?>
+                    <?php
+                        submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking' );
+                    ?>
                 </div>
             </div>
-            <!-- Now we can render the completed list table -->
-            <?php $booking_search_list_table->display() ?>
         </form>
+
+        <!-- Now we can render the completed list table -->
+        <?php $booking_search_list_table->display() ?>
 
     </div>
     <?php
