@@ -1,4 +1,7 @@
-<?php $booking_status = kanda_get_post_meta( $booking_id, 'booking_status' ); ?>
+<?php
+    $booking_status = kanda_get_post_meta( $booking_id, 'booking_status' );
+    $booking = get_post( $booking_id );
+?>
 <h4><?php esc_html_e( 'Booking details', 'kanda' ); ?></h4>
 <div class="users-table table">
     <header class="thead">
@@ -193,7 +196,7 @@
     <div class="col-lg-12">
         <div class="actions pull-right">
             <a href="#send-email-popup" class="open-popup btn -sm -primary"><?php _e( 'Send Email', 'kanda' ); ?></a>
-            <a href="<?php echo add_query_arg( array( 'action' => 'view_voucher', 'security' => wp_create_nonce( 'kanda-view-voucher' ),'id' => get_the_ID() ), admin_url( 'admin-ajax.php' ) ); ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php _e( 'View Voucher', 'kanda' ); ?></a>
+            <a href="<?php echo add_query_arg( array( 'action' => 'view_voucher', 'security' => wp_create_nonce( 'kanda-view-voucher' ),'id' => $booking_id ), admin_url( 'admin-ajax.php' ) ); ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php _e( 'View Voucher', 'kanda' ); ?></a>
             <?php if( $booking_status != 'cancelled' ) { ?>
                 <a href="#cancel-booking-popup" class="open-popup btn -sm -danger"><?php _e( 'Cancel Booking', 'kanda' ); ?></a>
             <?php } ?>
@@ -206,7 +209,7 @@
         <div class="form-group row clearfix">
             <label class="form-label" for="email_address"><?php esc_html_e( 'Email Address', 'kanda' ); ?></label>
             <div>
-                <input type="text" id="email_address" name="email_address" class="form-control" value="<?php echo get_the_author_meta( 'email' ); ?>">
+                <input type="text" id="email_address" name="email_address" class="form-control" value="<?php echo get_the_author_meta( 'email', $booking->post_author ); ?>">
                 <div class="form-control-feedback"><small></small></div>
             </div>
         </div>
@@ -228,7 +231,7 @@
               id="form_booking_email_details" method="post">
             <footer class="form-footer clearfix text-center">
                 <a id="btn-cancel-booking"
-                   href="<?php echo add_query_arg(array('booking_id' => get_the_ID(), 'security' => wp_create_nonce('kanda-cancel-booking')), admin_url('admin-ajax.php')); ?>"
+                   href="<?php echo add_query_arg(array('booking_id' => $booking_id, 'security' => wp_create_nonce('kanda-cancel-booking')), admin_url('admin-ajax.php')); ?>"
                    class="btn -sm -secondary"><?php _e('Cancel Booking', 'kanda'); ?></a>
             </footer>
         </form>
