@@ -90,6 +90,7 @@ if( ! class_exists( 'IOL_Provider' ) ) {
                     set_time_limit( 3000 );
 
                     $response = $this->hotels()->get_master_data( array( 'city' => $city ) );
+
                     if ($response->is_valid()) {
                         $data = $response->data;
                         $hotels = $data['masterdatadetails']['hotel'];

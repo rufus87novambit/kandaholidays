@@ -185,3 +185,13 @@ function kanda_view_voucher() {
     $controller = new Booking_Controller();
     $controller->view_voucher();
 }
+
+add_action( 'wp_ajax_booking_details', 'kanda_get_booking_details' );
+function kanda_get_booking_details() {
+    if( ! class_exists( 'Booking_Controller' ) ) {
+        require_once ( KANDA_CONTROLLERS_PATH . 'class-booking-controller.php' );
+    }
+
+    $controller = new Booking_Controller();
+    $controller->get_booking_details();
+}

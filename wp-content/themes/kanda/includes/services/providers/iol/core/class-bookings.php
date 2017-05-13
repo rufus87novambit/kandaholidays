@@ -210,6 +210,11 @@ class IOL_Bookings {
 
     }
 
+    /**
+     * Get formated XML fot booking cancellation request
+     * @param $args
+     * @return mixed
+     */
     private function get_cancel_booking_xml( $args ) {
         $xml = $this->request_instance->get_basic_xml( 'cancel_hotel_booking_request' );
 
@@ -245,6 +250,46 @@ class IOL_Bookings {
     public function cancel( $args ) {
 
         $xml = $this->get_cancel_booking_xml( $args );
+
+        return $this->request_instance->process( $xml, $args );
+
+    }
+
+    /**
+     * Get formated XML for booking details request
+     *
+     * @param $args
+     * @return mixed
+     */
+    private function get_booking_details_xml( $args ) {
+        $xml = $this->request_instance->get_basic_xml( 'retrieve_hotel_booking_request' );
+
+        $booking_details = $xml->addChild(
+            IOL_Helper::parse_xml_key( 'booking_details' )
+        );
+
+        $source = $booking_details->addChild(
+            IOL_Helper::parse_xml_key( 'source' ),
+            $args['booking_source']
+        );
+
+        $booking_number = $booking_details->addChild(
+            IOL_Helper::parse_xml_key( 'booking_number' ),
+            $args['booking_number']
+        );
+
+        return $xml->asXML();
+    }
+
+    /**
+     * Get booking details
+     *
+     * @param $args
+     * @return Kanda_Service_Response
+     */
+    public function booking_details( $args ) {
+
+        $xml = $this->get_booking_details_xml( $args );
 
         return $this->request_instance->process( $xml, $args );
 

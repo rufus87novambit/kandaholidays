@@ -341,6 +341,7 @@ class IOL_Helper {
         ) );
 
         $unique_id = uniqid();
+        $must_stay_days = ( isset( $room['restriction']['muststaydays'] ) && $room['restriction']['muststaydays'] ) ? $room['restriction']['muststaydays'] : 0;
         ?>
         <div class="users-table table">
             <header class="thead">
@@ -408,7 +409,7 @@ class IOL_Helper {
         </div>
         <?php
 
-        static::render_room_booking_confirmation_popup( $unique_id, $room, $args );
+        static::render_room_booking_confirmation_popup( $unique_id, $room, $args, $must_stay_days );
     }
 
     /**
@@ -418,7 +419,7 @@ class IOL_Helper {
      * @param $room
      * @param $args
      */
-    public static function render_room_booking_confirmation_popup( $popup_id, $room, $args ) {
+    public static function render_room_booking_confirmation_popup( $popup_id, $room, $args, $must_stay_days ) {
         $booking_create_url = static::get_booking_create_url( array(
             'hotel_code'            => $args['hotelcode'],
             'city_code'             => $args['request']['city'],
@@ -431,6 +432,7 @@ class IOL_Helper {
         ) );
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
+            <?php if( $args['request']['nights_count'] >= $must_stay_days ) { ?>
             <h2 class="text-center"><?php _e( 'Booking confirmation', 'kanda' ); ?></h2>
             <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
 
@@ -495,6 +497,10 @@ class IOL_Helper {
             <div class="actions text-center">
                 <a href="<?php echo $booking_create_url; ?>" class="btn -sm -secondary" target="_blank"><?php _e( 'Process', 'kanda' ); ?></a>
             </div>
+            <?php } else { ?>
+            <h2 class="text-center"><?php _e( 'Minimum stay restriction', 'kanda' ); ?></h2>
+                <p class="text-center"><?php printf( __( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), $must_stay_days, _n( 'day', 'days', $must_stay_days, 'kanda' ) ); ?></p>
+            <?php } ?>
         </div>
         <?php
     }

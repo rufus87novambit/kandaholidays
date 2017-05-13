@@ -845,6 +845,48 @@
     }
     /********************************************** /end Single Hotel *******************************************/
 
+    /********************************************** Single Booking *******************************************/
+    if( $( '#booking-details-box').length > 0 ) {
+        (function get_booking_details() {
+
+            var _booking_details_box = $('#booking-details-box'),
+                _booking_number = _booking_details_box.data( 'booking-number' ),
+                _booking_source = _booking_details_box.data( 'booking-source' ),
+                _booking_id = _booking_details_box.data( 'post-id' ),
+                _security = _booking_details_box.data( 'security' );
+
+            $.ajax({
+                url  : kanda.ajaxurl,
+                type : 'GET',
+                dataType : 'JSON',
+                data : {
+                    action          : 'booking_details',
+                    booking_number  : _booking_number,
+                    booking_source  : _booking_source,
+                    booking_id      : _booking_id,
+                    security        : _security
+                },
+                beforeSend: loading_popup(),
+                success : function( response ){
+                    if( response.success ) {
+                        _booking_details_box.html( $( response.data.content ) );
+
+                        $.magnificPopup.close();
+                    } else {
+                        $.magnificPopup.close();
+                        error_popup( response.data.message );
+                    }
+                },
+                error : function(){
+                    $.magnificPopup.close();
+                    error_popup( 'Internal server error. Please try again' );
+                }
+            });
+
+        } )()
+    }
+    /********************************************** /end Single Booking *******************************************/
+
     /********************************************** Hotel Search Results *******************************************/
 
     if( $('.show-booking-details').length > 0 ) {

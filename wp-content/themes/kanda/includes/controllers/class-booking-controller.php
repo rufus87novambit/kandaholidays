@@ -195,8 +195,6 @@ class Booking_Controller extends Base_Controller {
 
                         if( $cancellation_response->is_valid() ) {
 
-
-
                             $repeaters = array(
                                 'adults'                => array(),
                                 'children'              => array(),
@@ -254,7 +252,6 @@ class Booking_Controller extends Base_Controller {
                                 $real_price = number_format( $real_price, 2 );
                                 $agency_price = number_format( $agency_price, 2 );
 
-                                //$data['hoteldetails']['hotelcode'];
                                 $hotels_query = new WP_Query(array(
                                     'post_type' => 'hotel',
                                     'post_status' => 'publish',
@@ -365,7 +362,7 @@ class Booking_Controller extends Base_Controller {
 
                                 $booking_id = wp_insert_post( array(
                                     'post_author' => get_current_user_id(),
-                                    'post_title' => sprintf( '%1$s - #%2$s', $data['hoteldetails']['hotelname'], $data['bookingdetails']['bookingnumber'] ),
+                                    'post_title' => sprintf( '%1$s - PNR %2$s', $data['hoteldetails']['hotelname'], $data['bookingdetails']['bookingnumber'] ),
                                     'post_name' => kanda_generate_random_string( 20 ),
                                     'post_status' => 'publish',
                                     'post_type' => 'booking',
@@ -380,7 +377,7 @@ class Booking_Controller extends Base_Controller {
                                     $is_valid = false;
                                     $message = __( 'Error creating booking', 'kanda' );
                                 } else {
-                                    $redirect_to = get_permalink( $booking_id );
+                                    $redirect_to = add_query_arg( array( 'status' => 'created' ), get_permalink( $booking_id ) );
                                     foreach( $meta_data as $meta_key => $meta_value ) {
                                         switch ( $meta_key ) {
                                             case 'payment_status':
@@ -517,6 +514,9 @@ class Booking_Controller extends Base_Controller {
         kanda_to( 404 );
     }
 
+    /**
+     * Cancel booking
+     */
     public function cancel_booking() {
         if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
@@ -590,6 +590,9 @@ class Booking_Controller extends Base_Controller {
         $this->show_404();
     }
 
+    /**
+     * View voucher
+     */
     function view_voucher() {
         if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
             $security = isset($_REQUEST['security']) ? $_REQUEST['security'] : '';
@@ -632,6 +635,11 @@ class Booking_Controller extends Base_Controller {
         $this->show_404();
     }
 
+    /**
+     * Download voucher
+     *
+     * @param $args
+     */
     function download_voucher( $args ) {
         $booking = get_post( (int)$args[ 'k_booking_id' ] );
 
@@ -656,6 +664,126 @@ class Booking_Controller extends Base_Controller {
         } else {
             $this->show_404();
         }
+    }
+
+    /**
+     * Get booking details
+     */
+    function get_booking_details() {
+        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+            $security = isset( $_REQUEST['security'] ) ? $_REQUEST['security'] : '';
+
+            $is_valid = true;
+            if( wp_verify_nonce( $security, 'kanda-get-booking-details' ) ) {
+
+                $booking_number = isset( $_REQUEST['booking_number'] ) ? $_REQUEST['booking_number'] : false;
+                if( ! $booking_number ) {
+                    $is_valid = false;
+                    $message = __( 'Booking number is required', 'kanda' );
+                }
+
+                $booking_source = isset( $_REQUEST['booking_source'] ) ? $_REQUEST['booking_source'] : false;
+                if( ! $booking_source ) {
+                    $is_valid = false;
+                    $message = __( 'Booking source is required', 'kanda' );
+                }
+
+                $booking_id = isset( $_REQUEST['booking_id'] ) ? $_REQUEST['booking_id'] : false;
+                if( ! $booking_id ) {
+                    $is_valid = false;
+                    $message = __( 'Booking id is required', 'kanda' );
+                }
+
+                if( $is_valid ) {
+
+                    $response = provider_iol()->bookings()->booking_details( array(
+                        'booking_number' => $booking_number,
+                        'booking_source' => $booking_source
+                    ) );
+
+                    if( ! $response->is_valid() ) {
+                        $is_valid = false;
+                        $message = $response->message;
+                    } else {
+
+                        $template = KANDA_THEME_PATH . 'views/partials/booking-details.php';
+                        if( file_exists( $template ) ) {
+                            $data = $response->data;
+
+                            $room = $data['hoteldetails']['roomdetails']['room'];
+                            $booking_details = $data['bookingdetails'];
+                            $passenger_details = $data['bookingdetails']['passengerdetails']['passenger'];
+                            $passenger_details = IOL_Helper::is_associative_array( $passenger_details ) ? array( $passenger_details ) : $passenger_details;
+                            $passengers = array(
+                                'adults'    => array(),
+                                'children'  => array()
+                            );
+
+                            $adults = wp_list_filter( $passenger_details, array(
+                                'passengertype' => 'ADT'
+                            ) );
+                            foreach( $adults as $adult ) {
+                                $passengers['adults'][] = array(
+                                    'title'         => $adult['title'],
+                                    'first_name'    => $adult['firstname'],
+                                    'last_name'     => $adult['lastname'],
+                                    'date_of_birth' => '',
+                                    'nationality'   => '',
+                                    'gender'        => $adult['gender'],
+                                );
+                            }
+
+                            $children = wp_list_filter( $passenger_details, array(
+                                'passengertype' => 'CHD'
+                            ) );
+
+                            foreach( $children as $child ) {
+                                $passengers['children'][] = array(
+                                    'title'         => $child['title'],
+                                    'first_name'    => $child['firstname'],
+                                    'last_name'     => $child['lastname'],
+                                    'date_of_birth' => '',
+                                    'nationality'   => '',
+                                    'gender'        => $child['gender'],
+                                );
+                            }
+
+                            update_field( 'start_date', $room['startdate'], $booking_id );
+                            update_field( 'end_date', $room['enddate'], $booking_id );
+                            update_field( 'meal_plan', $room['mealplan'], $booking_id );
+                            update_field( 'meal_plan', $room['roomtype'], $booking_id );
+
+                            update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
+                            //update_field( 'adults', $passengers['adults'], $booking_id );
+                            //update_field( 'adults', $passengers['children'], $booking_id );
+
+                            // set variables
+                            $content = $this->render_template($template, array(
+                                'booking_id' => $booking_id
+                            ));
+
+                        } else {
+                            $is_valid = false;
+                            $message = __( 'Internal server error', 'kanda' );
+                        }
+
+                    }
+
+                }
+
+            } else {
+                $is_valid = false;
+                $message = __( 'Invalid request', 'kanda' );
+            }
+
+            if( $is_valid ) {
+                wp_send_json_success( array( 'content' => $content ) );
+            } else {
+                wp_send_json_error( array( 'message' => $message ) );
+            }
+
+        }
+        $this->show_404();
     }
 
 }
