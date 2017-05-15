@@ -657,7 +657,8 @@ class Booking_Controller extends Base_Controller {
                 $mpdf = new mPDF();
                 $mpdf->WriteHTML( $content );
 
-                $mpdf->Output( $booking->post_name . '.pdf', 'D');
+                $mpdf->Output( KANDA_THEME_PATH . 'mpdf.pdf', 'F');
+//                $mpdf->Output( $booking->post_name . '.pdf', 'D');
                 die;
             }
 

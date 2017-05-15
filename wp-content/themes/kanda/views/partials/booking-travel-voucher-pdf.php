@@ -1,7 +1,7 @@
 <style type="text/css">
     body {
         font-family: 'DejaVu Sans Condensed';
-        font-size: 14pt;
+        font-size: 14px;
     }
     p {
         text-align: justify;
@@ -16,6 +16,7 @@
         margin-bottom: 5pt;
         border-collapse: collapse;
         width: 100%;
+        border: 1px solid #000;
     }
 
     thead {
@@ -55,9 +56,20 @@
         padding-left: 2mm;
         vertical-align: top;
         padding-right: 2mm;
-        padding-top: 0.5mm;
-        padding-bottom: 0.5mm;
-        border: 0.05cm solid #000;
+        padding-top: 2mm;
+        padding-bottom: 2mm;
+    }
+    td.border-bottom {
+        border-bottom: 1px solid #000;
+    }
+    td.border-left {
+        border-left: 1px solid #000;
+    }
+    td.border-right {
+        border-right: 1px solid #000;
+    }
+    td.border-top {
+        border-top: 1px solid #000;
     }
 
     th p { margin:0pt;  }
@@ -81,30 +93,17 @@
 
     pre { font-family: 'DejaVu Sans Mono'; font-size: 9pt; margin-top: 5pt; margin-bottom: 5pt; }
 
-    h1 {
-        font-weight: bold;
-        font-size: 12pt;
-        color: #000066;
-        font-family: 'DejaVu Sans Condensed';
-        margin-top: 6pt;
-        margin-bottom: 6pt;
-        border-top: 0.07cm solid #000000;
-        border-bottom: 0.07cm solid #000000;
-        text-align: ;
-        text-transform:uppercase;
-        page-break-after:avoid;
-    }
 </style>
 
-<h2 class="text-center"><?php esc_html_e( 'Travel Vaucher', 'kanda' ); ?></h2>
 <table cellpadding="0" cellspacing="0">
     <tbody>
         <tr>
-            <td colspan="2" class="text-center"><?php _e( 'Booking Details' , 'kanda'); ?></td>
+            <td colspan="3" class="text-center border-bottom"><?php esc_html_e( 'Travel Vaucher', 'kanda' ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Reference No', 'kanda' ); ?></td>
             <td><?php the_field( 'booking_number', $booking_id ); ?></td>
+            <td rowspan="3" style="vertical-align: middle;"><img style="width:150px;" src="<?php echo KANDA_THEME_URL; ?>images/back/logo-pdf.png" /></td>
         </tr>
         <tr>
             <td><?php _e( 'Booked By', 'kanda' ); ?></td>
@@ -116,7 +115,7 @@
         </tr>
 
         <tr>
-            <td colspan="2" class="text-center"><?php _e( 'Service Provider Details' , 'kanda'); ?></td>
+            <td colspan="3" class="text-center border-top border-bottom"><?php _e( 'Service Provider Details' , 'kanda'); ?></td>
         </tr>
         <?php
         $hotel_query = new WP_Query( array(
@@ -134,22 +133,22 @@
         ?>
         <tr>
             <td><?php _e( 'Supplier Name', 'kanda' ); ?></td>
-            <td><?php echo the_field( 'hotel_name', $booking_id ); ?></td>
+            <td colspan="2" class="text-center"><?php echo the_field( 'hotel_name', $booking_id ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Phone', 'kanda' ); ?></td>
-            <td><?php echo ( $phone = kanda_get_post_meta( 'hotelphone', $hotel->ID ) ) ? $phone : 'N/A'; ?></td>
+            <td colspan="2" class="text-center"><?php echo ( $phone = kanda_get_post_meta( 'hotelphone', $hotel->ID ) ) ? $phone : 'N/A'; ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Address', 'kanda' ); ?></td>
-            <td><?php echo ( $address = kanda_get_post_meta( 'hoteladdress', $hotel->ID ) ) ? $address : 'N/A'; ?></td>
+            <td colspan="2" class="text-center"><?php echo ( $address = kanda_get_post_meta( 'hoteladdress', $hotel->ID ) ) ? $address : 'N/A'; ?></td>
         </tr>
         <tr>
-            <td colspan="2" class="text-center"><?php _e( 'Travel Details' , 'kanda'); ?></td>
+            <td colspan="3" class="text-center border-top border-bottom"><?php _e( 'Travel Details' , 'kanda'); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Passengers', 'kanda' ); ?></td>
-            <td>
+            <td colspan="2" class="text-center">
                 <?php while( have_rows( 'adults', $booking_id ) ) { the_row(); ?>
                     <div><?php printf( '%1$s %2$s %3$s', get_sub_field( 'title' ), get_sub_field( 'first_name' ), get_sub_field( 'last_name' ) ); ?></div>
                 <?php } ?>
@@ -161,31 +160,31 @@
         </tr>
         <tr>
             <td><?php _e( 'City', 'kanda' ); ?></td>
-            <td><?php echo IOL_Helper::get_city_name_from_code( get_field( 'hotel_city', $booking_id ) ); ?></td>
+            <td colspan="2" class="text-center"><?php echo IOL_Helper::get_city_name_from_code( get_field( 'hotel_city', $booking_id ) ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Supplier reference', 'kanda' ); ?></td>
-            <td><?php echo ( $reference = get_field( 'supplier_reference' ) ) ? $reference : 'N/A'; ?></td>
+            <td colspan="2" class="text-center"><?php echo ( $reference = get_field( 'supplier_reference' ) ) ? $reference : 'N/A'; ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Check-in', 'kanda' ); ?></td>
-            <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ); ?></td>
+            <td colspan="2" class="text-center"><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Check-out', 'kanda' ); ?></td>
-            <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ); ?></td>
+            <td colspan="2" class="text-center"><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Meal Plan', 'kanda' ); ?></td>
-            <td><?php echo the_field( 'meal_plan', $booking_id ); ?></td>
+            <td colspan="2" class="text-center"><?php echo the_field( 'meal_plan', $booking_id ); ?></td>
         </tr>
         <tr>
             <td><?php _e( 'Room Type', 'kanda' ); ?></td>
-            <td><?php echo the_field( 'room_type', $booking_id ); ?></td>
+            <td colspan="2" class="text-center"><?php echo the_field( 'room_type', $booking_id ); ?></td>
         </tr>
         <tr>
-            <td><?php _e( 'Additional Requests', 'kanda' ); ?></td>
-            <td>
+            <td><?php _e( 'Additional Info', 'kanda' ); ?></td>
+            <td colspan="2" class="text-center">
                 <?php
                 $additional_requests = get_field( 'additional_requests', $booking_id );
                 if( $additional_requests ) {

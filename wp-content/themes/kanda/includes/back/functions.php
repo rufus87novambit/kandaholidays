@@ -114,65 +114,155 @@ function kanda_get_back_localize() {
 /**
  * Send admin notification on new booking
  */
-add_action( 'kanda/booking/create', 'kanda_booking_create_send_admin_notification', 10, 1 );
-function kanda_booking_create_send_admin_notification( $booking_id ) {
-    $sent = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
-    if( ! $sent ) {
-        return;
-    }
+//add_action( 'kanda/booking/create', 'kanda_booking_create_send_admin_notification', 10, 1 );
+//function kanda_booking_create_send_admin_notification( $booking_id ) {
+//    $sent = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
+//    if( ! $sent ) {
+//        return;
+//    }
+//
+//    $subject = sprintf( '%1$s - %2$s', esc_html__( 'Booking confirmation', 'kanda' ), get_field( 'booking_number', $booking_id ) );
+//
+//    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+//    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'New booking is made at {{SITE_NAME}} with following details.', 'kanda' ) );
+//
+//    $booking = get_post( $booking_id );
+//    $user_metas = kanda_get_user_meta( $booking->post_author );
+//
+//    $message .= '<p></p>';
+//    $message .= '<table style="width:100%;">';
+//    $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency', 'kanda' ), $user_metas['company_name'] );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check In', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check Out', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Booking Status', 'kanda' ), ucwords( get_field( 'booking_status', $booking_id ) ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Hotel Name', 'kanda' ), get_field( 'hotel_name', $booking_id ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Room Type', 'kanda' ), get_field( 'room_type', $booking_id ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Meal Plan', 'kanda' ), get_field( 'meal_plan', $booking_id ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'City', 'kanda' ), IOL_Helper::get_city_name_from_code( get_field( 'hotel_city', $booking_id ) ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Real Price', 'kanda' ), sprintf( '%s USD', get_field( 'real_price', $booking_id ) ) );
+//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency Price', 'kanda' ), sprintf( '%s USD', get_field( 'agency_price', $booking_id ) ) );
+//    $message .= '</table>';
+//    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
+//    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
+//
+//    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+//        kanda_logger()->log( sprintf( 'Error sending email to admin for new booking. booking_id=%d' ), $booking_id );
+//    }
+//}
 
-    $subject = esc_html__( 'New Booking', 'kanda' );
-
-    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
-    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'New booking is made at {{SITE_NAME}} with following details.', 'kanda' ) );
+/**
+ * Send a notification to travel agency
+ */
+add_action( 'kanda/booking/create', 'kanda_booking_create_send_notifications', 10, 1 );
+function kanda_booking_create_send_notifications( $booking_id ) {
 
     $booking = get_post( $booking_id );
-    $user_metas = kanda_get_user_meta( $booking->post_author );
 
-    $message .= '<p></p>';
-    $message .= '<table style="width:100%;">';
-    $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency', 'kanda' ), $user_metas['company_name'] );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check In', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check Out', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Booking Status', 'kanda' ), ucwords( get_field( 'booking_status', $booking_id ) ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Hotel Name', 'kanda' ), get_field( 'hotel_name', $booking_id ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Room Type', 'kanda' ), get_field( 'room_type', $booking_id ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Meal Plan', 'kanda' ), get_field( 'meal_plan', $booking_id ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'City', 'kanda' ), IOL_Helper::get_city_name_from_code( get_field( 'hotel_city', $booking_id ) ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Real Price', 'kanda' ), sprintf( '%s USD', get_field( 'real_price', $booking_id ) ) );
-    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency Price', 'kanda' ), sprintf( '%s USD', get_field( 'agency_price', $booking_id ) ) );
-    $message .= '</table>';
-    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
-    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
+    $subject = kanda_get_theme_option( 'email_booking_confirmation_title' );
+    $message = kanda_get_theme_option( 'email_booking_confirmation_body' );
 
-    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        kanda_logger()->log( sprintf( 'Error sending email to admin for new booking. booking_id=%d' ), $booking_id );
+    $cancellation_html = '';
+    while( have_rows( 'cancellation_policy', $booking_id ) ) {
+        the_row();
+        $cancellation_html .= sprintf(
+            '<p>%1$s - %2$s: %3$s</p>',
+            date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'from', false ) ) ),
+            date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'to', false ) ) ),
+            get_sub_field( 'charge' )
+        );
+    }
+    $variables = array(
+        '{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
+        '{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
+        '{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
+        '{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
+        '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
+        '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
+        '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
+        '{{CANCELLATION_DETAILS}}'  => $cancellation_html
+    );
+
+    $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
+    if( ! $sent_user ) {
+        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d' ), $booking_id );
+    }
+
+    $sent_to_admin = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
+    if( $sent_to_admin ) {
+        $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
+        if (!$sent_admin) {
+            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d'), $booking_id);
+        }
     }
 }
 
 /**
  * Send admin notification on booking cancellation
  */
-add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_admin_notification' );
-function kanda_booking_cancel_send_admin_notification( $booking_id ) {
+//add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_admin_notification' );
+//function kanda_booking_cancel_send_admin_notification( $booking_id ) {
+//
+//    $sent = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
+//    if( ! $sent ) {
+//        return;
+//    }
+//
+//    $subject = esc_html__( 'Booking Cancellation', 'kanda' );
+//
+//    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
+//    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'Booking has been cancelled at {{SITE_NAME}}.', 'kanda' ) );
+//
+//    $message .= '<p></p>';
+//    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
+//    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
+//
+//    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
+//        kanda_logger()->log( sprintf( 'Error sending email to admin for booking cancellation. booking_id=%d' ), $booking_id );
+//    }
+//}
 
-    $sent = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
-    if( ! $sent ) {
-        return;
+add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_notifications', 10, 1 );
+function kanda_booking_cancel_send_notifications( $booking_id ) {
+
+    $booking = get_post( $booking_id );
+
+    $subject = kanda_get_theme_option( 'email_booking_cancellation_title' );
+    $message = kanda_get_theme_option( 'email_booking_cancellation_body' );
+
+    $charges = '---';
+    while( have_rows( 'cancellation_policy', $booking_id ) ) {
+        the_row();
+        $from = strtotime( get_sub_field( 'from', false ) );
+        $to = strtotime( get_sub_field( 'to', false ) );
+        $now = time();
+        if( ( $now >= $from ) && ( $now < $to )  ) {
+            $charges = get_sub_field( 'charge' );
+            break;
+        }
+    }
+    $variables = array(
+        '{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
+        '{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
+        '{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
+        '{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
+        '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
+        '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
+        '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
+        '{{CANCELLATION_CHARGES}}'  => $charges
+    );
+
+    $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
+    if( ! $sent_user ) {
+        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d' ), $booking_id );
     }
 
-    $subject = esc_html__( 'Booking Cancellation', 'kanda' );
-
-    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
-    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'Booking has been cancelled at {{SITE_NAME}}.', 'kanda' ) );
-
-    $message .= '<p></p>';
-    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
-    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
-
-    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        kanda_logger()->log( sprintf( 'Error sending email to admin for booking cancellation. booking_id=%d' ), $booking_id );
+    $sent_to_admin = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
+    if( $sent_to_admin ) {
+        $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
+        if (!$sent_admin) {
+            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d'), $booking_id);
+        }
     }
 }
 

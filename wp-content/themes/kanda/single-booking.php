@@ -2,7 +2,9 @@
 if( get_queried_object()->post_author != get_current_user_id() ) {
     kanda_to( 404 );
 }
-get_header(); ?>
+
+get_header();
+?>
 
     <div class="row">
         <div class="primary col-md-9">

@@ -45,6 +45,10 @@ return array(
     'email_profile_activation_body'     => '',
     'email_booking_details_title'       => esc_html__( 'Booking Details', 'kanda' ),
     'email_booking_details_body'        => '',
+    'email_booking_confirmation_title'  => esc_html__( 'Booking Confirmation - {{BOOKING_NUMBER}}', 'kanda' ),
+    'email_booking_confirmation_body'   => '',
+    'email_booking_cancellation_title'  => esc_html__( 'Booking Cancellation - {{BOOKING_NUMBER}}', 'kanda' ),
+    'email_booking_cancellation_body'   => '',
 
 /** - Section Front Page - **/
     'front_pages_slider_animation_delay' => 7,

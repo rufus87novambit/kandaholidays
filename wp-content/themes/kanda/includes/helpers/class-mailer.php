@@ -77,7 +77,12 @@ class Kanda_Mailer {
      * @param $subject
      * @return string
      */
-    private function normalize_email_subject( $subject ) {
+    private function normalize_email_subject( $subject, $variables ) {
+        $subject = strtr( $subject, array_merge(
+            $this->get_email_constant_variables(),
+            $variables
+        ) );
+
         return sprintf(
             '%1$s : %2$s',
             wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES ),
@@ -117,7 +122,7 @@ class Kanda_Mailer {
     public function send_developer_email( $subject, $message, $variables = array(), $headers = array() ) {
 
         $to = preg_replace('/\s+/', '', kanda_get_theme_option( 'debug_developer_email' ) );
-        $subject = $this->normalize_email_subject( $subject );
+        $subject = $this->normalize_email_subject( $subject, $variables );
         $message = $this->normalize_email_content( $message, $variables );
         $headers = $this->get_html_email_headers();
 
@@ -136,7 +141,7 @@ class Kanda_Mailer {
     public function send_admin_email( $subject, $message, $variables = array(), $headers = array() ) {
 
         $to = get_option( 'admin_email' );
-        $subject = $this->normalize_email_subject( $subject );
+        $subject = $this->normalize_email_subject( $subject, $variables );
         $message = $this->normalize_email_content( $message, $variables );
         $headers = $this->get_html_email_headers();
 
@@ -169,7 +174,7 @@ class Kanda_Mailer {
 
         if( $user_id_email ) {
 
-            $subject = $this->normalize_email_subject( $subject );
+            $subject = $this->normalize_email_subject( $subject, $variables );
             $message = $this->normalize_email_content( $message, $variables );
             $headers = $this->get_html_email_headers();
 
