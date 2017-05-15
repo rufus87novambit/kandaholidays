@@ -3,7 +3,7 @@
         <table>
             <tr>
                 <td>
-                    <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/header-blue.jpg" alt="header" />
+                    <img style="width:1000px;" src="<?php echo KANDA_THEME_URL; ?>images/email/header.jpg" alt="header" />
                 </td>
             </tr>
             <tr>
@@ -11,7 +11,7 @@
             </tr>
             <tr>
                 <td>
-                    <img style="width:1000px;" src="http://kandaclub.com/wp-content/themes/kanda/holidays/footer-blue.jpg" alt="header" />
+                    <img style="width:1000px;" src="<?php echo KANDA_THEME_URL; ?>images/email/footer.jpg" alt="header" />
                 </td>
             </tr>
         </table>

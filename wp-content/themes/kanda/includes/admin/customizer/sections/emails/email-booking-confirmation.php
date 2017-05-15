@@ -24,7 +24,7 @@ return array(
             'title'          => esc_html__( 'Booking Confirmation', 'kanda' ),
             'description'    => esc_html__( 'Booking confirmation details email settings', 'kanda' ),
             'panel'          => basename( __DIR__ ),
-            'priority'       => 160,
+            'priority'       => 163,
             'capability'     => 'edit_theme_options',
         )
     ),

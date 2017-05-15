@@ -49,6 +49,8 @@ return array(
     'email_booking_confirmation_body'   => '',
     'email_booking_cancellation_title'  => esc_html__( 'Booking Cancellation - {{BOOKING_NUMBER}}', 'kanda' ),
     'email_booking_cancellation_body'   => '',
+    'email_cancellation_deadline_title' => esc_html__( 'Cancellation Deadline', 'kanda' ),
+    'email_cancellation_deadline_body'  => '',
 
 /** - Section Front Page - **/
     'front_pages_slider_animation_delay' => 7,

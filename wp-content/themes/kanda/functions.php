@@ -73,12 +73,15 @@ if( isset( $_GET['server_test'] ) && $_GET['server_test'] ) {
     require_once( KANDA_INCLUDES_PATH . 'server-requirements.php' );
 }
 
-if( defined( 'KANDA_DOING_CRON' ) && KANDA_DOING_CRON && defined( 'KANDA_DOING_CRON_SECURITY' ) && KANDA_DOING_CRON_SECURITY == 'SktDcjIh7YMyhlWa' ) {
-    require_once( KANDA_INCLUDES_PATH . 'cron/functions.php' );
-    die;
-}
-
 /**
  * Load common resources (required by both, admin and front, contexts).
  */
 require_once( KANDA_INCLUDES_PATH . 'functions.php' );
+
+/**
+ * Cron functionality
+ */
+if( defined( 'KANDA_DOING_CRON' ) && KANDA_DOING_CRON && defined( 'KANDA_DOING_CRON_SECURITY' ) && KANDA_DOING_CRON_SECURITY == 'SktDcjIh7YMyhlWa' ) {
+    require_once( KANDA_INCLUDES_PATH . 'cron/functions.php' );
+    die;
+}

@@ -24,7 +24,7 @@ return array(
             'title'          => esc_html__( 'Profile activation', 'kanda' ),
             'description'    => esc_html__( 'Profile Activation email settings', 'kanda' ),
             'panel'          => basename( __DIR__ ),
-            'priority'       => 160,
+            'priority'       => 161,
             'capability'     => 'edit_theme_options',
         )
     ),
