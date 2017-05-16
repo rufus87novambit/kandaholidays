@@ -31,7 +31,8 @@
     color: #ececec;
     text-decoration: none;
 }
-.main-menu > li.current-menu-item > a {
+.main-menu > li.current-menu-item > a,
+.main-menu > li > a:hover {
     display: inline-block;
     border-bottom: 1px solid #ececec;
     padding-bottom: 2px;

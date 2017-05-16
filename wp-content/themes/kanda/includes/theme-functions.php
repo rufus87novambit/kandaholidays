@@ -89,6 +89,7 @@ function kanda_setup_theme() {
     ) );
 
     add_image_size( 'user-avatar', 150, 150, true );
+    add_image_size( 'image315x152', 315, 152, true );
 
     /**
      * This theme styles the visual editor to resemble the theme style,
@@ -184,8 +185,40 @@ function kanda_register_post_types() {
         'supports'           => array( 'title', 'author' )
     );
 
+    $top_destination_args = array(
+        'labels'             => array(
+            'name'               => _x( 'Top Destinations', 'post type general name', 'kanda' ),
+            'singular_name'      => _x( 'Top Destination', 'post type singular name', 'kanda' ),
+            'menu_name'          => _x( 'Top Destinations', 'admin menu', 'kanda' ),
+            'name_admin_bar'     => _x( 'Top Destination', 'add new on admin bar', 'kanda' ),
+            'add_new'            => _x( 'Add New', 'top destination', 'kanda' ),
+            'add_new_item'       => __( 'Add New Top Destination', 'kanda' ),
+            'new_item'           => __( 'New Top Destination', 'kanda' ),
+            'edit_item'          => __( 'Edit Top Destination', 'kanda' ),
+            'view_item'          => __( 'View Top Destination', 'kanda' ),
+            'all_items'          => __( 'All Top Destinations', 'kanda' ),
+            'search_items'       => __( 'Search Top Destinations', 'kanda' ),
+            'parent_item_colon'  => __( 'Parent Top Destinations:', 'kanda' ),
+            'not_found'          => __( 'No top destinations found.', 'kanda' ),
+            'not_found_in_trash' => __( 'No top destinations found in Trash.', 'kanda' )
+        ),
+        'description'        => __( 'Description.', 'kanda' ),
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'top-destinations' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => null,
+        'supports'           => array( 'title', 'author', 'editor', 'thumbnail' )
+    );
+
     register_post_type( 'hotel', $hotel_args );
     register_post_type( 'booking', $booking_args );
+    register_post_type( 'top-destination', $top_destination_args );
 }
 
 /**

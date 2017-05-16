@@ -1,4 +1,4 @@
-<h2 class="text-center"><?php esc_html_e( 'Travel Vaucher', 'kanda' ); ?></h2>
+<h2 class="text-center"><?php esc_html_e( 'Travel Voucher', 'kanda' ); ?></h2>
 
 <div class="table-wrap">
     <div class="users-table table text-center">

@@ -657,8 +657,8 @@ class Booking_Controller extends Base_Controller {
                 $mpdf = new mPDF();
                 $mpdf->WriteHTML( $content );
 
-                $mpdf->Output( KANDA_THEME_PATH . 'mpdf.pdf', 'F');
-//                $mpdf->Output( $booking->post_name . '.pdf', 'D');
+//                $mpdf->Output( KANDA_THEME_PATH . 'mpdf.pdf', 'F');
+                $mpdf->Output( $booking->post_name . '.pdf', 'D');
                 die;
             }
 
@@ -752,7 +752,7 @@ class Booking_Controller extends Base_Controller {
                             update_field( 'start_date', $room['startdate'], $booking_id );
                             update_field( 'end_date', $room['enddate'], $booking_id );
                             update_field( 'meal_plan', $room['mealplan'], $booking_id );
-                            update_field( 'meal_plan', $room['roomtype'], $booking_id );
+                            update_field( 'room_type', $room['roomtype'], $booking_id );
 
                             update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
                             //update_field( 'adults', $passengers['adults'], $booking_id );

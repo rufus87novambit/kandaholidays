@@ -40,10 +40,12 @@ class Index_Controller extends Base_Controller {
      * @return string
      */
     public function dashboard_change_content( $content ) {
-        return '</div><div>' . $content;
+        return $content;
     }
 
-
+    /*
+     * Dashboard main page
+     */
     public function dashboard() {
 
         $this->dashboard_add_hooks();
