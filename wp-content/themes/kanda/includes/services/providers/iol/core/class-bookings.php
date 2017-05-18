@@ -58,11 +58,6 @@ class IOL_Bookings {
                 IOL_Helper::convert_passenger_type('adult')
             );
 
-            $date_of_birth = $passenger->addChild(
-                IOL_Helper::parse_xml_key( 'date_of_birth' ),
-                IOL_Helper::convert_date( $adult['date_of_birth'], Kanda_Config::get( 'display_date_format' ) )
-            );
-
             $first_name = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'first_name' ),
                 $adult['first_name']
@@ -78,10 +73,6 @@ class IOL_Bookings {
                 strtoupper( $adult['gender'] )
             );
 
-            $nationality = $passenger->addChild(
-                IOL_Helper::parse_xml_key( 'nationality' ),
-                strtoupper( $adult['nationality'] )
-            );
         }
 
         foreach( $args['children'] as $child ) {
@@ -109,14 +100,9 @@ class IOL_Bookings {
                 IOL_Helper::convert_passenger_type('child')
             );
 
-            $date_of_birth = $passenger->addChild(
-                IOL_Helper::parse_xml_key( 'date_of_birth' ),
-                IOL_Helper::convert_date( $child['date_of_birth'], Kanda_Config::get( 'display_date_format' ) )
-            );
-
             $age = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'age' ),
-                DateTime::createFromFormat(Kanda_Config::get( 'display_date_format' ), $child['date_of_birth'] )->diff(new DateTime('now'))->y
+                $child['age']
             );
 
             $first_name = $passenger->addChild(
@@ -134,10 +120,6 @@ class IOL_Bookings {
                 strtoupper( $child['gender'] )
             );
 
-            $nationality = $passenger->addChild(
-                IOL_Helper::parse_xml_key( 'nationality' ),
-                strtoupper( $child['nationality'] )
-            );
         }
 
 

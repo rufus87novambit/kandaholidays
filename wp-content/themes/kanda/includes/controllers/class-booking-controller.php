@@ -85,18 +85,15 @@ class Booking_Controller extends Base_Controller {
                         'title' => '',
                         'first_name' => '',
                         'last_name' => '',
-                        'date_of_birth' => '',
-                        'gender' => '',
-                        'nationality' => 'AM'
+                        'gender' => ''
                     ));
 
                     $children = array_fill(0, $children_count, array(
                         'title' => '',
                         'first_name' => '',
                         'last_name' => '',
-                        'date_of_birth' => '',
                         'gender' => '',
-                        'nationality' => 'AM'
+                        'age' => 0
                     ));
                 } else {
                     $is_valid = false;
@@ -176,7 +173,6 @@ class Booking_Controller extends Base_Controller {
                             'title' => '',
                             'first_name' => '',
                             'last_name' => '',
-                            'date_of_birth' => '',
                             'gender' => ''
                         ));
 
@@ -184,7 +180,7 @@ class Booking_Controller extends Base_Controller {
                             'title' => '',
                             'first_name' => '',
                             'last_name' => '',
-                            'date_of_birth' => '',
+                            'age' => '',
                             'gender' => ''
                         ));
 
@@ -296,13 +292,10 @@ class Booking_Controller extends Base_Controller {
                                     'additional_requests'   => array_keys( $details['additional_requests'] )
                                 );
 
-                                $nationalities = kanda_get_nationality_choices();
                                 $keymap = array(
                                     'title'         => 'title',
                                     'first_name'    => 'firstname',
                                     'last_name'     => 'lastname',
-                                    'date_of_birth' => 'dateofbirth',
-                                    'nationality'   => 'nationality',
                                     'gender'        => 'gender'
                                 );
 
@@ -319,16 +312,7 @@ class Booking_Controller extends Base_Controller {
                                 for( $i = 0; $i < count( $adults ); $i++ ) {
                                     $adult = array();
                                     foreach( $keymap as $meta_key => $response_key ) {
-                                        switch( $response_key ) {
-                                            case 'nationality':
-                                                $meta_value = $nationalities[ $adults[$i][$response_key] ];
-                                                break;
-                                            default:
-                                                $meta_value = $adults[$i][$response_key];
-                                                break;
-                                        }
-
-                                        $adult[ $meta_key ] = $meta_value;
+                                        $adult[ $meta_key ] = $adults[$i][$response_key];
                                     }
                                     $passengers_meta[] = sprintf( '%1$s %2$s', $adult['first_name'], $adult['last_name'] );
                                     $repeaters['adults'][] = $adult;
@@ -344,16 +328,8 @@ class Booking_Controller extends Base_Controller {
 
                                 for( $i = 0; $i < count( $children ); $i++ ) {
                                     $child = array();
-                                    foreach( $keymap as $meta_key => $response_key ) {
-                                        switch( $response_key ) {
-                                            case 'nationality':
-                                                $meta_value = $nationalities[ $children[$i][$response_key] ];
-                                                break;
-                                            default:
-                                                $meta_value = $children[$i][$response_key];
-                                                break;
-                                        }
-                                        $child[ $meta_key ] = $meta_value;
+                                    foreach( array_merge( $keymap, array( 'age' => 'age' ) ) as $meta_key => $response_key ) {
+                                        $child[ $meta_key ] = $children[$i][$response_key];
                                     }
                                     $passengers_meta[] = sprintf( '%1$s %2$s', $child['first_name'], $child['last_name'] );
                                     $repeaters['children'][] = $child;
@@ -728,8 +704,6 @@ class Booking_Controller extends Base_Controller {
                                     'title'         => $adult['title'],
                                     'first_name'    => $adult['firstname'],
                                     'last_name'     => $adult['lastname'],
-                                    'date_of_birth' => '',
-                                    'nationality'   => '',
                                     'gender'        => $adult['gender'],
                                 );
                             }
@@ -743,8 +717,6 @@ class Booking_Controller extends Base_Controller {
                                     'title'         => $child['title'],
                                     'first_name'    => $child['firstname'],
                                     'last_name'     => $child['lastname'],
-                                    'date_of_birth' => '',
-                                    'nationality'   => '',
                                     'gender'        => $child['gender'],
                                 );
                             }

@@ -241,25 +241,20 @@ class Kanda_Config {
                 'form_create_booking' => array(
                     // key => input_id
                     'title' => array(
-                        'required' => esc_html__( 'Required', 'kanda' ),
-                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
+                        'required' => esc_html__( 'Required', 'kanda' )
                     ),
                     'first_name' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                        'jquery_ui_datepicker' => esc_html__( 'Invalid date', 'kanda' ),
                     ),
                     'last_name' => array(
                         'required'   => esc_html__( 'Required', 'kanda' )
                     ),
-                    'date_of_birth' => array(
+                    'age' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
                     ),
                     'gender' => array(
                         'required' => esc_html__( 'Required', 'kanda' ),
-                    ),
-                    'nationality' => array(
-                        'required' => esc_html__( 'Required', 'kanda' ),
-                    ),
+                    )
                 ),
                 'form_booking_email_details' => array(
                     // key => input_id

@@ -44,29 +44,11 @@
                         </div>
                     </div>
                     <div class="form-group row clearfix">
-                        <label class="form-label col-lg-5"><?php esc_html_e( 'Date of birth', 'kanda' ); ?>:</label>
-                        <div class="select-wrap col-lg-7">
-                            <input type="text" name="adults[<?php echo $i; ?>][date_of_birth]" class="form-control birthdate deny-typing" value="<?php $adult['date_of_birth']; ?>">
-                            <div class="form-control-feedback"><small></small></div>
-                        </div>
-                    </div>
-                    <div class="form-group row clearfix">
                         <label class="form-label col-lg-5"><?php esc_html_e( 'Gender', 'kanda' ); ?>:</label>
                         <div class="select-wrap col-lg-7">
                             <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="adults[<?php echo $i; ?>][gender]">
                                 <option value="m" <?php selected( $adult['gender'], 'm' ); ?>><?php _e( 'Male', 'kanda' ); ?></option>
                                 <option value="f" <?php selected( $adult['gender'], 'f' ); ?>><?php _e( 'Female', 'kanda' ); ?></option>
-                            </select>
-                            <div class="form-control-feedback"><small></small></div>
-                        </div>
-                    </div>
-                    <div class="form-group row clearfix">
-                        <label class="form-label col-lg-5"><?php esc_html_e( 'Nationality', 'kanda' ); ?>:</label>
-                        <div class="select-wrap col-lg-7">
-                            <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="adults[<?php echo $i; ?>][nationality]">
-                                <?php foreach( kanda_get_nationality_choices() as $iso => $nat_name ) { ?>
-                                <option value="<?php echo $iso; ?>" <?php selected( $iso, $adult['nationality'] ); ?>><?php echo $nat_name; ?></option>
-                                <?php } ?>
                             </select>
                             <div class="form-control-feedback"><small></small></div>
                         </div>
@@ -110,9 +92,9 @@
                             </div>
                         </div>
                         <div class="form-group row clearfix">
-                            <label class="form-label col-lg-5"><?php esc_html_e( 'Date of birth', 'kanda' ); ?>:</label>
+                            <label class="form-label col-lg-5"><?php esc_html_e( 'Age', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
-                                <input type="text" name="children[<?php echo $i; ?>][date_of_birth]" class="form-control birthdate deny-typing" value="<?php $child['date_of_birth']; ?>">
+                                <input type="number" name="children[<?php echo $i; ?>][age]" class="form-control" min="0" max="12" value="<?php $child['age']; ?>">
                                 <div class="form-control-feedback"><small></small></div>
                             </div>
                         </div>
@@ -122,17 +104,6 @@
                                 <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="children[<?php echo $i; ?>][gender]">
                                     <option value="m" <?php selected( $child['gender'], 'm' ); ?>><?php _e( 'Male', 'kanda' ); ?></option>
                                     <option value="f" <?php selected( $child['gender'], 'f' ); ?>><?php _e( 'Female', 'kanda' ); ?></option>
-                                </select>
-                                <div class="form-control-feedback"><small></small></div>
-                            </div>
-                        </div>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-lg-5"><?php esc_html_e( 'Nationality', 'kanda' ); ?>:</label>
-                            <div class="select-wrap col-lg-7">
-                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="children[<?php echo $i; ?>][nationality]">
-                                    <?php foreach( kanda_get_nationality_choices() as $iso => $nat_name ) { ?>
-                                    <option value="<?php echo $iso; ?>" <?php selected( $iso, $child['nationality'] ); ?>><?php echo $nat_name; ?></option>
-                                    <?php } ?>
                                 </select>
                                 <div class="form-control-feedback"><small></small></div>
                             </div>

@@ -952,26 +952,10 @@
                     validation : { required : true},
                     message : { required : booking.validation.last_name.required }
                 },
-                adults_date_of_birth = {
-                    key : 'adults['+i+'][date_of_birth]',
-                    validation : {
-                        required : true,
-                        jquery_ui_datepicker : true
-                    },
-                    message : {
-                        required : booking.validation.date_of_birth.required,
-                        jquery_ui_datepicker : booking.validation.date_of_birth.jquery_ui_datepicker
-                    }
-                },
                 adults_gender = {
                     key : 'adults['+i+'][gender]',
                     validation : { required : true},
                     message : { required : booking.validation.gender.required }
-                },
-                adults_nationality = {
-                    key : 'adults['+i+'][nationality]',
-                    validation : { required : true},
-                    message : { required : booking.validation.nationality.required }
                 },
                 children_title = {
                     key : 'children['+i+'][title]',
@@ -988,26 +972,19 @@
                     validation : { required : true},
                     message : { required : booking.validation.last_name.required }
                 },
-                children_date_of_birth = {
-                    key : 'children['+i+'][date_of_birth]',
+                children_age = {
+                    key : 'children['+i+'][age]',
                     validation : {
                         required : true,
-                        jquery_ui_datepicker : true
                     },
                     message : {
-                        required : booking.validation.date_of_birth.required,
-                        jquery_ui_datepicker : booking.validation.date_of_birth.jquery_ui_datepicker
+                        required : booking.validation.age.required,
                     }
                 },
                 children_gender = {
                     key : 'children['+i+'][gender]',
                     validation : { required : true},
                     message : { required : booking.validation.gender.required }
-                },
-                children_nationality = {
-                    key : 'children['+i+'][nationality]',
-                    validation : { required : true},
-                    message : { required : booking.validation.nationality.required }
                 }
 
             kanda_back_form_create_booking_validation_args.rules[ adults_title.key ] = adults_title.validation;
@@ -1019,14 +996,8 @@
             kanda_back_form_create_booking_validation_args.rules[ adults_last_name.key ] = adults_last_name.validation;
             kanda_back_form_create_booking_validation_args.messages[ adults_last_name.key ] = adults_last_name.message;
 
-            kanda_back_form_create_booking_validation_args.rules[ adults_date_of_birth.key ] = adults_date_of_birth.validation;
-            kanda_back_form_create_booking_validation_args.messages[ adults_date_of_birth.key ] = adults_date_of_birth.message;
-
             kanda_back_form_create_booking_validation_args.rules[ adults_gender.key ] = adults_gender.validation;
             kanda_back_form_create_booking_validation_args.messages[ adults_gender.key ] = adults_gender.message;
-
-            kanda_back_form_create_booking_validation_args.rules[ adults_nationality.key ] = adults_nationality.validation;
-            kanda_back_form_create_booking_validation_args.messages[ adults_nationality.key ] = adults_nationality.message;
 
             kanda_back_form_create_booking_validation_args.rules[ children_title.key ] = children_title.validation;
             kanda_back_form_create_booking_validation_args.messages[ children_title.key ] = children_title.message;
@@ -1037,14 +1008,12 @@
             kanda_back_form_create_booking_validation_args.rules[ children_last_name.key ] = children_last_name.validation;
             kanda_back_form_create_booking_validation_args.messages[ children_last_name.key ] = children_last_name.message;
 
-            kanda_back_form_create_booking_validation_args.rules[ children_date_of_birth.key ] = children_date_of_birth.validation;
-            kanda_back_form_create_booking_validation_args.messages[ children_date_of_birth.key ] = children_date_of_birth.message;
+            kanda_back_form_create_booking_validation_args.rules[ children_age.key ] = children_age.validation;
+            kanda_back_form_create_booking_validation_args.messages[ children_age.key ] = children_age.message;
 
             kanda_back_form_create_booking_validation_args.rules[ children_gender.key ] = children_gender.validation;
             kanda_back_form_create_booking_validation_args.messages[ children_gender.key ] = children_gender.message;
 
-            kanda_back_form_create_booking_validation_args.rules[ children_nationality.key ] = children_nationality.validation;
-            kanda_back_form_create_booking_validation_args.messages[ children_nationality.key ] = children_nationality.message;
         });
 
         kanda_back_form_create_booking_validation_args = Object.assign(

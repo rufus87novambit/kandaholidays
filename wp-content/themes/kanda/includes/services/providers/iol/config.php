@@ -28,7 +28,7 @@ class IOL_Config {
      * @var string
      */
 
-    private static $mode = 'test';
+    private static $mode = 'live';
 
     /**
      * Access details
@@ -81,10 +81,10 @@ class IOL_Config {
     private static $cities = array(
         'AUH'   => 'Abu Dhabi',
         'AJMA'  => 'Ajman',
-        'ALAZ'  => 'Al Ain',
         'DXB'   => 'Dubai',
         'FUJA'  => 'Fujairah',
-        'RASK' => 'Ras al Khaimah'
+        'RASK'  => 'Ras al Khaimah',
+        'SHAR'  => 'Sharjah'
     );
 
     /**

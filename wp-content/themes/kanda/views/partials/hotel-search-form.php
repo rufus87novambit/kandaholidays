@@ -187,7 +187,7 @@
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Children', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
                                 <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?> children-presence" name="room_occupants[<?php echo $i; ?>][child]">
-                                    <option value="0" <?php selected( $children_count, 0 ); ?>><?php esc_html_e( 'Without children', 'kanda' ); ?></option>
+                                    <option value="0" <?php selected( $children_count, 0 ); ?>><?php esc_html_e( 'No Child', 'kanda' ); ?></option>
                                     <option value="1" <?php selected( $children_count, 1 ); ?>><?php esc_html_e( '1 Child', 'kanda' ); ?></option>
                                     <option value="2" <?php selected( $children_count, 2 ); ?>><?php esc_html_e( '2 Children', 'kanda' ); ?></option>
                                     <option value="3" <?php selected( $children_count, 3 ); ?>><?php esc_html_e( '3 Children', 'kanda' ); ?></option>

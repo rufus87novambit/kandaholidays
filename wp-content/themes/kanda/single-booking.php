@@ -184,8 +184,6 @@ get_header();
                         <td class="title"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Date Of Birth', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Nationality', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
                     </tr>
                     <?php while( have_rows( 'adults' ) ) { the_row(); ?>
@@ -193,8 +191,6 @@ get_header();
                             <td><?php the_sub_field( 'title' ); ?></td>
                             <td><?php the_sub_field( 'first_name' ); ?></td>
                             <td><?php the_sub_field( 'last_name' ); ?></td>
-                            <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'date_of_birth', false, false ) ) ); ?></td>
-                            <td><?php the_sub_field( 'nationality' ); ?></td>
                             <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
                         </tr>
                         <?php } ?>
@@ -208,8 +204,7 @@ get_header();
                         <td class="title"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Date Of Birth', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Nationality', 'kanda' ); ?></td>
+                        <td class="title"><?php esc_html_e( 'Age', 'kanda' ); ?></td>
                         <td class="title"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
                     </tr>
                     <?php while( have_rows( 'children' ) ) { the_row(); ?>
@@ -217,8 +212,7 @@ get_header();
                             <td><?php the_sub_field( 'title' ); ?></td>
                             <td><?php the_sub_field( 'first_name' ); ?></td>
                             <td><?php the_sub_field( 'last_name' ); ?></td>
-                            <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'date_of_birth', false, false ) ) ); ?></td>
-                            <td><?php the_sub_field( 'nationality' ); ?></td>
+                            <td><?php the_sub_field( 'age' ); ?></td>
                             <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
                         </tr>
                         <?php } ?>
