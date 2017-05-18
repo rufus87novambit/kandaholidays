@@ -362,7 +362,7 @@ class Booking_Controller extends Base_Controller {
 
                                 $booking_id = wp_insert_post( array(
                                     'post_author' => get_current_user_id(),
-                                    'post_title' => sprintf( '%1$s - PNR %2$s', $data['hoteldetails']['hotelname'], $data['bookingdetails']['bookingnumber'] ),
+                                    'post_title' => sprintf( 'PNR %1$s - %2$s', $data['bookingdetails']['bookingnumber'], $data['hoteldetails']['hotelname'] ),
                                     'post_name' => kanda_generate_random_string( 20 ),
                                     'post_status' => 'publish',
                                     'post_type' => 'booking',

@@ -2,7 +2,7 @@
     $booking_status = kanda_get_post_meta( $booking_id, 'booking_status' );
     $booking = get_post( $booking_id );
 ?>
-<h4><?php esc_html_e( 'Booking details', 'kanda' ); ?></h4>
+<h4><?php esc_html_e( 'Booking Details', 'kanda' ); ?></h4>
 <div class="users-table table">
     <header class="thead">
         <div class="th"><?php esc_html_e( 'Property Name', 'kanda' ); ?></div>
@@ -173,7 +173,7 @@
             <div class="th"><?php esc_html_e( 'Title', 'kanda' ); ?></div>
             <div class="th"><?php esc_html_e( 'First Name', 'kanda' ); ?></div>
             <div class="th"><?php esc_html_e( 'Last Name', 'kanda' ); ?></div>
-            <div class="th"><?php esc_html_e( 'Date Of Birth Name', 'kanda' ); ?></div>
+            <div class="th"><?php esc_html_e( 'Date Of Birth', 'kanda' ); ?></div>
             <div class="th"><?php esc_html_e( 'Nationality', 'kanda' ); ?></div>
             <div class="th"><?php esc_html_e( 'Gender', 'kanda' ); ?></div>
         </header>
