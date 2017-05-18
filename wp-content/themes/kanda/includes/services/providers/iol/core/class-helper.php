@@ -400,7 +400,7 @@ class IOL_Helper {
                         if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
                             <div class="tr">
                                 <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
-                                <div class="td"><?php echo absint( $discount['totaldiscountrate'] ); ?></div>
+                                <div class="td"><?php echo absint( $discount['totaldiscountrate'] ) . ' USD'; ?></div>
                             </div>
                         <?php }
                     }
@@ -486,7 +486,7 @@ class IOL_Helper {
                             if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
                                 <div class="tr">
                                     <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
-                                    <div class="td"><?php echo absint( $discount['totaldiscountrate'] ); ?></div>
+                                    <div class="td"><?php echo absint( $discount['totaldiscountrate'] ) . ' USD'; ?></div>
                                 </div>
                             <?php }
                         }

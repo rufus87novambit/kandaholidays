@@ -331,3 +331,34 @@
     border: none;
     background-color: transparent;
 }
+
+/** custom table */
+.custom-table {
+    border: 1px solid var(--brand-primary);
+    font-size: 14px;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.custom-table .title {
+    color: #fff;
+    background: var(--brand-primary);
+    padding: 8px;
+}
+.custom-table .heading {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    color: #fff;
+    background: var(--brand-primary);
+    padding: 8px;
+}
+.custom-table td {
+    border-bottom: 1px solid var(--border-color);
+    padding: 5px 8px;
+}
+.custom-table .no-border {
+    border: 0;
+}
+.custom-table .border-separator {
+    border-top: 1px solid var(--brand-primary);
+    border-bottom: 1px solid var(--brand-primary);
+}

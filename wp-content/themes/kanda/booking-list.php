@@ -39,12 +39,12 @@ get_header(); ?>
                     <div class="th"><?php esc_html_e( 'Status', 'kanda' ); ?></div>
                     <div class="th"><?php esc_html_e( 'Check In Date', 'kanda' ); ?></div>
                     <div class="th"><?php esc_html_e( 'Check Out Date', 'kanda' ); ?></div>
-                    <div class="th"><?php esc_html_e( 'Actions', 'kanda' ); ?></div>
+                    <div class="th"><?php esc_html_e( 'More', 'kanda' ); ?></div>
                 </header>
                 <div class="tbody">
                     <?php while( have_posts() ) { the_post(); ?>
                     <div class="tr">
-                        <div class="td" style="width: 50%;"><?php //echo the_title(); ?></div>
+                        <div class="td" style="width: 50%;"><?php echo the_title(); ?></div>
                         <div class="td"><?php echo ucwords( get_field( 'booking_status' ) ); ?></div>
                         <div class="td"><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', false, false ) ) ); ?></div>
                         <div class="td"><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', false, false ) ) ); ?></div>
