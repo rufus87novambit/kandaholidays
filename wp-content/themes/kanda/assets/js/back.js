@@ -1096,36 +1096,32 @@
     }
     /********************************************** /end booking email *******************************************/
 
-    if( $('#btn-cancel-booking').length > 0 ) {
+    $('body').on( 'click', '#btn-cancel-booking', function(){
+        var _btn = $(this);
 
-        $('#btn-cancel-booking').on( 'click', function(){
-            var _btn = $(this);
-
-            $.ajax({
-                url : _btn.attr('href'),
-                type : 'POST',
-                dataType : 'JSON',
-                data: {
-                    action : 'cancel_booking'
-                },
-                beforeSend: loading_popup(),
-                success : function( response ){
-                    if( response.success ) {
-                        window.location = response.data.redirect_to
-                    } else {
-                        error_popup( response.data.message );
-                    }
-                },
-                error : function(){
-                    $.magnificPopup.close();
-                    error_popup( 'Service is currently not available. Please try again later' );
+        $.ajax({
+            url : _btn.attr('href'),
+            type : 'POST',
+            dataType : 'JSON',
+            data: {
+                action : 'cancel_booking'
+            },
+            beforeSend: loading_popup(),
+            success : function( response ){
+                if( response.success ) {
+                    window.location = response.data.redirect_to
+                } else {
+                    error_popup( response.data.message );
                 }
-            });
+            },
+            error : function(){
+                $.magnificPopup.close();
+                error_popup( 'Service is currently not available. Please try again later' );
+            }
+        });
 
-            return false;
+        return false;
 
-        } );
-
-    }
+    } );
 
 })(jQuery);
