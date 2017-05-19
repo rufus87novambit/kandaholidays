@@ -155,6 +155,20 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                     <?php for( $i = 1; $i <= $this->response->request['rooms_count']; $i++ ) { ?>
                                     <div class="tab-content hotel-<?php echo $hotel['hotelcode']; ?>-room-<?php echo $i; ?> <?php echo $i == 1 ? '' : 'hidden'; ?>">
                                         <?php
+                                        $adults_count = $this->response->request['room_occupants'][$i]['adults'];
+                                        $children_count = $this->response->request['room_occupants'][$i]['child'] ? count( $this->response->request['room_occupants'][$i]['child']['age'] ) : '';
+
+                                        $message = array();
+                                        if( $adults_count ) {
+                                            $message[] = sprintf( '%1$d %2$s', $adults_count, _n( 'adult', 'adults', $adults_count, 'kanda' ) );
+                                        }
+
+                                        if( $children_count ) {
+                                            $message[] = sprintf( '%1$d %2$s', $children_count, _n( 'child', 'children', $children_count, 'kanda' ) );
+                                        }
+
+                                        printf( '<p>%s</p>', implode( ' + ', $message ) );
+
                                         foreach (wp_list_filter( $rooms, array( 'roomnumber' => $i ) ) as $room) {
                                             IOL_Helper::render_room_details(
                                                 $room,
@@ -168,6 +182,7 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                                         $this->response->request,
                                                         array( 'request_id' => $this->request_id )
                                                     ),
+                                                    'requested_room_number' => $i
                                                 )
                                             );
                                         }
@@ -180,6 +195,19 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                         }
                         // render as single room
                         else {
+                            $adults_count = $this->response->request['room_occupants'][1]['adults'];
+                            $children_count = $this->response->request['room_occupants'][1]['child'] ? count( $this->response->request['room_occupants'][1]['child']['age'] ) : '';
+
+                            $message = array();
+                            if( $adults_count ) {
+                                $message[] = sprintf( '%1$d %2$s', $adults_count, _n( 'adult', 'adults', $adults_count, 'kanda' ) );
+                            }
+
+                            if( $children_count ) {
+                                $message[] = sprintf( '%1$d %2$s', $children_count, _n( 'child', 'children', $children_count, 'kanda' ) );
+                            }
+
+                            printf( '<p>%s</p>', implode( ' + ', $message ) );
                             foreach (wp_list_filter( $rooms, array( 'roomnumber' => 1 ) ) as $room) {
                                 IOL_Helper::render_room_details(
                                     $room,
@@ -192,7 +220,8 @@ $end_date = date( 'Ymd', strtotime($this->response->request['end_date'] ) );
                                         'request' => array_merge(
                                             $this->response->request,
                                             array( 'request_id' => $this->request_id )
-                                        )
+                                        ),
+                                        'requested_room_number' => 1
                                     )
                                 );
                             }

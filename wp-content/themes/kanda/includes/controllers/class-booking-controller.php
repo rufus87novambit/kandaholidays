@@ -54,6 +54,7 @@ class Booking_Controller extends Base_Controller {
         $contract_token_id = isset($_GET['contract_token_id']) ? $_GET['contract_token_id'] : '';
         $room_configuration_id = isset($_GET['room_configuration_id']) ? $_GET['room_configuration_id'] : '';
         $meal_plan_code = isset($_GET['meal_plan_code']) ? $_GET['meal_plan_code'] : '';
+        $requested_room_number = isset($_GET['room_n']) ? $_GET['room_n'] : 1;
 
         if (
             ! $hotel_code ||
@@ -88,13 +89,16 @@ class Booking_Controller extends Base_Controller {
                         'gender' => ''
                     ));
 
-                    $children = array_fill(0, $children_count, array(
-                        'title' => '',
-                        'first_name' => '',
-                        'last_name' => '',
-                        'gender' => '',
-                        'age' => 0
-                    ));
+                    $children = array();
+                    for( $i = 0; $i < $children_count; $i++ ) {
+                        $children[] = array(
+                            'title' => '',
+                            'first_name' => '',
+                            'last_name' => '',
+                            'gender' => '',
+                            'age' => $request_args[ 'room_occupants' ][ $requested_room_number ][ 'child' ][ 'age' ][ $i ]
+                        );
+                    }
                 } else {
                     $is_valid = false;
                 }

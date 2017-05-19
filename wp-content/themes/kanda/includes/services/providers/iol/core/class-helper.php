@@ -429,6 +429,7 @@ class IOL_Helper {
             'contract_token_id'     => $room['contracttokenid'],
             'room_configuration_id' => $room['roomconfigurationid'],
             'meal_plan_code'        => $room['mealplancode'],
+            'room_n'                => $args['requested_room_number']
         ) );
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
