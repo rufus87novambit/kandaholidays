@@ -12,7 +12,7 @@ get_header();
 
             <?php
                 $update = true;
-                if( isset( $_GET['status'] ) && ( $_GET['status'] == 'created' ) ) {
+                if( isset( $_GET['update'] ) && ( $_GET['update'] == 0 ) ) {
                     $update = false;
                 }
 

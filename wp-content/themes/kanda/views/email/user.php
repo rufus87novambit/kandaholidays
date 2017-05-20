@@ -1,5 +1,5 @@
 <html>
-    <body style="background:#fff;">
+    <body style="background:#fff; font-family: ">
         <table>
             <tr>
                 <td>

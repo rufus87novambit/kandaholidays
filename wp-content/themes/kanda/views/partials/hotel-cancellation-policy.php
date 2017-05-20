@@ -17,7 +17,10 @@
                     $spare = Kanda_Config::get( 'spare_days_count' ) * 86400;
 
                     $from_timestamp = max( strtotime( $policy['fromdate'] ), time() ) - $spare;
-                    $to_timestamp = min( strtotime( $policy['todate'] ), strtotime( $request['end_date'] ) ) - $spare;
+                    $to_timestamp = min( strtotime( $policy['todate'] ), strtotime( $request['end_date'] ) );
+                    if( $to_timestamp != strtotime( $request['end_date'] ) ) {
+                        $to_timestamp -= $spare;
+                    }
                     if( $to_timestamp <= time() ) {
                         continue;
                     } ?>

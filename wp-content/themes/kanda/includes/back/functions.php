@@ -249,17 +249,9 @@ function kanda_booking_cancel_send_notifications( $booking_id ) {
     $subject = kanda_get_theme_option( 'email_booking_cancellation_title' );
     $message = kanda_get_theme_option( 'email_booking_cancellation_body' );
 
-    $charges = '---';
-    while( have_rows( 'cancellation_policy', $booking_id ) ) {
-        the_row();
-        $from = strtotime( get_sub_field( 'from', false ) );
-        $to = strtotime( get_sub_field( 'to', false ) );
-        $now = time();
-        if( ( $now >= $from ) && ( $now < $to )  ) {
-            $charges = get_sub_field( 'charge' );
-            break;
-        }
-    }
+    $charges = get_field( 'cancellation_total_amount', $booking_id );
+    $charges = $charges ? $charges : 0;
+
     $variables = array(
         '{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
         '{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
@@ -268,7 +260,7 @@ function kanda_booking_cancel_send_notifications( $booking_id ) {
         '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
         '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
         '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
-        '{{CANCELLATION_CHARGES}}'  => $charges
+        '{{CANCELLATION_CHARGES}}'  => sprintf( '%s USD', $charges )
     );
 
     $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );

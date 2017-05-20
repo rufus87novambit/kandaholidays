@@ -84,7 +84,7 @@
     </tr>
     <tr>
         <td><?php esc_html_e( 'Paid Amount', 'kanda' ); ?></td>
-        <td><?php printf( '%s USD', get_field( 'paid_amount', $booking_id ) ); ?></td>
+        <td><?php printf( '%d USD', get_field( 'paid_amount', $booking_id ) ); ?></td>
     </tr>
     <tr>
         <td><?php esc_html_e( 'Payment Status', 'kanda' ); ?></td>
