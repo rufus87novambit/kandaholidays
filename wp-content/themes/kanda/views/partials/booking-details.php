@@ -5,7 +5,7 @@
 <h4><?php esc_html_e( 'Booking Details', 'kanda' ); ?></h4>
 <table class="custom-table" cellpadding="0" cellspacing="0">
     <tr>
-        <td class="title text-center" colspan="2"><?php _e( 'Chgitem inch grem', 'kanda' ); ?></td>
+        <td class="title text-center" colspan="2"><?php _e( 'Itinerary', 'kanda' ); ?></td>
     </tr>
     <tr>
         <td><?php esc_html_e( 'Supplier Reference', 'kanda' ); ?></td>

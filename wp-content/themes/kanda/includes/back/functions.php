@@ -20,12 +20,31 @@ require_once( KANDA_BACK_PATH . 'ajax.php' );
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
-    wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', array( 'jquery' ), null, true );
-    wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
+    $deps = array( 'jquery' );
+    $localize = array();
+    $localize_key = false;
     if( is_singular( 'booking' ) ) {
-        wp_localize_script( 'back', 'booking', array(
+        $localize = array(
             'validation' => Kanda_Config::get( 'validation->back->form_booking_email_details' )
-        ) );
+        );
+        $localize_key = 'booking';
+    } elseif( is_page_template( 'booking-list.php' ) ) {
+        wp_enqueue_script( 'jquery-ui-datepicker' );
+        wp_enqueue_script( 'jquery-ui-autocomplete' );
+
+        $localize = array(
+            'hotel_names' => kanda_get_hotels_for_autocomplete()
+        );
+        $localize_key = 'bookings_data';
+        $deps = array_merge( $deps, array( 'jquery-ui-datepicker', 'jquery-ui-autocomplete' ) );
+    }
+
+
+    wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', $deps, null, true );
+    wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
+
+    if( $localize_key && ! empty( $localize ) ) {
+        wp_localize_script( 'back', $localize_key, $localize );
     }
 }
 
@@ -278,4 +297,128 @@ function kanda_price_order( $a, $b ) {
         return 0;
     }
     return ( $a['rate'] < $b['rate'] ) ? -1 : 1;
+}
+
+/**
+ * Get WP_Query args for bookings list of current user
+ * @return array
+ */
+function kanda_get_booking_query_args() {
+
+    $meta_query = array();
+
+    if( isset( $_GET['search'] ) && $_GET['search'] ) {
+        $names = array();
+        if( isset( $_GET['pfn'] ) && $_GET['pfn'] ) {
+            $names[] = sanitize_text_field( $_GET['pfn'] );
+        }
+        if( isset( $_GET['pln'] ) && $_GET['pln'] ) {
+            $names[] = sanitize_text_field( $_GET['pln'] );
+        }
+
+        if( ! empty( $names ) ) {
+            $meta_query[] = array(
+                'key'       => 'passenger_names',
+                'value'     => implode( ' ', $names ),
+                'compare'   => 'LIKE'
+            );
+        }
+
+        if( isset( $_GET['city'] ) && $_GET['city'] ) {
+            $meta_query[] = array(
+                'key'       => 'hotel_city',
+                'value'     => sanitize_text_field( $_GET['city'] ),
+                'compare'   => '='
+            );
+        }
+
+
+        if( isset( $_GET['hotel_name'] ) && $_GET['hotel_name'] && ( $hotel_code = kanda_get_hotel_code_by_name( $_GET['hotel_name'] ) ) ) {
+            $meta_query[] = array(
+                'key'       => 'hotel_code',
+                'value'     => $hotel_code,
+                'compare'   => '='
+            );
+        }
+
+        if( isset( $_GET['brn'] ) && $_GET['brn'] ) {
+            $meta_query[] = array(
+                'key'       => 'booking_number',
+                'value'     => sanitize_text_field( $_GET['brn'] ),
+                'compare'   => '='
+            );
+        }
+
+        if( isset( $_GET['check_in'] ) && $_GET['check_in'] ) {
+            $meta_query[] = array(
+                'key'       => 'start_date',
+                'value'     => sanitize_text_field( $_GET['check_in'] ),
+                'compare'   => '='
+            );
+        }
+
+        if( isset( $_GET['status'] ) && $_GET['status'] ) {
+            $meta_query[] = array(
+                'key'       => 'booking_status',
+                'value'     => sanitize_text_field( $_GET['status'] ),
+                'compare'   => '='
+            );
+        }
+
+        if( count( $meta_query ) > 1 ) {
+            $meta_query['realtion'] = 'AND';
+        }
+
+    } else {
+        $meta_query[] = array(
+            'key'       => 'end_date',
+            'value'     => date('Ymd'),
+            'compare'   => '>=',
+            'type' => 'DATE'
+        );
+    }
+
+    $args = array(
+        'post_type' => 'booking',
+        'post_status' => 'publish',
+        'author' => get_current_user_id(),
+        'paged'  => kanda_get_paged(),
+        'order' => 'DESC',
+        'orderby' => 'date',
+        'posts_per_page' => 10,
+        'meta_query' => $meta_query
+    );
+
+    return $args;
+}
+
+/**
+ * Prepare hotel names for autocomplete
+ * @return array
+ */
+function kanda_get_hotels_for_autocomplete() {
+    global $wpdb;
+    $query = "SELECT `post_title` FROM `wp_posts` WHERE `post_type` = 'hotel'";
+
+    $hotels = array();
+    $results = $wpdb->get_results( $query, OBJECT_K );
+
+    return array_keys( $results );
+}
+
+/**
+ * Get hotel code by name
+ * @param $name
+ * @return null|string
+ */
+function kanda_get_hotel_code_by_name( $name ) {
+    global $wpdb;
+
+    $query = "SELECT meta_value
+                FROM {$wpdb->postmeta}
+                WHERE
+                `post_id` = ( SELECT ID FROM `{$wpdb->posts}` WHERE `post_title` = '{$name}' AND `post_type` = 'hotel' ) AND
+                `meta_key` = 'hotelcode'";
+
+    return $wpdb->get_var( $query );
 }
