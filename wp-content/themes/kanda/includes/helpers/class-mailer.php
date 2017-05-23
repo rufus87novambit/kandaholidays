@@ -55,11 +55,14 @@ class Kanda_Mailer {
      */
     private function get_html_email_headers( $headers = array() ) {
 
-        $site_name = strtolower( $_SERVER['SERVER_NAME'] );
-        if ( substr( $site_name, 0, 4 ) == 'www.' ) {
-            $site_name = substr( $site_name, 4 );
+        $from = Kanda_Config::get( 'email_from' );
+        if( ! $from ) {
+            $site_name = strtolower($_SERVER['SERVER_NAME']);
+            if (substr($site_name, 0, 4) == 'www.') {
+                $site_name = substr($site_name, 4);
+            }
+            $from = 'noreply@' . $site_name;
         }
-        $from = 'noreply@' . $site_name;
 
         return array_merge(
             array(
