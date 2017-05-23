@@ -253,6 +253,15 @@
         });
     }
 
+    if( $('.main_banners').length > 0 ) {
+        $('.main_banners').slick({
+            arrows      : false,
+            fade        : true,
+            autoplay    : true,
+            dots        : false
+        });
+    }
+
     /********************************************** /end Helpers ***********************************************/
 
     /***************************************** Currency functionality ******************************************/

@@ -80,4 +80,11 @@ return array(
     'pricing_additional_fee_for_3_star_hotel' => 5,
     'pricing_additional_fee_for_4_star_hotel' => 5,
     'pricing_additional_fee_for_5_star_hotel' => 5,
+
+/** - Panel Banners - **/
+    /** - Section Main- */
+    'main_banners_slider_gallery' => array(),
+
+    /** - Section Sidebar- */
+    'sidebar_banners_slider_gallery' => array()
 );

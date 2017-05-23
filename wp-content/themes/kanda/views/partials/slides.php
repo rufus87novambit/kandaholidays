@@ -1,6 +1,7 @@
 <?php
     $gallery = kanda_get_theme_option( 'front_pages_slider_gallery', array() );
     if( $gallery ) {
+        shuffle ( $gallery );
 ?>
 <div class="slides-wrapper">
     <div class="slides">

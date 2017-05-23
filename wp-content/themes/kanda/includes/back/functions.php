@@ -414,3 +414,46 @@ function kanda_get_hotel_code_by_name( $name ) {
 
     return $wpdb->get_var( $query );
 }
+
+/**
+ * Render banners
+ * @param $location main | sidebar
+ * @param array $args
+ */
+function kanda_render_banners( $location, $args = array() ) {
+    $args = wp_parse_args( $args, array(
+        'before' => '',
+        'after'  => '',
+        'class'  => 'slider'
+    ) );
+
+    $banners = $gallery = kanda_get_theme_option( $location . '_banners_slider_gallery', array() );
+    if( $gallery ) {
+        echo $args['before'];
+        ?>
+        <div class="<?php echo $args['class']; ?>">
+            <?php foreach ($banners as $banner) { ?>
+                <div><?php echo wp_get_attachment_image( $banner['image'], 'full' ); ?></div>
+            <?php } ?>
+        </div>
+        <?php
+        echo $args['after'];
+    }
+}
+
+add_shortcode( 'banners_slider', 'kanda_banners_slider' );
+function kanda_banners_slider( $atts ) {
+    $atts = shortcode_atts( array(
+        'location' => ''
+    ), $atts, 'banners_slider' );
+
+    $html = '';
+    if( $atts['location'] ) {
+        $class = ( $atts['location'] == 'main' ) ? 'main_banners' : 'slider';
+        ob_start();
+        kanda_render_banners( $atts['location'], array( 'class' => $class ) );
+        $html = ob_get_clean();
+    }
+
+    return $html;
+}

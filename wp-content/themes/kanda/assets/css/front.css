@@ -70,8 +70,7 @@ header.page-header .logo img {
 .bordered-box {
     background: rgba(0,0,0,.5);
     border-top: 4px solid #8b36d1;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-radius: 13px;
     padding: 20px;
 }
 

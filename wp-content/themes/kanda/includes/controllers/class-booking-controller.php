@@ -204,6 +204,8 @@ class Booking_Controller extends Base_Controller {
                             $data = $cancellation_response->data;
                             $cancellation_policies = ( array_key_exists( 'cancellationdetails', $data ) && isset( $data['cancellationdetails']['cancellation'] ) ) ? $data['cancellationdetails']['cancellation'] : array();
                             $spare = Kanda_Config::get( 'spare_days_count' ) * 86400;
+                            $account_type = get_field( 'account_type', 'user_' . get_current_user_id() );
+                            $allow_booking = true;
 
                             for( $i = 0; $i < count( $cancellation_policies ); $i++ ) {
                                 $now = time();
@@ -217,6 +219,13 @@ class Booking_Controller extends Base_Controller {
                                     continue;
                                 }
 
+                                $now = strtotime( '20170603' );
+                                if( $account_type == 'prepaid' ) {
+                                    if( ( $now >= $from_timestamp ) && ( $now < $to_timestamp ) ) {
+                                        $allow_booking = false;
+                                    }
+                                }
+
                                 $repeaters['cancellation_policy'][] = array(
                                     'from'          => date( 'Ymd', $from_timestamp ),
                                     'to'            => date( 'Ymd', $to_timestamp ),
@@ -225,169 +234,174 @@ class Booking_Controller extends Base_Controller {
 
                             }
 
-                            $booking_response = provider_iol()->bookings()->create(array(
-                                'start_date'            => $request_args['start_date'],
-                                'end_date'              => $request_args['end_date'],
-                                'hotel_code'            => $hotel_code,
-                                'city_code'             => $city_code,
-                                'room_type_code'        => $room_type_code,
-                                'contract_token_id'     => $contract_token_id,
-                                'room_configuration_id' => $room_configuration_id,
-                                'meal_plan_code'        => $meal_plan_code,
-                                'adults'                => $adults,
-                                'children'              => $children
-                            ));
-
-                            if ( $booking_response->is_valid() ) {
-                                $data = $booking_response->data;
-
-                                $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['startdate'] );
-                                $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['enddate'] );
-                                $interval = $end_date->diff( $start_date );
-                                $nights_count = $interval->d;
-
-                                $real_price = $data['bookingdetails']['bookingtotalrate'];
-                                $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
-                                $real_price = $real_price['amount'];
-
-                                $additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
-                                $earnings = $additional_fee * $nights_count;
-                                $agency_fee = kanda_get_user_additional_fee() * $nights_count;
-                                $agency_price = $real_price + $earnings + $agency_fee;
-
-                                $earnings = number_format( $earnings, 2 );
-                                $real_price = number_format( $real_price, 2 );
-                                $agency_price = number_format( $agency_price, 2 );
-
-                                $hotels_query = new WP_Query(array(
-                                    'post_type' => 'hotel',
-                                    'post_status' => 'publish',
-                                    'posts_per_page' => 1,
-                                    'meta_query' => array(
-                                        array(
-                                            'key'     => 'hotelcode',
-                                            'value'   => $data['hoteldetails']['hotelcode'],
-                                            'compare' => '=',
-                                        )
-                                    )
+                            if( $allow_booking ) {
+                                $booking_response = provider_iol()->bookings()->create(array(
+                                    'start_date'            => $request_args['start_date'],
+                                    'end_date'              => $request_args['end_date'],
+                                    'hotel_code'            => $hotel_code,
+                                    'city_code'             => $city_code,
+                                    'room_type_code'        => $room_type_code,
+                                    'contract_token_id'     => $contract_token_id,
+                                    'room_configuration_id' => $room_configuration_id,
+                                    'meal_plan_code'        => $meal_plan_code,
+                                    'adults'                => $adults,
+                                    'children'              => $children
                                 ));
-                                if( $hotels_query->have_posts() ) {
-                                    $hotels = $hotels_query->get_posts();
-                                    $hotel = $hotels[0];
-                                    $hotel_city = kanda_get_post_meta( $hotel->ID, 'hotelcity' );
+
+                                if ( $booking_response->is_valid() ) {
+                                    $data = $booking_response->data;
+
+                                    $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['startdate'] );
+                                    $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['enddate'] );
+                                    $interval = $end_date->diff( $start_date );
+                                    $nights_count = $interval->d;
+
+                                    $real_price = $data['bookingdetails']['bookingtotalrate'];
+                                    $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
+                                    $real_price = $real_price['amount'];
+
+                                    $additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+                                    $earnings = $additional_fee * $nights_count;
+                                    $agency_fee = kanda_get_user_additional_fee() * $nights_count;
+                                    $agency_price = $real_price + $earnings + $agency_fee;
+
+                                    $earnings = number_format( $earnings, 2 );
+                                    $real_price = number_format( $real_price, 2 );
+                                    $agency_price = number_format( $agency_price, 2 );
+
+                                    $hotels_query = new WP_Query(array(
+                                        'post_type' => 'hotel',
+                                        'post_status' => 'publish',
+                                        'posts_per_page' => 1,
+                                        'meta_query' => array(
+                                            array(
+                                                'key'     => 'hotelcode',
+                                                'value'   => $data['hoteldetails']['hotelcode'],
+                                                'compare' => '=',
+                                            )
+                                        )
+                                    ));
+                                    if( $hotels_query->have_posts() ) {
+                                        $hotels = $hotels_query->get_posts();
+                                        $hotel = $hotels[0];
+                                        $hotel_city = kanda_get_post_meta( $hotel->ID, 'hotelcity' );
+                                    } else {
+                                        $hotel_city = '';
+                                    }
+
+                                    $meta_data = array(
+                                        'start_date'            => $start_date->format( 'Ymd' ),
+                                        'end_date'              => $end_date->format( 'Ymd' ),
+                                        'hotel_name'            => $data['hoteldetails']['hotelname'],
+                                        'hotel_code'            => $data['hoteldetails']['hotelcode'],
+                                        'hotel_city'            => $hotel_city,
+                                        'real_price'            => $real_price,
+                                        'agency_price'          => $agency_price,
+                                        'earnings'              => $earnings,
+                                        'booking_status'        => $data['bookingdetails']['bookingstatus'],
+                                        'room_type'             => $data['hoteldetails']['roomdetails']['room']['roomtype'],
+                                        'meal_plan'             => $data['hoteldetails']['roomdetails']['room']['mealplan'],
+                                        'booking_number'        => $data['bookingdetails']['bookingnumber'],
+                                        'booking_date'          => $data['bookingdetails']['bookeddate'],
+                                        'payment_status'        => 'unpaid',
+                                        'visa_rate'             => 0,
+                                        'transfer_rate'         => 0,
+                                        'other_rate'            => 0,
+                                        'adults'                => '',
+                                        'children'              => '',
+                                        'cancellation_policy'   => '',
+                                        'additional_requests'   => array_keys( $details['additional_requests'] )
+                                    );
+
+                                    $keymap = array(
+                                        'title'         => 'title',
+                                        'first_name'    => 'firstname',
+                                        'last_name'     => 'lastname',
+                                        'gender'        => 'gender'
+                                    );
+
+                                    $passengers = $data['bookingdetails']['passengerdetails']['passenger'];
+                                    $passengers = IOL_Helper::is_associative_array( $passengers ) ? array( $passengers ) : $passengers;
+
+                                    $passengers_meta = array();
+                                    /** adults repeater */
+                                    $adults = wp_list_filter( $passengers, array(
+                                        'passengertype' => 'ADT'
+                                    ) );
+                                    $adults = array_values( $adults );
+
+                                    for( $i = 0; $i < count( $adults ); $i++ ) {
+                                        $adult = array();
+                                        foreach( $keymap as $meta_key => $response_key ) {
+                                            $adult[ $meta_key ] = $adults[$i][$response_key];
+                                        }
+                                        $passengers_meta[] = sprintf( '%1$s %2$s', $adult['first_name'], $adult['last_name'] );
+                                        $repeaters['adults'][] = $adult;
+                                    }
+                                    /** /end adults repeater */
+
+
+                                    /** children repeater */
+                                    $children = wp_list_filter( $passengers, array(
+                                        'passengertype' => 'CHD'
+                                    ) );
+                                    $children = array_values( $children );
+
+                                    for( $i = 0; $i < count( $children ); $i++ ) {
+                                        $child = array();
+                                        foreach( array_merge( $keymap, array( 'age' => 'age' ) ) as $meta_key => $response_key ) {
+                                            $child[ $meta_key ] = $children[$i][$response_key];
+                                        }
+                                        $passengers_meta[] = sprintf( '%1$s %2$s', $child['first_name'], $child['last_name'] );
+                                        $repeaters['children'][] = $child;
+                                    }
+                                    /** /end children repeater */
+
+                                    $booking_id = wp_insert_post( array(
+                                        'post_author' => get_current_user_id(),
+                                        'post_title' => sprintf( 'PNR %1$s - %2$s', $data['bookingdetails']['bookingnumber'], $data['hoteldetails']['hotelname'] ),
+                                        'post_name' => kanda_generate_random_string( 20 ),
+                                        'post_status' => 'publish',
+                                        'post_type' => 'booking',
+                                        'meta_input' => array(
+                                            'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
+                                            'source' => $data['bookingdetails']['source'],
+                                            'passenger_names' => implode( '##', $passengers_meta ),
+                                            'nights_count' => $nights_count
+                                        )
+                                    ), true );
+
+                                    if( is_wp_error( $booking_id ) ) {
+                                        $is_valid = false;
+                                        $message = __( 'Error creating booking', 'kanda' );
+                                    } else {
+                                        $redirect_to = add_query_arg( array( 'update' => 0 ), get_permalink( $booking_id ) );
+                                        foreach( $meta_data as $meta_key => $meta_value ) {
+                                            switch ( $meta_key ) {
+                                                case 'payment_status':
+                                                case 'booking_status':
+                                                    $sanitize_value = strtolower( $meta_value );
+                                                    break;
+                                                default:
+                                                    $sanitize_value = $meta_value;
+                                            }
+                                            update_field( $meta_key, $sanitize_value, $booking_id );
+                                        }
+                                        foreach( $repeaters as $parent_key => $rows ) {
+                                            foreach( $rows as $row ) {
+                                                add_row( $parent_key, $row, $booking_id );
+                                            }
+                                        }
+
+                                        do_action( 'kanda/booking/create', $booking_id );
+                                    }
                                 } else {
-                                    $hotel_city = '';
-                                }
-
-                                $meta_data = array(
-                                    'start_date'            => $start_date->format( 'Ymd' ),
-                                    'end_date'              => $end_date->format( 'Ymd' ),
-                                    'hotel_name'            => $data['hoteldetails']['hotelname'],
-                                    'hotel_code'            => $data['hoteldetails']['hotelcode'],
-                                    'hotel_city'            => $hotel_city,
-                                    'real_price'            => $real_price,
-                                    'agency_price'          => $agency_price,
-                                    'earnings'              => $earnings,
-                                    'booking_status'        => $data['bookingdetails']['bookingstatus'],
-                                    'room_type'             => $data['hoteldetails']['roomdetails']['room']['roomtype'],
-                                    'meal_plan'             => $data['hoteldetails']['roomdetails']['room']['mealplan'],
-                                    'booking_number'        => $data['bookingdetails']['bookingnumber'],
-                                    'booking_date'          => $data['bookingdetails']['bookeddate'],
-                                    'payment_status'        => 'unpaid',
-                                    'visa_rate'             => 0,
-                                    'transfer_rate'         => 0,
-                                    'other_rate'            => 0,
-                                    'adults'                => '',
-                                    'children'              => '',
-                                    'cancellation_policy'   => '',
-                                    'additional_requests'   => array_keys( $details['additional_requests'] )
-                                );
-
-                                $keymap = array(
-                                    'title'         => 'title',
-                                    'first_name'    => 'firstname',
-                                    'last_name'     => 'lastname',
-                                    'gender'        => 'gender'
-                                );
-
-                                $passengers = $data['bookingdetails']['passengerdetails']['passenger'];
-                                $passengers = IOL_Helper::is_associative_array( $passengers ) ? array( $passengers ) : $passengers;
-
-                                $passengers_meta = array();
-                                /** adults repeater */
-                                $adults = wp_list_filter( $passengers, array(
-                                    'passengertype' => 'ADT'
-                                ) );
-                                $adults = array_values( $adults );
-
-                                for( $i = 0; $i < count( $adults ); $i++ ) {
-                                    $adult = array();
-                                    foreach( $keymap as $meta_key => $response_key ) {
-                                        $adult[ $meta_key ] = $adults[$i][$response_key];
-                                    }
-                                    $passengers_meta[] = sprintf( '%1$s %2$s', $adult['first_name'], $adult['last_name'] );
-                                    $repeaters['adults'][] = $adult;
-                                }
-                                /** /end adults repeater */
-
-
-                                /** children repeater */
-                                $children = wp_list_filter( $passengers, array(
-                                    'passengertype' => 'CHD'
-                                ) );
-                                $children = array_values( $children );
-
-                                for( $i = 0; $i < count( $children ); $i++ ) {
-                                    $child = array();
-                                    foreach( array_merge( $keymap, array( 'age' => 'age' ) ) as $meta_key => $response_key ) {
-                                        $child[ $meta_key ] = $children[$i][$response_key];
-                                    }
-                                    $passengers_meta[] = sprintf( '%1$s %2$s', $child['first_name'], $child['last_name'] );
-                                    $repeaters['children'][] = $child;
-                                }
-                                /** /end children repeater */
-
-                                $booking_id = wp_insert_post( array(
-                                    'post_author' => get_current_user_id(),
-                                    'post_title' => sprintf( 'PNR %1$s - %2$s', $data['bookingdetails']['bookingnumber'], $data['hoteldetails']['hotelname'] ),
-                                    'post_name' => kanda_generate_random_string( 20 ),
-                                    'post_status' => 'publish',
-                                    'post_type' => 'booking',
-                                    'meta_input' => array(
-                                        'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
-                                        'source' => $data['bookingdetails']['source'],
-                                        'passenger_names' => implode( '##', $passengers_meta ),
-                                        'nights_count' => $nights_count
-                                    )
-                                ), true );
-
-                                if( is_wp_error( $booking_id ) ) {
                                     $is_valid = false;
-                                    $message = __( 'Error creating booking', 'kanda' );
-                                } else {
-                                    $redirect_to = add_query_arg( array( 'update' => 0 ), get_permalink( $booking_id ) );
-                                    foreach( $meta_data as $meta_key => $meta_value ) {
-                                        switch ( $meta_key ) {
-                                            case 'payment_status':
-                                            case 'booking_status':
-                                                $sanitize_value = strtolower( $meta_value );
-                                                break;
-                                            default:
-                                                $sanitize_value = $meta_value;
-                                        }
-                                        update_field( $meta_key, $sanitize_value, $booking_id );
-                                    }
-                                    foreach( $repeaters as $parent_key => $rows ) {
-                                        foreach( $rows as $row ) {
-                                            add_row( $parent_key, $row, $booking_id );
-                                        }
-                                    }
-
-                                    do_action( 'kanda/booking/create', $booking_id );
+                                    $message = $booking_response->message;
                                 }
                             } else {
                                 $is_valid = false;
-                                $message = $booking_response->message;
+                                $message = __( 'Please make the full prepayment for the below booking in order to confirm it.', 'kanda' );
                             }
 
                         } else {
@@ -453,8 +467,8 @@ class Booking_Controller extends Base_Controller {
                         $booking = $bookings[0];
 
                         ob_start();
-                            $booking_id = $booking->ID;
-                            include Kanda_Mailer::get_layout_path() . 'booking-details.php';
+                        $booking_id = $booking->ID;
+                        include Kanda_Mailer::get_layout_path() . 'booking-details.php';
                         $booking_details = ob_get_clean();
 
                         $user = get_user_by( 'email', $email );
