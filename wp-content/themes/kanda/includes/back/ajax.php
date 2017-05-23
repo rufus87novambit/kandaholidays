@@ -140,7 +140,6 @@ function kanda_get_city_hotels_list( $city = false ) {
     } else {
         return $is_valid ? array( 'is_valid' => $is_valid, 'results' => $results ) : array( 'is_valid' => $is_valid, 'message' => $message );
     }
-
 }
 
 /**

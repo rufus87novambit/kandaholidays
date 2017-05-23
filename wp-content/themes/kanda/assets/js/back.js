@@ -86,6 +86,12 @@
         });
     }
 
+    if( $( '.datepicker-all-dates' ).length > 0 ) {
+        $( '.datepicker-all-dates' ).datepicker({
+            showOn: 'focus'
+        });
+    }
+
     if( $('.birthdate').length > 0 ) {
         $( '.birthdate' ).datepicker({
             showOn: 'focus',
@@ -1123,5 +1129,16 @@
         return false;
 
     } );
+
+    if( $( '#form_booking_search').length ) {
+        if( $( '#booking_hotel_name').length ) {
+            $('#booking_hotel_name').autocomplete({
+                appendTo: '#autocomplete-wrap',
+                minLength: 1,
+                autoFocus: true,
+                source: bookings_data.hotel_names
+            });
+        }
+    }
 
 })(jQuery);

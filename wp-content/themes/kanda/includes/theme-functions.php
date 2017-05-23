@@ -114,7 +114,7 @@ function kanda_widgets_init() {
             'description'   => $register_sidebar['description'],
             'before_widget' => '<section id="%1$s" class="widget %2$s">',
             'after_widget'  => '</section>',
-            'before_title'  => '<h2 class="widget-title">',
+            'before_title'  => '<h2 class="widget-title page-title">',
             'after_title'   => '</h2>',
         ) );
     }

@@ -584,13 +584,19 @@ function kanda_generate_price( $price, $hotel_code, $exit_currency, $input_curre
         $currency = $exit_currency;
     }
 
-    if( false && current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
+    if( current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
         $additional_fee = kanda_get_hotel_additional_fee( $hotel_code );
         $price += $additional_fee * $multiply_index;
     }
 
     return sprintf('%1$s %2$s', number_format( $price, 2 ), $currency );
 
+}
+
+function kanda_get_user_additional_fee( $user_id = false ) {
+    $user_id = $user_id ? $user_id : get_current_user_id();
+
+    return get_field( 'additional_fee', 'user_' . $user_id );
 }
 
 function kanda_exchange_rate( $amount, $hotel_code, $input_currency, $exit_currency ) {

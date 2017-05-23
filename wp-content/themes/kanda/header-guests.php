@@ -14,7 +14,7 @@
 
             <header class="page-header clearfix">
                 <h1 class="logo site-title">
-                    <a href="<?php echo esc_url( '/' ); ?>">
+                    <a href="<?php echo get_option( 'home' ); ?>">
                         <img src="<?php echo KANDA_THEME_URL; ?>images/delete/logo.png" alt="<?php esc_html_e( 'logo', 'kanda' ); ?>">
                     </a>
                 </h1>

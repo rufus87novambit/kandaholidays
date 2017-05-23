@@ -54,6 +54,7 @@ class Booking_Controller extends Base_Controller {
         $contract_token_id = isset($_GET['contract_token_id']) ? $_GET['contract_token_id'] : '';
         $room_configuration_id = isset($_GET['room_configuration_id']) ? $_GET['room_configuration_id'] : '';
         $meal_plan_code = isset($_GET['meal_plan_code']) ? $_GET['meal_plan_code'] : '';
+        $requested_room_number = isset($_GET['room_n']) ? $_GET['room_n'] : 1;
 
         if (
             ! $hotel_code ||
@@ -88,13 +89,16 @@ class Booking_Controller extends Base_Controller {
                         'gender' => ''
                     ));
 
-                    $children = array_fill(0, $children_count, array(
-                        'title' => '',
-                        'first_name' => '',
-                        'last_name' => '',
-                        'gender' => '',
-                        'age' => 0
-                    ));
+                    $children = array();
+                    for( $i = 0; $i < $children_count; $i++ ) {
+                        $children[] = array(
+                            'title' => '',
+                            'first_name' => '',
+                            'last_name' => '',
+                            'gender' => '',
+                            'age' => $request_args[ 'room_occupants' ][ $requested_room_number ][ 'child' ][ 'age' ][ $i ]
+                        );
+                    }
                 } else {
                     $is_valid = false;
                 }
@@ -199,18 +203,24 @@ class Booking_Controller extends Base_Controller {
 
                             $data = $cancellation_response->data;
                             $cancellation_policies = ( array_key_exists( 'cancellationdetails', $data ) && isset( $data['cancellationdetails']['cancellation'] ) ) ? $data['cancellationdetails']['cancellation'] : array();
+                            $spare = Kanda_Config::get( 'spare_days_count' ) * 86400;
+
                             for( $i = 0; $i < count( $cancellation_policies ); $i++ ) {
                                 $now = time();
-                                $from_timestamp = max( strtotime( $cancellation_policies[$i]['fromdate'] ), $now );
+                                $from_timestamp = max( strtotime( $cancellation_policies[$i]['fromdate'] ), $now ) - $spare;
+
                                 $to_timestamp = min( strtotime( $cancellation_policies[$i]['todate'] ), strtotime( $request_args['end_date'] ) );
+                                if( $to_timestamp != strtotime( $request_args['end_date'] ) ) {
+                                    $to_timestamp -= $spare;
+                                }
                                 if ( $to_timestamp <= $now ) {
                                     continue;
                                 }
 
                                 $repeaters['cancellation_policy'][] = array(
-                                    'from'      => date( 'Ymd', $from_timestamp ),
-                                    'to'        => date( 'Ymd', $to_timestamp ),
-                                    'charge'    => ( strtolower( $cancellation_policies[$i]['percentoramt'] ) == 'a' ) ? sprintf( '%1$d %2$s', $cancellation_policies[$i]['nighttocharge'], _n( 'night', 'nights', $cancellation_policies[$i]['nighttocharge'], 'kanda' ) ) : sprintf( '%1$d%%', intval( $cancellation_policies[$i]['value'] ) )
+                                    'from'          => date( 'Ymd', $from_timestamp ),
+                                    'to'            => date( 'Ymd', $to_timestamp ),
+                                    'charge'        => ( strtolower( $cancellation_policies[$i]['percentoramt'] ) == 'a' ) ? sprintf( '%1$d %2$s', $cancellation_policies[$i]['nighttocharge'], _n( 'night', 'nights', $cancellation_policies[$i]['nighttocharge'], 'kanda' ) ) : sprintf( '%1$d%%', intval( $cancellation_policies[$i]['value'] ) )
                                 );
 
                             }
@@ -242,7 +252,8 @@ class Booking_Controller extends Base_Controller {
 
                                 $additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
                                 $earnings = $additional_fee * $nights_count;
-                                $agency_price = $real_price + $earnings;
+                                $agency_fee = kanda_get_user_additional_fee() * $nights_count;
+                                $agency_price = $real_price + $earnings + $agency_fee;
 
                                 $earnings = number_format( $earnings, 2 );
                                 $real_price = number_format( $real_price, 2 );
@@ -345,7 +356,8 @@ class Booking_Controller extends Base_Controller {
                                     'meta_input' => array(
                                         'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
                                         'source' => $data['bookingdetails']['source'],
-                                        'passenger_names' => implode( '##', $passengers_meta )
+                                        'passenger_names' => implode( '##', $passengers_meta ),
+                                        'nights_count' => $nights_count
                                     )
                                 ), true );
 
@@ -353,7 +365,7 @@ class Booking_Controller extends Base_Controller {
                                     $is_valid = false;
                                     $message = __( 'Error creating booking', 'kanda' );
                                 } else {
-                                    $redirect_to = add_query_arg( array( 'status' => 'created' ), get_permalink( $booking_id ) );
+                                    $redirect_to = add_query_arg( array( 'update' => 0 ), get_permalink( $booking_id ) );
                                     foreach( $meta_data as $meta_key => $meta_value ) {
                                         switch ( $meta_key ) {
                                             case 'payment_status':
@@ -520,19 +532,52 @@ class Booking_Controller extends Base_Controller {
                         if ($response->is_valid()) {
                             $data = $response->data;
 
-                            if( $data['currency'] ) {
+                            if ($data['currency']) {
                                 $cancellation_total_amount_converted = kanda_covert_currency_to($data['totalamount'], 'USD', $data['currency']);
-                                $cancellation_total_amount = $cancellation_total_amount_converted['amount'] . ' ' . $cancellation_total_amount_converted['currency'];
+                                $cancellation_total_amount = $cancellation_total_amount_converted['amount'];
                             } else {
                                 $cancellation_total_amount = $data['totalamount'];
                             }
 
+                            // we need to calculate cancellation ourselves
+                            if( ! $cancellation_total_amount ) {
+                                $cancellation_type = false;
+                                while( have_rows( 'cancellation_policy', $booking_id ) ) {
+                                    the_row();
+
+                                    $from = get_sub_field( 'from', false );
+                                    $to = get_sub_field( 'to', false );
+
+                                    $from_timestamp = strtotime( $from );
+                                    $to_timestamp = strtotime( $to );
+                                    $now = time();
+                                    if( $now >= $from_timestamp && $now < $to_timestamp ) {
+                                        $charge = get_sub_field( 'charge' );
+                                        $cancellation_type = ( strpos( $charge, 'night' ) === false ) ? 'p' : 'a';
+                                        $charge = preg_replace('/[^\d.]/', '', $charge);
+                                        break;
+                                    }
+                                }
+
+                                if( $cancellation_type == 'a' ) {
+                                    $nights_count = get_post_meta($booking_id, 'nights_count', true);
+                                    $agency_price = floatval( str_replace(',', '', get_field( 'agency_price', $booking_id ) ) );
+                                    $cancellation_total_amount = $agency_price / $nights_count * $charge;
+                                    $cancellation_total_amount = number_format($cancellation_total_amount, 2);
+                                } elseif( $cancellation_type == 'p' ) {
+                                    $agency_price = floatval( str_replace(',', '', get_field( 'agency_price', $booking_id ) ) );
+                                    $cancellation_total_amount = $agency_price * $charge / 100;
+                                    $cancellation_total_amount = number_format($cancellation_total_amount, 2);
+                                }
+                            }
+
                             update_post_meta( $booking_id, 'booking_status', 'cancelled' );
                             update_post_meta( $booking_id, 'cancellation_total_amount', $cancellation_total_amount );
+                            update_field( 'agency_price', $cancellation_total_amount, $booking_id );
 
                             do_action( 'kanda/booking/cancel', $booking_id );
 
-                            $redirect_to = get_permalink( $booking_id );
+                            $redirect_to = add_query_arg( array( 'update' => 0 ), get_permalink( $booking_id ) );
 
                         } else {
                             $is_valid = false;

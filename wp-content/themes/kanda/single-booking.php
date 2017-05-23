@@ -12,7 +12,7 @@ get_header();
 
             <?php
                 $update = true;
-                if( isset( $_GET['status'] ) && ( $_GET['status'] == 'created' ) ) {
+                if( isset( $_GET['update'] ) && ( $_GET['update'] == 0 ) ) {
                     $update = false;
                 }
 
@@ -47,7 +47,7 @@ get_header();
                 <h4><?php esc_html_e( 'Booking Details', 'kanda' ); ?></h4>
                 <table class="custom-table" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="title text-center" colspan="2"><?php _e( 'Chgitem inch grem', 'kanda' ); ?></td>
+                        <td class="title text-center" colspan="2"><?php _e( 'Itinerary', 'kanda' ); ?></td>
                     </tr>
                     <tr>
                         <td><?php esc_html_e( 'Supplier Reference', 'kanda' ); ?></td>
@@ -181,17 +181,18 @@ get_header();
                 <h6><?php esc_html_e( 'Adults', 'kanda' ); ?></h6>
                 <table class="custom-table" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="title"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
+                        <td class="title" style="width: 10%;"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
+                        <td class="title" style="width: 30%;"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
+                        <td class="title" style="width: 30%;"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
+                        <td class="title" style="width: 20%;"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
+                        <td class="title" style="width: 10%;"></td>
                     </tr>
                     <?php while( have_rows( 'adults' ) ) { the_row(); ?>
                         <tr>
                             <td><?php the_sub_field( 'title' ); ?></td>
                             <td><?php the_sub_field( 'first_name' ); ?></td>
                             <td><?php the_sub_field( 'last_name' ); ?></td>
-                            <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
+                            <td colspan="2"><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
                         </tr>
                         <?php } ?>
                 </table>
@@ -201,19 +202,19 @@ get_header();
                 <h6><?php esc_html_e( 'Children', 'kanda' ); ?></h6>
                 <table class="custom-table" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="title"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Age', 'kanda' ); ?></td>
-                        <td class="title"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
+                        <td class="title" style="width: 10%;"><?php esc_html_e( 'Title', 'kanda' ); ?></td>
+                        <td class="title" style="width: 30%;"><?php esc_html_e( 'First Name', 'kanda' ); ?></td>
+                        <td class="title" style="width: 30%;"><?php esc_html_e( 'Last Name', 'kanda' ); ?></td>
+                        <td class="title" style="width: 20%;"><?php esc_html_e( 'Gender', 'kanda' ); ?></td>
+                        <td class="title" style="width: 10%;"><?php esc_html_e( 'Age', 'kanda' ); ?></td>
                     </tr>
                     <?php while( have_rows( 'children' ) ) { the_row(); ?>
                         <tr>
                             <td><?php the_sub_field( 'title' ); ?></td>
                             <td><?php the_sub_field( 'first_name' ); ?></td>
                             <td><?php the_sub_field( 'last_name' ); ?></td>
-                            <td><?php the_sub_field( 'age' ); ?></td>
                             <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
+                            <td><?php the_sub_field( 'age' ); ?></td>
                         </tr>
                         <?php } ?>
                 </table>

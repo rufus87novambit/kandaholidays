@@ -120,8 +120,6 @@
             <th><?php esc_html_e( 'Title', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'First Name', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'Last Name', 'kanda' ); ?></th>
-            <th><?php esc_html_e( 'Date Of Birth', 'kanda' ); ?></th>
-            <th><?php esc_html_e( 'Nationality', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'Gender', 'kanda' ); ?></th>
         </tr>
     </thead>
@@ -131,8 +129,6 @@
             <td><?php the_sub_field( 'title' ); ?></td>
             <td><?php the_sub_field( 'first_name' ); ?></td>
             <td><?php the_sub_field( 'last_name' ); ?></td>
-            <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'date_of_birth', false ) ) ); ?></td>
-            <td><?php the_sub_field( 'nationality' ); ?></td>
             <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
         </tr>
         <?php } ?>
@@ -148,9 +144,8 @@
             <th><?php esc_html_e( 'Title', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'First Name', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'Last Name', 'kanda' ); ?></th>
-            <th><?php esc_html_e( 'Date Of Birth', 'kanda' ); ?></th>
-            <th><?php esc_html_e( 'Nationality', 'kanda' ); ?></th>
             <th><?php esc_html_e( 'Gender', 'kanda' ); ?></th>
+            <th><?php esc_html_e( 'Age', 'kanda' ); ?></th>
         </tr>
         </thead>
         <tbody>
@@ -159,9 +154,8 @@
                 <td><?php the_sub_field( 'title' ); ?></td>
                 <td><?php the_sub_field( 'first_name' ); ?></td>
                 <td><?php the_sub_field( 'last_name' ); ?></td>
-                <td><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'date_of_birth', false ) ) ); ?></td>
-                <td><?php the_sub_field( 'nationality' ); ?></td>
                 <td><?php echo "m" == strtolower( get_sub_field( 'gender' ) ) ? esc_html__( 'Male', 'kanda' ) : __( 'Female', 'kanda' ); ?></td>
+                <td><?php the_sub_field( 'age' ); ?></td>
             </tr>
         <?php } ?>
         </tbody>

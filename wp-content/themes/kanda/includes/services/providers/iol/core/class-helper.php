@@ -371,7 +371,14 @@ class IOL_Helper {
                 if (isset($room['rate']) && $room['rate']) { ?>
                     <div class="tr">
                         <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
-                        <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']); ?></div>
+                        <div class="td">
+                            <?php
+                                $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
+                                $price = floatval( str_replace(',', '', $price) );
+                                $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
+                                printf( '%1$s %2$s', $price, $args['currency'] ); ?>
+                                <a href="#<?php printf( 'daily_rate_%s', $unique_id ); ?>" class="btn -sm -secondary open-popup"><?php _e( 'See daily rates', 'kanda' ); ?></a>
+                        </div>
                     </div>
                 <?php }
 
@@ -410,6 +417,15 @@ class IOL_Helper {
         <?php
 
         static::render_room_booking_confirmation_popup( $unique_id, $room, $args, $must_stay_days );
+        static::render_daily_rate_popup( array(
+            'popup_id'        => sprintf( 'daily_rate_%s', $unique_id ),
+            'room'            => $room,
+            'start_date'      => $args['start_date'],
+            'end_date'        => $args['end_date'],
+            'hotel_code'      => $args['hotelcode'],
+            'input_currency'  => $args['currency'],
+            'output_currency' => $room['currcode']
+        ) );
     }
 
     /**
@@ -429,6 +445,7 @@ class IOL_Helper {
             'contract_token_id'     => $room['contracttokenid'],
             'room_configuration_id' => $room['roomconfigurationid'],
             'meal_plan_code'        => $room['mealplancode'],
+            'room_n'                => $args['requested_room_number']
         ) );
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
@@ -457,7 +474,14 @@ class IOL_Helper {
                     if (isset($room['rate']) && $room['rate']) { ?>
                         <div class="tr">
                             <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
-                            <div class="td"><?php echo kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']); ?></div>
+                            <div class="td">
+                                <?php
+                                $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
+                                $price = floatval( str_replace(',', '', $price) );
+                                $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
+                                printf( '%1$s %2$s', $price, $args['currency'] ); ?>
+                                <a href="#<?php printf( 'daily_rate_%s', $popup_id ); ?>" class="btn -sm -secondary open-popup"><?php _e( 'See daily rates', 'kanda' ); ?></a>
+                            </div>
                         </div>
                     <?php }
 
@@ -505,6 +529,54 @@ class IOL_Helper {
         <?php
     }
 
+    public static function render_daily_rate_popup( $args ) {
+
+        $full_period = array();
+        $chunk_size = 7;
+        $index = 0;
+
+        $start_date = new DateTime( $args['start_date'] );
+        $end_date = new DateTime( $args['end_date'] );
+        $interval = DateInterval::createFromDateString('1 day');
+        $life_period = new DatePeriod( $start_date, $interval, $end_date );
+
+        $price = $args['room']['ratedetails']['rate'][ $index ];
+        $price = kanda_generate_price($args['room']['ratedetails']['rate'][ $index ], $args['hotel_code'], $args['output_currency'], $args['input_currency']);
+        $price = floatval( str_replace(',', '', $price) );
+        $price += kanda_get_user_additional_fee();
+        $price = sprintf( '%1$s %2$s', $price, $args['output_currency'] );
+
+        foreach ( $life_period as $lp ) {
+            $full_period[] = array(
+                'rate' => $price,
+                'date' => $lp->format( "d / m" )
+            );
+            ++$index;
+        }
+        $period_chunks = array_chunk( $full_period, $chunk_size );
+        ?>
+        <div id="<?php echo $args['popup_id']; ?>" class="static-popup -sm mfp-hide">
+            <h2 class="text-center"><?php _e( 'Daily Rate', 'kanda' ); ?></h2>
+
+            <?php foreach( $period_chunks as $chunk ) {  ?>
+            <div class="users-table table text-center">
+                <header class="thead">
+                    <?php foreach ( $chunk as $data ) { ?>
+                        <div class="th"><?php echo $data['date']; ?></div>
+                    <?php } ?>
+                </header>
+                <div class="tbody">
+                    <div class="tr">
+                        <?php foreach ( $chunk as $data ) { ?>
+                            <div class="td"><?php echo $data['rate']; ?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+        <?php
+    }
     /**
      * Generate hotel cancellation policy request url
      *
