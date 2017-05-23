@@ -886,6 +886,7 @@
                     if( response.success ) {
                         _booking_details_box.html( $( response.data.content ) );
 
+                        init_send_booking_details_via_email_form();
                         $.magnificPopup.close();
                     } else {
                         $.magnificPopup.close();
@@ -1077,8 +1078,7 @@
     /********************************************** /end Booking create *******************************************/
 
     /********************************************** booking email *******************************************/
-    if( $('#form_booking_email_details').length > 0 ) {
-
+    function init_send_booking_details_via_email_form(){
         var kanda_back_form_booking_email_details = $('#form_booking_email_details'),
             kanda_back_form_booking_email_details_validation_args = {
                 rules : {
@@ -1107,7 +1107,9 @@
                 return false;
             }
         } );
-
+    }
+    if( $('#form_booking_email_details').length > 0 ) {
+        init_send_booking_details_via_email_form();
     }
     /********************************************** /end booking email *******************************************/
 

@@ -350,6 +350,7 @@ class IOL_Helper {
                     <?php esc_html_e('Property value', 'kanda'); ?>
                     <div class="actions pull-right">
                         <a href="#<?php echo $unique_id; ?>" class="btn -sm -secondary open-popup"><?php esc_html_e('Book', 'kanda'); ?></a>
+                        <a href="#<?php printf( 'daily_rate_%s', $unique_id ); ?>" class="btn -sm -secondary open-popup"><?php esc_html_e('See daily rates', 'kanda'); ?></a>
                         <a href="<?php echo $availability_request_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e( 'Availability', 'kanda' ); ?></a>
                         <a href="<?php echo $cancellation_policy_url; ?>" class="btn -sm -secondary ajax-popup" data-popup="-sm"><?php esc_html_e('Cancellation policy', 'kanda'); ?></a>
                     </div>
@@ -377,7 +378,6 @@ class IOL_Helper {
                                 $price = floatval( str_replace(',', '', $price) );
                                 $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
                                 printf( '%1$s %2$s', $price, $args['currency'] ); ?>
-                                <a href="#<?php printf( 'daily_rate_%s', $unique_id ); ?>" class="btn -sm -secondary open-popup"><?php _e( 'See daily rates', 'kanda' ); ?></a>
                         </div>
                     </div>
                 <?php }
@@ -480,7 +480,6 @@ class IOL_Helper {
                                 $price = floatval( str_replace(',', '', $price) );
                                 $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
                                 printf( '%1$s %2$s', $price, $args['currency'] ); ?>
-                                <a href="#<?php printf( 'daily_rate_%s', $popup_id ); ?>" class="btn -sm -secondary open-popup"><?php _e( 'See daily rates', 'kanda' ); ?></a>
                             </div>
                         </div>
                     <?php }

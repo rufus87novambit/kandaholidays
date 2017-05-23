@@ -1,5 +1,5 @@
 <html>
-    <body style="background:#fff; font-family: ">
+    <body style="background:#fff; font-family: 'trebuchet ms',sans-serif;">
         <table>
             <tr>
                 <td>

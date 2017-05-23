@@ -203,6 +203,8 @@ function kanda_parse_request( $query_vars ) {
         kanda_to( '404' );
     }
 
+//    echo 123; die;
+
     if( empty( $query_vars->query_vars ) ) {
         $show_on_front = get_option( 'show_on_front' );
 

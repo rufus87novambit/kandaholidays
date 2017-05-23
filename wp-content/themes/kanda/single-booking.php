@@ -253,7 +253,7 @@ get_header();
             <div id="cancel-booking-popup" class="static-popup -sm mfp-hide">
                 <h2 class="text-center"><?php _e('Booking Cancellation', 'kanda'); ?></h2>
 
-                <p class="text-center"><?php _e('Are you sure you want to cancel booking', 'kanda'); ?></p>
+                <p class="text-center"><?php _e('Are you sure you want to cancel booking?', 'kanda'); ?></p>
 
                 <form class="form-block"
                       action="<?php echo kanda_url_to('booking', array('send-email', get_queried_object()->post_name)); ?>"

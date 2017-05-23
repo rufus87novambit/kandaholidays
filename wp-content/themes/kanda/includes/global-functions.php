@@ -314,7 +314,7 @@ function kanda_get_sidebars() {
  * @param $name
  * @param array $params
  */
-function kanda_to( $name, $params = array() ) {
+function kanda_to( $name, $params = array(), $query_args = array() ) {
     if( $name == '404' ) {
         global $wp_query;
 
@@ -323,7 +323,7 @@ function kanda_to( $name, $params = array() ) {
         get_template_part( '404' );
         exit();
     }
-    $url = kanda_url_to( $name, $params );
+    $url = kanda_url_to( $name, $params, $query_args );
     if( $url ) {
         wp_redirect( $url ); exit();
     }
@@ -336,7 +336,7 @@ function kanda_to( $name, $params = array() ) {
  * @param string $params
  * @return bool|false|string|void
  */
-function kanda_url_to( $name, $params = array() ) {
+function kanda_url_to( $name, $params = array(), $query_args = array() ) {
     switch( $name ) {
         case 'home';
             $url = home_url();
@@ -368,6 +368,10 @@ function kanda_url_to( $name, $params = array() ) {
 
     if( $url && ! empty( $params ) ) {
         $url .= '/' . implode( '/', $params );
+    }
+
+    if( ! empty( $query_args ) ) {
+        $url = add_query_arg( $query_args, $url );
     }
     return $url;
 }

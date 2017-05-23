@@ -43,6 +43,8 @@ return array(
     'email_forgot_password_body'        => '',
     'email_profile_activation_title'    => esc_html__( 'Profile Activated', 'kanda' ),
     'email_profile_activation_body'     => '',
+    'email_user_registration_title'     => esc_html__( 'Account Registration', 'kanda' ),
+    'email_user_registration_body'      => '',
     'email_booking_details_title'       => esc_html__( 'Booking Details', 'kanda' ),
     'email_booking_details_body'        => '',
     'email_booking_confirmation_title'  => esc_html__( 'Booking Confirmation - {{BOOKING_NUMBER}}', 'kanda' ),

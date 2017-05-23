@@ -1,4 +1,4 @@
-<h2 class="text-center"><?php esc_html_e( 'Cancellation Policies', 'kanda' ); ?></h2>
+<h2 class="text-center"><?php esc_html_e( 'Cancellation Policy', 'kanda' ); ?></h2>
 <p></p>
 <?php if( empty( $cancellation_policies ) ) { ?>
 <p class="text-center"><?php _e( 'Cancellation policy data is empty', 'kanda' ); ?></p>

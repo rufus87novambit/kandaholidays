@@ -280,6 +280,8 @@ class Auth_Controller extends Base_Controller {
                         update_user_meta( $user_id, 'company_city', $company_city );
                         update_user_meta( $user_id, 'company_country', $company_country );
                         update_user_meta( $user_id, 'company_phone', $company_phone );
+                        update_user_meta( $user_id, 'account_type', '' );
+                        update_user_meta( $user_id, 'additional_fee', 0 );
 
                         $this->request['fields']['personal']['username']['value'] = '';
                         $this->request['fields']['personal']['email']['value'] = '';
@@ -363,10 +365,14 @@ class Auth_Controller extends Base_Controller {
                         $to = $user->user_email;
                         $subject = kanda_get_theme_option( 'email_forgot_password_title' );
                         $message = kanda_get_theme_option( 'email_forgot_password_body' );
-                        $variables = array( '{{RESET_URL}}' => sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ) );
+                        $variables = array(
+                            '{{RESET_URL}}'  => sprintf( '<a href="%1$s">%1$s</a>', $password_reset_url ),
+                            '{{FIRST_NAME}}' => $user->first_name,
+                            '{{LAST_NAME}}'  => $user->last_name
+                        );
 
                         if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
-                            $this->set_notification( 'success', esc_html__( 'An email with instructions is sent to your email address.', 'kanda' ) );
+                            $this->set_notification( 'success', esc_html__( 'You will receive an email with instructions on how to reset your new password to your registered email address.', 'kanda' ) );
                             $this->username_email = '';
                             $this->show_form = false;
 

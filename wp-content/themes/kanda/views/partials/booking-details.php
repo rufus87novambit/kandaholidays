@@ -113,7 +113,7 @@
 </table>
 
 <?php if( have_rows( 'cancellation_policy', $booking_id ) ) { ?>
-<h4><?php esc_html_e( 'Cancellation', 'kanda' ); ?></h4>
+<h4><?php esc_html_e( 'Cancellation Policy', 'kanda' ); ?></h4>
 <table class="custom-table" cellpadding="0" cellspacing="0">
     <tr>
         <td class="title"><?php esc_html_e( 'From', 'kanda' ); ?></td>
@@ -190,7 +190,7 @@
 </div>
 
 <div id="send-email-popup" class="static-popup -sm mfp-hide">
-    <form class="form-block" action="<?php echo kanda_url_to( 'booking', array( 'send-email', get_queried_object()->post_name ) ); ?>" id="form_booking_email_details" method="post">
+    <form class="form-block" action="<?php echo kanda_url_to( 'booking', array( 'send-email', $booking->post_name ) ); ?>" id="form_booking_email_details" method="post">
         <div class="form-group row clearfix">
             <label class="form-label" for="email_address"><?php esc_html_e( 'Email Address', 'kanda' ); ?></label>
             <div>
@@ -212,7 +212,7 @@
     <p class="text-center"><?php _e('Are you sure you want to cancel booking', 'kanda'); ?></p>
 
     <form class="form-block"
-          action="<?php echo kanda_url_to('booking', array('send-email', get_queried_object()->post_name)); ?>"
+          action="<?php echo kanda_url_to('booking', array('send-email', $booking->post_name)); ?>"
           id="form_booking_email_details" method="post">
         <footer class="form-footer clearfix text-center">
             <a id="btn-cancel-booking"

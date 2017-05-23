@@ -129,6 +129,18 @@ function kanda_after_new_user_registration( $user_id ) {
             kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
         }
 
+
+        $subject = kanda_get_theme_option( 'email_user_registration_title' );
+        $message = kanda_get_theme_option( 'email_user_registration_body' );
+        $variables = array(
+            '{{FIRST_NAME}}' => $user->first_name,
+            '{{LAST_NAME}}'  => $user->last_name
+        );
+
+        if( ! kanda_mailer()->send_user_email( $user->user_email, $subject, $message, $variables ) ) {
+            kanda_logger()->log( sprintf( 'Error sending email to user for new registration. user_id=%d' ), $user->ID );
+        }
+
     }
 }
 

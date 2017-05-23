@@ -438,6 +438,7 @@ class Booking_Controller extends Base_Controller {
      * @param $args
      */
     public function send_details_email( $args ) {
+
         if( isset( $_POST['kanda_send_email'] ) ) {
 
             $is_valid = true;
@@ -495,7 +496,7 @@ class Booking_Controller extends Base_Controller {
                         }
                         $this->set_notification( $notification_type, $notification_message );
 
-                        kanda_to( 'booking', array( 'view', $args[ 'k_booking_slug' ] ) );
+                        kanda_to( 'booking', array( 'view', $args[ 'k_booking_slug' ] ), array( 'update' => 0 ) );
                     } else {
                         $is_valid = false;
                         $message = __( 'Invalid request', 'kanda' );
@@ -693,7 +694,7 @@ class Booking_Controller extends Base_Controller {
                 $mpdf->WriteHTML( $content );
 
 //                $mpdf->Output( KANDA_THEME_PATH . 'mpdf.pdf', 'F');
-                $mpdf->Output( $booking->post_name . '.pdf', 'D');
+                $mpdf->Output( 'voucher.pdf', 'D');
                 die;
             }
 

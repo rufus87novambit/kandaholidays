@@ -107,10 +107,20 @@ class Kanda_Mailer {
             $variables
         ) );
 
+        $message .= $this->add_message_footer();
+
         ob_start();
         include $this->layout_path . 'user.php';
 
         return ob_get_clean();
+    }
+
+    private function add_message_footer() {
+        $footer = sprintf('<p>%s</p>', 'Best regards,');
+        $footer .= sprintf('<p>%s</p>', 'Customer Care');
+        $footer .= sprintf('<p>%s</p>', 'KANDA Travel Club LLC');
+
+        return $footer;
     }
 
     /**
@@ -127,6 +137,7 @@ class Kanda_Mailer {
         $to = preg_replace('/\s+/', '', kanda_get_theme_option( 'debug_developer_email' ) );
         $subject = $this->normalize_email_subject( $subject, $variables );
         $message = $this->normalize_email_content( $message, $variables );
+        echo $message; die;
         $headers = $this->get_html_email_headers();
 
         return $to ? wp_mail( $to, $subject, $message, $headers ) : null;
@@ -146,6 +157,7 @@ class Kanda_Mailer {
         $to = get_option( 'admin_email' );
         $subject = $this->normalize_email_subject( $subject, $variables );
         $message = $this->normalize_email_content( $message, $variables );
+        echo '<pre>'; var_dump( $message ); echo '</pre>'; die;
         $headers = $this->get_html_email_headers();
 
         return wp_mail( $to, $subject, $message, $headers );
@@ -176,7 +188,6 @@ class Kanda_Mailer {
         }
 
         if( $user_id_email ) {
-
             $subject = $this->normalize_email_subject( $subject, $variables );
             $message = $this->normalize_email_content( $message, $variables );
             $headers = $this->get_html_email_headers();

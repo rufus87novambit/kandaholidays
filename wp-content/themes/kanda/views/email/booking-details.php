@@ -89,7 +89,7 @@
 </table>
 
 <?php if( have_rows( 'cancellation_policy', $booking_id ) ) { ?>
-<h4><?php esc_html_e( 'Cancellation', 'kanda' ); ?></h4>
+<h4><?php esc_html_e( 'Cancellation Policy', 'kanda' ); ?></h4>
 <table cellpadding="3px" cellspacing="0" border="3px" style="width:100%; border:1px solid #311b92;">
     <thead>
         <tr>

@@ -135,10 +135,10 @@ get_header(); ?>
             <div class="users-table table">
                 <header class="thead">
                     <div class="th" style="width: 50%;"><?php esc_html_e( 'Name', 'kanda' ); ?></div>
-                    <div class="th"><?php esc_html_e( 'Status', 'kanda' ); ?></div>
-                    <div class="th"><?php esc_html_e( 'Check In Date', 'kanda' ); ?></div>
-                    <div class="th"><?php esc_html_e( 'Check Out Date', 'kanda' ); ?></div>
-                    <div class="th"><?php esc_html_e( 'More', 'kanda' ); ?></div>
+                    <div class="th" style="width: 10%;"><?php esc_html_e( 'Status', 'kanda' ); ?></div>
+                    <div class="th" style="width: 15%;"><?php esc_html_e( 'Check In Date', 'kanda' ); ?></div>
+                    <div class="th" style="width: 15%;"><?php esc_html_e( 'Check Out Date', 'kanda' ); ?></div>
+                    <div class="th" style="width: 10%;"><?php esc_html_e( 'More', 'kanda' ); ?></div>
                 </header>
                 <div class="tbody">
                     <?php while( have_posts() ) { the_post(); ?>
