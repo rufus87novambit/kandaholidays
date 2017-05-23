@@ -68,6 +68,13 @@ class Kanda_Config {
     public static $spare_days_count = 2;
 
     /**
+     * Email from address
+     *
+     * @var string
+     */
+    public static $email_from = 'noreply@kandaholidays.com';
+
+    /**
      * Get configuration value
      *
      * @param string $property
