@@ -13,7 +13,7 @@
     </tr>
     <?php
     $hotel_name = get_field( 'hotel_name', $booking_id );
-    $hotel_code = kanda_get_post_meta( get_the_ID(), 'hotel_code' );
+    $hotel_code = kanda_get_post_meta( $booking_id, 'hotel_code' );
     $hotel_permalink = kanda_get_single_hotel_url( array( 'hotelcode' => $hotel_code, 'start_date' => get_field( 'start_date', $booking_id, false ), 'end_date' => get_field( 'end_date', $booking_id, false ) ) );
     ?>
     <tr>
