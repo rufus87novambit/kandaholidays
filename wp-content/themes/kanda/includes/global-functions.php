@@ -214,8 +214,6 @@ function kanda_get_exchange() {
 function kanda_get_currency_iso_array() {
     $exchange_rates = kanda_get_exchange_rates();
 
-    kanda_logger()->log( json_encode( $exchange_rates ) );
-
     $rates = array_keys( $exchange_rates );
     $rates[] = 'AMD';
 
