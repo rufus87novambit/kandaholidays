@@ -282,6 +282,7 @@ class Auth_Controller extends Base_Controller {
                         update_user_meta( $user_id, 'company_phone', $company_phone );
                         update_user_meta( $user_id, 'account_type', '' );
                         update_user_meta( $user_id, 'additional_fee', 0 );
+                        update_user_meta( $user_id, 'specific_addition_fee', 0 );
 
                         $this->request['fields']['personal']['username']['value'] = '';
                         $this->request['fields']['personal']['email']['value'] = '';
