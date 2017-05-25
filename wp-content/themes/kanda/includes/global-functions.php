@@ -287,7 +287,11 @@ function kanda_show_notification( $notification = array() ) {
             default:
                 $icon = '';
         }
-        printf('<div class="flash-message alert alert-%1$s" role="alert"><button class="alert-close-btn icon-cross2"></button> %2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
+        if( $notification['location'] == 'back' ) {
+            printf('<div class="flash-message alert alert-%1$s" role="alert"><button class="alert-close-btn icon-cross2"></button> %2$s %3$s</div>', $notification['type'], $icon, $notification['message']);
+        } else {
+            printf('<div class="flash-message alert alert-%1$s" role="alert">%2$s</div>', $notification['type'], $notification['message']);
+        }
     }
 }
 
@@ -623,7 +627,7 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
     $additional_fee = 0;
     if( $hotel_metadata ) {
         $additional_fee = kanda_fields()->get_hotel_additional_fee( $hotel_metadata->post_id );
-        if( ! $additional_fee ) {
+        if( $additional_fee !== '' ) {
             $rating = absint( $hotel_metadata->rating );
             if( $rating > 5 || ! $rating ) {
                 $rating = 0;

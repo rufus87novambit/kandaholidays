@@ -400,7 +400,18 @@ class IOL_Helper {
                             </div>
                         </div>
                     <?php } ?>
-                <?php }
+                <?php } ?>
+
+                <?php if( $must_stay_days ) { ?>
+                    <div class="tr">
+                        <div class="td"><?php esc_html_e('Restrictions', 'kanda'); ?></div>
+                        <div class="td">
+                            <?php printf( __( 'Room requires minimum stay of %d days', 'kanda' ), $must_stay_days ); ?>
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <?php
 
                 if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
                     $room_discounts = $room['discountdetails']['discount'];

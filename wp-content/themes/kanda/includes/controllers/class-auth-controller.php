@@ -74,20 +74,20 @@ class Auth_Controller extends Base_Controller {
 
                             if ( is_wp_error( $user ) ) {
                                 $errors['username'] = $errors['password'] = '';
-                                $this->set_notification( 'danger', esc_html__('Invalid username / password', 'kanda') );
+                                $this->set_notification( 'danger', esc_html__('Invalid username / password', 'kanda'), 'front' );
                             } else {
 
                                 do_action( 'kanda/after_user_login', $user );
 
                                 if( user_can( $user, 'administrator' ) ) {
-                                     wp_redirect( site_url( '/wp-admin' ) ); die;
+                                    wp_redirect( site_url( '/wp-admin' ) ); die;
                                 } else {
                                     kanda_to('home');
                                 }
                             }
 
                         } else {
-                            $this->set_notification( 'warning', __( 'Your account is inactive. You will get an email once it is activated.', 'kanda' ) );
+                            $this->set_notification( 'warning', __( 'Your account is inactive. You will get an email once it is activated.', 'kanda' ), 'front' );
                         }
                     } else {
                         $is_valid = false;
@@ -96,7 +96,7 @@ class Auth_Controller extends Base_Controller {
                 }
                 $this->errors = $errors;
             } else {
-                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ), 'front' );
             }
 
         } else {
@@ -377,14 +377,14 @@ class Auth_Controller extends Base_Controller {
                         );
 
                         if( kanda_mailer()->send_user_email( $to, $subject, $message, $variables ) ) {
-                            $this->set_notification( 'success', esc_html__( 'You will receive an email with instructions on how to reset your new password to your registered email address.', 'kanda' ) );
+                            $this->set_notification( 'success', esc_html__( 'You will receive an email with instructions on how to reset your new password to your registered email address.', 'kanda' ), 'front' );
                             $this->username_email = '';
                             $this->show_form = false;
 
                             do_action( 'kanda/after_forgot_password', $user );
 
                         } else {
-                            $this->set_notification( 'danger', esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' ) );
+                            $this->set_notification( 'danger', esc_html__( 'Oops! Something went wrong while sending email. Please try again', 'kanda' ), 'front' );
                             kanda_logger()->log( sprintf( 'There was an error while sending password reset email to user: Details: user_id=%1$d, reset_url=%2$s', $user->ID, $password_reset_url ) );
                         }
 
@@ -393,7 +393,7 @@ class Auth_Controller extends Base_Controller {
 
                 $this->errors = $errors;
             } else {
-                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ), 'front' );
             }
 
         } else {
@@ -463,14 +463,14 @@ class Auth_Controller extends Base_Controller {
                         kanda_to( 'home' );
 
                     } else {
-                        $this->set_notification( 'danger', esc_html__( 'Error reseting password. Please try again.', 'kanda' ) );
+                        $this->set_notification( 'danger', esc_html__( 'Error reseting password. Please try again.', 'kanda' ), 'front' );
                     }
 
                 }
 
                 $this->errors = $errors;
             } else {
-                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ) );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ), 'front' );
             }
 
         } else {

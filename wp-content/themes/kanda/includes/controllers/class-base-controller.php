@@ -94,11 +94,13 @@ class Base_Controller {
      *
      * @param $type
      * @param string $message
+     * @param string $location front | back
      */
-    protected function set_notification( $type, $message = '' ) {
+    protected function set_notification( $type, $message = '', $location = 'back' ) {
         $_SESSION[ 'kanda_notification' ] = array(
-            'type' => $type,
-            'message' => $message
+            'type' 		=> $type,
+            'message' 	=> $message,
+            'location'	=> $location
         );
     }
 

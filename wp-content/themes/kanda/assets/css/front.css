@@ -95,7 +95,7 @@ header.page-header .logo img {
     color: #d9534f;
 }
 .form .alert.alert-success {
-    color: #40e200;
+    color: #fff;
 }
 .form .column {
     float: left;
@@ -199,6 +199,7 @@ header.page-header .logo img {
 }
 .form.form-forgot-password {
     max-width: 316px;
+    min-height: 209px;
 }
 .form.form-forgot-password label {
     min-width: 145px;
