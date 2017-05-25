@@ -110,7 +110,7 @@
 </table>
 <?php } ?>
 
-<h3><?php _e( 'Passenger details', 'kanda' ); ?></h3>
+<h3><?php _e( 'Passenger Details', 'kanda' ); ?></h3>
 
 <?php if( have_rows( 'adults', $booking_id ) ) { ?>
 <h4><?php _e( 'Adults', 'kanda' ); ?></h4>

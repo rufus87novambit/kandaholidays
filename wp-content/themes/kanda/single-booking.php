@@ -175,7 +175,7 @@ get_header();
                 </table>
                 <?php } ?>
 
-                <h4><?php esc_html_e( 'Passenger details', 'kanda' ); ?></h4>
+                <h4><?php esc_html_e( 'Passenger Details', 'kanda' ); ?></h4>
 
                 <?php if( have_rows( 'adults' ) ) { ?>
                 <h6><?php esc_html_e( 'Adults', 'kanda' ); ?></h6>
