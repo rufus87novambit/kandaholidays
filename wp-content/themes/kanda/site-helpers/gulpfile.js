@@ -128,7 +128,7 @@ gulp.task('js-back', function () {
         '../assets/js/back.js'
     ])
         .pipe(concat('back.min.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('../js/'))
         .pipe(notify("Done! JS Back"));
 });
