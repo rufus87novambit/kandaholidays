@@ -202,7 +202,7 @@
                 if( $additional_requests ) {
                     $field_object = get_field_object( 'additional_requests', $booking_id );
                 }
-                foreach( $additional_requests as $request ) { ?>
+                foreach( (array)$additional_requests as $request ) { ?>
                     <div><?php echo $field_object['choices'][$request]; ?></div>
                 <?php } ?>
             </td>

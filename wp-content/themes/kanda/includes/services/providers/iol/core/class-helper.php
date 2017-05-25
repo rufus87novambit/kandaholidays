@@ -450,7 +450,7 @@ class IOL_Helper {
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
             <?php if( $args['request']['nights_count'] >= $must_stay_days ) { ?>
-            <h2 class="text-center"><?php _e( 'Booking confirmation', 'kanda' ); ?></h2>
+            <h2 class="text-center"><?php _e( 'Booking Confirmation', 'kanda' ); ?></h2>
             <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
 
             <div class="users-table table">
