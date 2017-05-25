@@ -116,11 +116,12 @@ class Kanda_Mailer {
     }
 
     private function add_message_footer() {
-        $footer = sprintf('<p>%s</p>', 'Best regards,');
-        $footer .= sprintf('<p>%s</p>', 'Customer Care');
-        $footer .= sprintf('<p>%s</p>', 'KANDA Travel Club LLC');
-
-        return $footer;
+        return sprintf(
+            '<p>%1$s<br/>%2$s<br/>%3$s</p>',
+            'Best regards,',
+            'Customer Care',
+            'KANDA Travel Club LLC'
+        );
     }
 
     /**
