@@ -122,7 +122,7 @@
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Number Of Nights', 'kanda' ); ?></label>
                             <div class="select-wrap col-lg-7">
-                                <input id="nights_count" name="nights_count" type="number" class="form-control -sm" min="1" value="<?php echo $nights_count; ?>">
+                                <input id="nights_count" name="nights_count" type="number" class="form-control -sm" min="1" max="30" value="<?php echo $nights_count; ?>">
                                 <div class="form-control-feedback"><small><?php echo $has_error ? $this->errors[ 'nights_count' ] : ''; ?></small></div>
                             </div>
                         </div>

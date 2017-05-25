@@ -116,7 +116,7 @@
             end_date_picker = $('.datepicker-end-date' ),
             min_checkin = new Date(),
             checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin,
-            //min_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() )),
+            max_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).attr('max') )),
             min_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( 1 )),
             checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
 
@@ -148,8 +148,9 @@
             onSelect: function(){
                 checkin = new Date( this.value );
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
+                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').attr('max') ) );
 
-                end_date_picker.datepicker( 'option', 'minDate', checkout );
+                end_date_picker.datepicker( 'option', 'minDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
                 checkout = new Date( end_date_picker.datepicker( 'getDate' ) );
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
             }
@@ -162,6 +163,7 @@
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
             minDate: min_checkout,
+            maxDate: max_checkout,
             onSelect: function(){
                 checkin = start_date_picker.datepicker( 'getDate' );
                 checkout = new Date( this.value );
@@ -177,8 +179,9 @@
             checkin = start_date_picker.datepicker( 'getDate' );
             if( checkin ) {
                 checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
+                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).attr('max') ) );
             }
-            end_date_picker.datepicker( 'setDate', checkout );
+            end_date_picker.datepicker( 'setDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
         } );
     }
 
