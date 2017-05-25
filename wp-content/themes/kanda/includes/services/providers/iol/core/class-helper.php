@@ -371,7 +371,7 @@ class IOL_Helper {
                 <?php }
                 if (isset($room['rate']) && $room['rate']) { ?>
                     <div class="tr">
-                        <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
+                        <div class="td"><?php esc_html_e('Total Rate', 'kanda'); ?></div>
                         <div class="td">
                             <?php
                                 $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
@@ -473,7 +473,7 @@ class IOL_Helper {
                     <?php }
                     if (isset($room['rate']) && $room['rate']) { ?>
                         <div class="tr">
-                            <div class="td"><?php esc_html_e('Rate', 'kanda'); ?></div>
+                            <div class="td"><?php esc_html_e('Total Rate', 'kanda'); ?></div>
                             <div class="td">
                                 <?php
                                 $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
