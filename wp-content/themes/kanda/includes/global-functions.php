@@ -214,8 +214,6 @@ function kanda_get_exchange() {
 function kanda_get_currency_iso_array() {
     $exchange_rates = kanda_get_exchange_rates();
 
-    kanda_logger()->log( json_encode( $exchange_rates ) );
-
     $rates = array_keys( $exchange_rates );
     $rates[] = 'AMD';
 
@@ -633,9 +631,20 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
             $option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
             $additional_fee = kanda_get_theme_option( $option_name );
         }
+        $additional_fee += kanda_get_specific_agency_additional_fee();
     }
 
     return floatval( $additional_fee );
+}
+
+/**
+ * Get Specific additional fee for current travel agency
+ * @return float|int
+ */
+function kanda_get_specific_agency_additional_fee() {
+    $specific_fee = get_field( 'specific_addition_fee', 'user_' . get_current_user_id() );
+
+    return $specific_fee ? floatval( $specific_fee ) : 0;
 }
 
 /**

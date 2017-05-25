@@ -539,8 +539,10 @@ class IOL_Helper {
         $interval = DateInterval::createFromDateString('1 day');
         $life_period = new DatePeriod( $start_date, $interval, $end_date );
 
-        $price = $args['room']['ratedetails']['rate'][ $index ];
-        $price = kanda_generate_price($args['room']['ratedetails']['rate'][ $index ], $args['hotel_code'], $args['output_currency'], $args['input_currency']);
+        $rates = is_array( $args['room']['ratedetails']['rate'] ) ? $args['room']['ratedetails']['rate'] : array( $args['room']['ratedetails']['rate'] );
+
+        $price = $rates[ $index ];
+        $price = kanda_generate_price($rates[ $index ], $args['hotel_code'], $args['output_currency'], $args['input_currency']);
         $price = floatval( str_replace(',', '', $price) );
         $price += kanda_get_user_additional_fee();
         $price = sprintf( '%1$s %2$s', $price, $args['output_currency'] );

@@ -5,10 +5,10 @@
     <div class="table-wrap">
         <div class="users-table table">
             <header class="thead">
-                <div class="th" style="width: 50%;"><?php esc_html_e( 'Name', 'kanda' ); ?></div>
+                <div class="th" style="width: 40%;"><?php esc_html_e( 'Name', 'kanda' ); ?></div>
                 <div class="th" style="width: 10%;"><?php esc_html_e( 'Status', 'kanda' ); ?></div>
-                <div class="th" style="width: 15%;"><?php esc_html_e( 'Start Date', 'kanda' ); ?></div>
-                <div class="th" style="width: 15%;"><?php esc_html_e( 'End Date', 'kanda' ); ?></div>
+                <div class="th" style="width: 20%;"><?php esc_html_e( 'Check In Date', 'kanda' ); ?></div>
+                <div class="th" style="width: 20%;"><?php esc_html_e( 'Check Out Date', 'kanda' ); ?></div>
                 <div class="th" style="width: 10%;"><?php esc_html_e( 'More', 'kanda' ); ?></div>
             </header>
 
