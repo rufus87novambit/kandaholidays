@@ -374,12 +374,32 @@ class IOL_Helper {
                         <div class="td"><?php esc_html_e('Total Rate', 'kanda'); ?></div>
                         <div class="td">
                             <?php
-                                $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
-                                $price = floatval( str_replace(',', '', $price) );
-                                $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
-                                printf( '%1$s %2$s', $price, $args['currency'] ); ?>
+                            $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
+                            $price = floatval( str_replace(',', '', $price) );
+                            $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
+                            printf( '%1$s %2$s', $price, $args['currency'] ); ?>
                         </div>
                     </div>
+                    <?php
+                    $suppliment = isset( $room['supplementdetails']['supplement'] ) ? $room['supplementdetails']['supplement'] : false;
+
+                    $has_suppliment = false;
+                    if( $suppliment ) {
+                        $suppliment = IOL_Helper::is_associative_array( $suppliment ) ? array( $suppliment ) : $suppliment;
+                        $has_suppliment = ! empty( $suppliment );
+                    }
+
+                    if( $has_suppliment ) {
+                        ?>
+                        <div class="tr">
+                            <div class="td"><?php esc_html_e('Suppliments Included', 'kanda'); ?></div>
+                            <div class="td">
+                                <?php foreach( $suppliment as $sp ) {
+                                    printf( '<p>%1$s - %2$s USD</p>', $sp[ 'name' ], $sp['rate'] );
+                                } ?>
+                            </div>
+                        </div>
+                    <?php } ?>
                 <?php }
 
                 if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
@@ -450,78 +470,78 @@ class IOL_Helper {
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
             <?php if( $args['request']['nights_count'] >= $must_stay_days ) { ?>
-            <h2 class="text-center"><?php _e( 'Booking Confirmation', 'kanda' ); ?></h2>
-            <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
+                <h2 class="text-center"><?php _e( 'Booking Confirmation', 'kanda' ); ?></h2>
+                <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
 
-            <div class="users-table table">
-                <header class="thead">
-                    <div class="th" style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
-                    <div class="th"><?php esc_html_e('Property value', 'kanda'); ?></div>
-                </header>
-                <div class="tbody">
-                    <?php if (isset($room['roomtype']) && $room['roomtype']) { ?>
-                        <div class="tr">
-                            <div class="td"><?php esc_html_e('Room Type', 'kanda'); ?></div>
-                            <div class="td"><?php echo $room['roomtype']; ?></div>
-                        </div>
-                    <?php }
-                    if (isset($room['mealplan']) && $room['mealplan']) { ?>
-                        <div class="tr">
-                            <div class="td"><?php esc_html_e('Meal Plan', 'kanda'); ?></div>
-                            <div class="td"><?php echo $room['mealplan']; ?></div>
-                        </div>
-                    <?php }
-                    if (isset($room['rate']) && $room['rate']) { ?>
-                        <div class="tr">
-                            <div class="td"><?php esc_html_e('Total Rate', 'kanda'); ?></div>
-                            <div class="td">
-                                <?php
-                                $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
-                                $price = floatval( str_replace(',', '', $price) );
-                                $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
-                                printf( '%1$s %2$s', $price, $args['currency'] ); ?>
+                <div class="users-table table">
+                    <header class="thead">
+                        <div class="th" style="width: 25%"><?php esc_html_e('Property type', 'kanda'); ?></div>
+                        <div class="th"><?php esc_html_e('Property value', 'kanda'); ?></div>
+                    </header>
+                    <div class="tbody">
+                        <?php if (isset($room['roomtype']) && $room['roomtype']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Room Type', 'kanda'); ?></div>
+                                <div class="td"><?php echo $room['roomtype']; ?></div>
                             </div>
-                        </div>
-                    <?php }
+                        <?php }
+                        if (isset($room['mealplan']) && $room['mealplan']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Meal Plan', 'kanda'); ?></div>
+                                <div class="td"><?php echo $room['mealplan']; ?></div>
+                            </div>
+                        <?php }
+                        if (isset($room['rate']) && $room['rate']) { ?>
+                            <div class="tr">
+                                <div class="td"><?php esc_html_e('Total Rate', 'kanda'); ?></div>
+                                <div class="td">
+                                    <?php
+                                    $price = kanda_generate_price($room['rate'], $args['hotelcode'], $args['currency'], $room['currcode'], $args['request']['nights_count']);
+                                    $price = floatval( str_replace(',', '', $price) );
+                                    $price += kanda_get_user_additional_fee() * $args['request']['nights_count'];
+                                    printf( '%1$s %2$s', $price, $args['currency'] ); ?>
+                                </div>
+                            </div>
+                        <?php }
 
-                    if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
-                        $room_discounts = $room['discountdetails']['discount'];
-                        $room_discounts = IOL_Helper::is_associative_array($room_discounts) ? array($room_discounts) : $room_discounts;
-                        foreach ($room_discounts as $discount) {
-                            if (isset($discount['discountname']) && $discount['discountname']) { ?>
-                                <div class="tr">
-                                    <div class="td"><?php esc_html_e('Discount Name', 'kanda'); ?></div>
-                                    <div class="td"><?php echo $discount['discountname']; ?></div>
-                                </div>
-                            <?php }
-                            if (isset($discount['discounttype']) && $discount['discounttype']) { ?>
-                                <div class="tr">
-                                    <div class="td"><?php esc_html_e('Discount Type', 'kanda'); ?></div>
-                                    <div class="td"><?php echo $discount['discounttype']; ?></div>
-                                </div>
-                            <?php }
-                            if (isset($discount['discountnotes']) && $discount['discountnotes']) { ?>
-                                <div class="tr">
-                                    <div class="td"><?php esc_html_e('Discount Notes', 'kanda'); ?></div>
-                                    <div class="td"><?php echo $discount['discountnotes']; ?></div>
-                                </div>
-                            <?php }
-                            if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
-                                <div class="tr">
-                                    <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
-                                    <div class="td"><?php echo absint( $discount['totaldiscountrate'] ) . ' USD'; ?></div>
-                                </div>
-                            <?php }
-                        }
-                    } ?>
+                        if ((bool)$room['discountdetails'] && array_key_exists('discount', $room['discountdetails'])) {
+                            $room_discounts = $room['discountdetails']['discount'];
+                            $room_discounts = IOL_Helper::is_associative_array($room_discounts) ? array($room_discounts) : $room_discounts;
+                            foreach ($room_discounts as $discount) {
+                                if (isset($discount['discountname']) && $discount['discountname']) { ?>
+                                    <div class="tr">
+                                        <div class="td"><?php esc_html_e('Discount Name', 'kanda'); ?></div>
+                                        <div class="td"><?php echo $discount['discountname']; ?></div>
+                                    </div>
+                                <?php }
+                                if (isset($discount['discounttype']) && $discount['discounttype']) { ?>
+                                    <div class="tr">
+                                        <div class="td"><?php esc_html_e('Discount Type', 'kanda'); ?></div>
+                                        <div class="td"><?php echo $discount['discounttype']; ?></div>
+                                    </div>
+                                <?php }
+                                if (isset($discount['discountnotes']) && $discount['discountnotes']) { ?>
+                                    <div class="tr">
+                                        <div class="td"><?php esc_html_e('Discount Notes', 'kanda'); ?></div>
+                                        <div class="td"><?php echo $discount['discountnotes']; ?></div>
+                                    </div>
+                                <?php }
+                                if (isset($discount['totaldiscountrate']) && $discount['totaldiscountrate']) { ?>
+                                    <div class="tr">
+                                        <div class="td"><?php esc_html_e('Discount Total Rate', 'kanda'); ?></div>
+                                        <div class="td"><?php echo absint( $discount['totaldiscountrate'] ) . ' USD'; ?></div>
+                                    </div>
+                                <?php }
+                            }
+                        } ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="actions text-center">
-                <a href="<?php echo $booking_create_url; ?>" class="btn -sm -secondary" target="_blank"><?php _e( 'Process', 'kanda' ); ?></a>
-            </div>
+                <div class="actions text-center">
+                    <a href="<?php echo $booking_create_url; ?>" class="btn -sm -secondary" target="_blank"><?php _e( 'Process', 'kanda' ); ?></a>
+                </div>
             <?php } else { ?>
-            <h2 class="text-center"><?php _e( 'Minimum stay restriction', 'kanda' ); ?></h2>
+                <h2 class="text-center"><?php _e( 'Minimum stay restriction', 'kanda' ); ?></h2>
                 <p class="text-center"><?php printf( __( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), $must_stay_days, _n( 'day', 'days', $must_stay_days, 'kanda' ) ); ?></p>
             <?php } ?>
         </div>
@@ -529,6 +549,26 @@ class IOL_Helper {
     }
 
     public static function render_daily_rate_popup( $args ) {
+        $suppliment = isset( $args['room']['supplementdetails']['supplement'] ) ? $args['room']['supplementdetails']['supplement'] : false;
+
+        $has_suppliment = false;
+        if( $suppliment ) {
+            $suppliment = IOL_Helper::is_associative_array( $suppliment ) ? array( $suppliment ) : $suppliment;
+            $has_suppliment = ! empty( $suppliment );
+        }
+
+        //$has_supliment = false;
+        if( $has_suppliment ) {
+            $suppliments = array();
+
+            foreach( $suppliment as $sp ) {
+                $suppliments[] = array(
+                    'from' 	=> DateTime::createFromFormat( 'Ymd H:i:s', sprintf( '%s 00:00:00', $sp['fromdate'] ) )->getTimestamp(),
+                    'to' 	=> DateTime::createFromFormat( 'Ymd H:i:s', sprintf( '%s 00:00:00', $sp['todate'] ) )->getTimestamp(),
+                    'rate'	=> $sp['rate']
+                );
+            }
+        }
 
         $full_period = array();
         $chunk_size = 7;
@@ -541,15 +581,25 @@ class IOL_Helper {
 
         $rates = is_array( $args['room']['ratedetails']['rate'] ) ? $args['room']['ratedetails']['rate'] : array( $args['room']['ratedetails']['rate'] );
 
-        $price = $rates[ $index ];
-        $price = kanda_generate_price($rates[ $index ], $args['hotel_code'], $args['output_currency'], $args['input_currency']);
-        $price = floatval( str_replace(',', '', $price) );
-        $price += kanda_get_user_additional_fee();
-        $price = sprintf( '%1$s %2$s', $price, $args['output_currency'] );
+        $user_additional_fee = kanda_get_user_additional_fee();
 
         foreach ( $life_period as $lp ) {
+            $lp_timestamp = $lp->getTimestamp();
+
+            $price = $rates[ $index ];
+            $price = kanda_generate_price($rates[ $index ], $args['hotel_code'], $args['output_currency'], $args['input_currency']);
+            $price = floatval( str_replace(',', '', $price) );
+            $price += $user_additional_fee;
+
+            if( $has_suppliment ) {
+                foreach( $suppliments as $sp_item ) {
+                    if( ( $lp_timestamp >= $sp_item['from'] && $lp_timestamp <= $sp_item['to'] ) ) {
+                        $price += $sp_item['rate'];
+                    }
+                }
+            }
             $full_period[] = array(
-                'rate' => $price,
+                'rate' => sprintf( '%1$s %2$s', $price, $args['output_currency'] ),
                 'date' => $lp->format( "d / m" )
             );
             ++$index;
@@ -560,20 +610,20 @@ class IOL_Helper {
             <h2 class="text-center"><?php _e( 'Daily Rate', 'kanda' ); ?></h2>
 
             <?php foreach( $period_chunks as $chunk ) {  ?>
-            <div class="users-table table text-center">
-                <header class="thead">
-                    <?php foreach ( $chunk as $data ) { ?>
-                        <div class="th"><?php echo $data['date']; ?></div>
-                    <?php } ?>
-                </header>
-                <div class="tbody">
-                    <div class="tr">
+                <div class="users-table table text-center">
+                    <header class="thead">
                         <?php foreach ( $chunk as $data ) { ?>
-                            <div class="td"><?php echo $data['rate']; ?></div>
+                            <div class="th"><?php echo $data['date']; ?></div>
                         <?php } ?>
+                    </header>
+                    <div class="tbody">
+                        <div class="tr">
+                            <?php foreach ( $chunk as $data ) { ?>
+                                <div class="td"><?php echo $data['rate']; ?></div>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
-            </div>
             <?php } ?>
         </div>
         <?php
