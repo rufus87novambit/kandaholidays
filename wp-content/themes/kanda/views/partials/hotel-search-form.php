@@ -138,9 +138,6 @@
                                     <option value="2" <?php selected( 2, $rooms_count ); ?>>2</option>
                                     <option value="3" <?php selected( 3, $rooms_count ); ?>>3</option>
                                     <option value="4" <?php selected( 4, $rooms_count ); ?>>4</option>
-                                    <option value="5" <?php selected( 5, $rooms_count ); ?>>5</option>
-                                    <option value="6" <?php selected( 6, $rooms_count ); ?>>6</option>
-                                    <option value="7" <?php selected( 7, $rooms_count ); ?>>7</option>
                                 </select>
                             </div>
                         </div>
