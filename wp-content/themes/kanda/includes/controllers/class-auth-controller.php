@@ -79,7 +79,11 @@ class Auth_Controller extends Base_Controller {
 
                                 do_action( 'kanda/after_user_login', $user );
 
-                                kanda_to( 'home' );
+                                if( user_can( $user, 'administrator' ) ) {
+                                     wp_redirect( site_url( '/wp-admin' ) ); die;
+                                } else {
+                                    kanda_to('home');
+                                }
                             }
 
                         } else {
