@@ -279,7 +279,8 @@ class IOL_Helper {
      * @return string
      */
     public static function array_to_savable_format( array $array ){
-        return addslashes( serialize( $array ) );
+        return serialize( $array );
+        //return addslashes( serialize( $array ) );
     }
 
     /**
@@ -289,7 +290,8 @@ class IOL_Helper {
      * @return mixed
      */
     public static function savable_format_to_array( $data ) {
-        return maybe_unserialize( stripslashes( $data ) );
+        return maybe_unserialize( $data );
+        //return maybe_unserialize( stripslashes( $data ) );
     }
 
     /**
