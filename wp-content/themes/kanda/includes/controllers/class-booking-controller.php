@@ -219,7 +219,6 @@ class Booking_Controller extends Base_Controller {
                                     continue;
                                 }
 
-                                $now = strtotime( '20170603' );
                                 if( $account_type == 'prepaid' ) {
                                     if( ( $now >= $from_timestamp ) && ( $now < $to_timestamp ) ) {
                                         $allow_booking = false;
@@ -751,12 +750,9 @@ class Booking_Controller extends Base_Controller {
                             $booking_details = $data['bookingdetails'];
                             $passenger_details = $data['bookingdetails']['passengerdetails']['passenger'];
 
-                            /********** ***********/
-                            //echo '<pre>'; var_dump( $data ); echo '</pre>'; die;
-
-                            /*
-                            $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['startdate'] );
-                            $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['enddate'] );
+                            /** Pricing calculation **/
+                            $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['startdate'] );
+                            $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['enddate'] );
                             $interval = $end_date->diff( $start_date );
                             $nights_count = $interval->d;
 
@@ -771,10 +767,9 @@ class Booking_Controller extends Base_Controller {
 
                             $earnings = number_format( $earnings, 2 );
                             $real_price = number_format( $real_price, 2 );
-                            $agency_price = number_format( $agency_price, 2 );*/
-                            /********** ***********/
+                            $agency_price = number_format( $agency_price, 2 );
 
-
+                            /** Passenger details **/
                             $passenger_details = IOL_Helper::is_associative_array( $passenger_details ) ? array( $passenger_details ) : $passenger_details;
                             $passengers = array(
                                 'adults'    => array(),
@@ -815,6 +810,10 @@ class Booking_Controller extends Base_Controller {
                             update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
                             update_field( 'adults', $passengers['adults'], $booking_id );
                             update_field( 'children', $passengers['children'], $booking_id );
+
+                            update_field( 'real_price', $real_price, $booking_id );
+                            update_field( 'agency_price', $agency_price, $booking_id );
+                            update_field( 'earnings', $earnings, $booking_id );
 
                             // set variables
                             $content = $this->render_template($template, array(
