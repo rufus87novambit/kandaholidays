@@ -112,13 +112,15 @@
      */
     if( $('.datepicker-start-date').length > 0 && $('.datepicker-end-date').length > 0 ) {
 
-        var start_date_picker = $('.datepicker-start-date'),
-            end_date_picker = $('.datepicker-end-date' ),
-            min_checkin = new Date(),
-            checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin,
-            max_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).attr('max') )),
-            min_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( 1 )),
-            checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
+        var start_date_picker = $('.datepicker-start-date');
+        var end_date_picker = $('.datepicker-end-date' );
+
+        var min_checkin = new Date();
+        var checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin;
+
+        var min_checkout = addDays( checkin, 1 );
+        var max_checkout = addDays( checkin, $( '#nights_count' ).attr( 'max' ) );
+        var checkout = end_date_picker.val() ? new Date( end_date_picker.val() ) : addDays( checkin, $( '#nights_count' ).val() );
 
         /**
          * Get date in milliseconds
@@ -126,6 +128,13 @@
          */
         function get_day_in_milliseconds( $days ) {
             return $days * 24 * 60 * 60 * 1000;
+        }
+
+        function addDays( date, days ) {
+            var new_date = new Date();
+            new_date.setTime( date.getTime() + get_day_in_milliseconds( days ) );
+
+            return new_date;
         }
 
         /**
@@ -144,14 +153,21 @@
         start_date_picker.datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
+            defaultDate: new Date(),
             minDate: min_checkin,
             onSelect: function(){
                 checkin = new Date( this.value );
-                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
-                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').attr('max') ) );
+                checkout = addDays( checkin, $( '#nights_count').val() );
 
-                end_date_picker.datepicker( 'option', 'minDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
+                min_checkout = addDays( checkin, 1 );
+                max_checkout = addDays( checkin, $( '#nights_count').attr('max') );
+
+                end_date_picker
+                    .datepicker( 'option', 'minDate', min_checkout )
+                    .datepicker( 'option', 'maxDate', max_checkout );
+
                 checkout = new Date( end_date_picker.datepicker( 'getDate' ) );
+
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
             }
         }).datepicker( 'setDate', checkin );
@@ -178,10 +194,14 @@
         $( '#nights_count').on( 'change keyup', function(){
             checkin = start_date_picker.datepicker( 'getDate' );
             if( checkin ) {
-                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
-                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).attr('max') ) );
+                checkout = addDays( checkin, $( this ).val() );
+
+                min_checkout = addDays( checkin, 1 )
+                max_checkout = addDays( checkin, $( this ).attr('max') );
             }
-            end_date_picker.datepicker( 'setDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
+            end_date_picker.datepicker( 'setDate', checkout )
+                .datepicker( 'option', 'minDate', min_checkout )
+                .datepicker( 'option', 'maxDate', max_checkout );
         } );
     }
 
