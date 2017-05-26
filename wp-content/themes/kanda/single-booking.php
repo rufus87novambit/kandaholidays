@@ -12,7 +12,7 @@ get_header();
 
             <?php
                 $update = true;
-                if( isset( $_GET['update'] ) && ( $_GET['update'] == 0 ) ) {
+                if( ( isset( $_GET['update'] ) && ( $_GET['update'] == 0 ) ) || ( get_field( 'booking_status' ) == 'cancelled' ) ) {
                     $update = false;
                 }
 
