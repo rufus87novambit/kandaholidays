@@ -750,6 +750,31 @@ class Booking_Controller extends Base_Controller {
                             $room = $data['hoteldetails']['roomdetails']['room'];
                             $booking_details = $data['bookingdetails'];
                             $passenger_details = $data['bookingdetails']['passengerdetails']['passenger'];
+
+                            /********** ***********/
+                            //echo '<pre>'; var_dump( $data ); echo '</pre>'; die;
+
+                            /*
+                            $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['startdate'] );
+                            $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['enddate'] );
+                            $interval = $end_date->diff( $start_date );
+                            $nights_count = $interval->d;
+
+                            $real_price = $data['bookingdetails']['bookingtotalrate'];
+                            $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
+                            $real_price = $real_price['amount'];
+
+                            $additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+                            $earnings = $additional_fee * $nights_count;
+                            $agency_fee = kanda_get_user_additional_fee() * $nights_count;
+                            $agency_price = $real_price + $earnings + $agency_fee;
+
+                            $earnings = number_format( $earnings, 2 );
+                            $real_price = number_format( $real_price, 2 );
+                            $agency_price = number_format( $agency_price, 2 );*/
+                            /********** ***********/
+
+
                             $passenger_details = IOL_Helper::is_associative_array( $passenger_details ) ? array( $passenger_details ) : $passenger_details;
                             $passengers = array(
                                 'adults'    => array(),
@@ -777,6 +802,7 @@ class Booking_Controller extends Base_Controller {
                                     'title'         => $child['title'],
                                     'first_name'    => $child['firstname'],
                                     'last_name'     => $child['lastname'],
+                                    'age'           => $child['age'],
                                     'gender'        => $child['gender'],
                                 );
                             }
@@ -787,8 +813,8 @@ class Booking_Controller extends Base_Controller {
                             update_field( 'room_type', $room['roomtype'], $booking_id );
 
                             update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
-                            //update_field( 'adults', $passengers['adults'], $booking_id );
-                            //update_field( 'adults', $passengers['children'], $booking_id );
+                            update_field( 'adults', $passengers['adults'], $booking_id );
+                            update_field( 'children', $passengers['children'], $booking_id );
 
                             // set variables
                             $content = $this->render_template($template, array(
