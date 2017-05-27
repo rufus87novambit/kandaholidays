@@ -472,7 +472,7 @@ class IOL_Helper {
         $booking_create_url = static::get_booking_create_url( array(
             'hotel_code'            => $args['hotelcode'],
             'city_code'             => $args['request']['city'],
-            'room_number'           => $args['roomnumber'],
+            'room_number'           => $room['roomnumber'],
             'request_id'            => $args['request']['request_id'],
             'room_type_code'        => $room['roomtypecode'],
             'contract_token_id'     => $room['contracttokenid'],

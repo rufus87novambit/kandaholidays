@@ -12,7 +12,7 @@ $form_links = array(
 
             <h1 class="page-title"><?php esc_html_e( 'Registration', 'kanda' ); ?></h1>
 
-            <?php if( $this->request['message'] ) { ?>
+            <?php if( isset( $this->request['message'] ) && $this->request['message'] ) { ?>
                 <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
             <?php } ?>
 
@@ -177,7 +177,7 @@ $form_links = array(
                         <div class="row text-center clearfix">
                             <div class="g-recaptcha-outer">
                                 <div class="g-recaptcha-inner">
-                                    <div class="g-recaptcha" data-sitekey="6LdafxMUAAAAAP-E5ksEG5SVw-_PlR4rcJggUNpm"></div>
+                                    <div class="g-recaptcha" data-sitekey="<?php echo Kanda_Config::get( 'google_site_key' ); ?>"></div>
                                 </div>
                             </div>
                         </div>

@@ -144,6 +144,7 @@
         <input type="hidden" name="room_configuration_id" value="<?php echo $this->room_configuration_id; ?>" />
         <input type="hidden" name="meal_plan_code" value="<?php echo $this->meal_plan_code; ?>"  />
         <input type="hidden" name="request_id" value="<?php echo $this->request_id; ?>" />
+        <input type="hidden" name="room_n" value="<?php echo $this->requested_room_number; ?>" />
         <input type="hidden" name="security" value="<?php echo wp_create_nonce( 'kanda-save-booking' ); ?>" />
         <input type="submit" name="kanda_save_booking" value="<?php _e( 'Book', 'kanda' ); ?>" class="btn -secondary pull-right">
     </footer>

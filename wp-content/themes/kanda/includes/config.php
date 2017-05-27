@@ -75,6 +75,23 @@ class Kanda_Config {
     public static $email_from = 'noreply@kandaholidays.com';
 
     /**
+     * Google recaptcha site key
+     * @var string
+     */
+    public static $google_site_key = '6LeyMyUTAAAAAHSVJyjANkySQnfePSz2tzLKUswF';
+
+    /**
+     * Google recaptcha secret key
+     * @var string
+     */
+    public static $google_secret_key = '6LeyMyUTAAAAAGlgwLp5mjUU-h14hV8VYnRpY6xj';
+
+    /**
+     * Google recaptcha validation endpoint
+     */
+    public static $google_recaptcha_validation_endpoint = 'https://www.google.com/recaptcha/api/siteverify';
+
+    /**
      * Get configuration value
      *
      * @param string $property
@@ -167,6 +184,10 @@ class Kanda_Config {
                     'company_phone' => array(
                         'phone_number' => esc_html__( 'Invalid phone number', 'kanda' )
                     ),
+                    'captcha' => array(
+                        'required' => esc_html__( 'Required', 'kanda' ),
+                        'invalid'  => esc_html__( 'Invalid Captcha', 'kanda' ),
+                    )
                 ),
                 'form_forgot_password' => array(
                     // key => input_id
