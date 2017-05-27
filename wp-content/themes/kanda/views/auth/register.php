@@ -12,9 +12,7 @@ $form_links = array(
 
             <h1 class="page-title"><?php esc_html_e( 'Registration', 'kanda' ); ?></h1>
 
-            <?php if( isset( $this->request['message'] ) && $this->request['message'] ) { ?>
-                <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
-            <?php } ?>
+            <?php kanda_show_notification(); ?>
 
             <form id="form_register" method="post">
                 <div class="clearfix">
@@ -95,7 +93,7 @@ $form_links = array(
 
                             <?php $has_error = ! $this->request['fields']['personal']['position']['valid']; ?>
                             <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                                <input tabindex="11" id="position" name="personal[position]" type="text" value="<?php echo $this->request['fields']['personal']['position']['value']; ?>" />
+                                <input tabindex="8" id="position" name="personal[position]" type="text" value="<?php echo $this->request['fields']['personal']['position']['value']; ?>" />
                                 <div class="help-block"><?php echo $this->request['fields']['personal']['position']['msg']; ?></div>
                             </div>
                         </div>
@@ -109,7 +107,7 @@ $form_links = array(
 
                             <?php $has_error = ! $this->request['fields']['company']['name']['valid']; ?>
                             <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                                <input tabindex="8" id="company_name" name="company[name]" type="text" value="<?php echo $this->request['fields']['company']['name']['value']; ?>" />
+                                <input tabindex="9" id="company_name" name="company[name]" type="text" value="<?php echo $this->request['fields']['company']['name']['value']; ?>" />
                                 <div class="help-block"><?php echo $this->request['fields']['company']['name']['msg']; ?></div>
                             </div>
                         </div>
@@ -119,7 +117,7 @@ $form_links = array(
 
                             <?php $has_error = ! $this->request['fields']['company']['license']['valid']; ?>
                             <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                                <input tabindex="9" id="company_license" name="company[license]" type="text" value="<?php echo $this->request['fields']['company']['license']['value']; ?>" />
+                                <input tabindex="10" id="company_license" name="company[license]" type="text" value="<?php echo $this->request['fields']['company']['license']['value']; ?>" />
                                 <div class="help-block"><?php echo $this->request['fields']['company']['license']['msg']; ?></div>
                             </div>
                         </div>
@@ -129,7 +127,7 @@ $form_links = array(
 
                             <?php $has_error = ! $this->request['fields']['company']['address']['valid']; ?>
                             <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>">
-                                <input tabindex="10" id="company_address" name="company[address]" type="text" value="<?php echo $this->request['fields']['company']['address']['value']; ?>" />
+                                <input tabindex="11" id="company_address" name="company[address]" type="text" value="<?php echo $this->request['fields']['company']['address']['value']; ?>" />
                                 <div class="help-block"><?php echo $this->request['fields']['company']['address']['msg']; ?></div>
                             </div>
                         </div>
@@ -174,11 +172,16 @@ $form_links = array(
                             </div>
                         </div>
 
-                        <div class="row text-center clearfix">
-                            <div class="g-recaptcha-outer">
-                                <div class="g-recaptcha-inner">
-                                    <div class="g-recaptcha" data-sitekey="<?php echo Kanda_Config::get( 'google_site_key' ); ?>"></div>
+                        <div class="row clearfix">
+
+                            <?php $has_error = ! $this->request['fields']['captcha']['valid']; ?>
+                            <div class="input-holder <?php echo $has_error ? 'has-error' : ''; ?>" style="float: none; width: auto;">
+                                <div class="g-recaptcha-outer">
+                                    <div class="g-recaptcha-inner">
+                                        <div class="g-recaptcha" data-sitekey="<?php echo Kanda_Config::get( 'google_site_key' ); ?>"></div>
+                                    </div>
                                 </div>
+                                <div class="help-block"><?php echo $this->request['fields']['captcha']['msg']; ?></div>
                             </div>
                         </div>
 

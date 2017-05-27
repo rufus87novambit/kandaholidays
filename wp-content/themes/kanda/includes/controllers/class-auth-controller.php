@@ -323,6 +323,8 @@ class Auth_Controller extends Base_Controller {
                     );
                 }
 
+                $request['fields']['personal']['position']['value'] = $position;
+
                 $request['fields']['company']['name']['value'] = $company_name;
                 if( ! $company_name ) {
                     $has_error = true;
@@ -340,6 +342,11 @@ class Auth_Controller extends Base_Controller {
                         array( 'valid' => false, 'msg' => $validation_rules['company_license']['required'] )
                     );
                 }
+
+                $request['fields']['company']['address']['value'] = $company_address;
+                $request['fields']['company']['city']['value'] = $company_city;
+                $request['fields']['company']['country']['value'] = $company_country;
+                $request['fields']['company']['website']['value'] = $company_website;
 
                 $request['fields']['company']['phone']['value'] = $company_phone;
                 if( $company_phone && !( preg_match( '/^[^:]*\d{9,}$/', $company_phone ) ) ) {
@@ -395,7 +402,7 @@ class Auth_Controller extends Base_Controller {
                     ) );
 
                     if( is_wp_error( $user_id ) ) {
-                        $request['message'] = $user_id->get_error_message();
+                        $this->set_notification( 'danger', $user_id->get_error_message(), 'front' );
                     } else {
                         update_user_meta( $user_id, 'profile_status', 0 );
                         update_user_meta( $user_id, 'mobile', $mobile );
@@ -428,14 +435,14 @@ class Auth_Controller extends Base_Controller {
                         $request['fields']['company']['website']['value'] = '';
 
                         $request['success'] = true;
-                        $request['message'] = esc_html__( 'Your profile has been successfully created. You will get an email once it is activated.', 'kanda' );
+                        $this->set_notification( 'success', esc_html__( 'Your profile has been successfully created. You will get an email once it is activated.', 'kanda' ), 'front' );
 
                         do_action( 'kanda/after_new_user_registration', $user_id );
                     }
                 }
 
             } else {
-                $request['message'] = esc_html__( 'Invalid request', 'kanda' );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ), 'front' );
             }
 
         }

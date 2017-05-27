@@ -10,10 +10,6 @@ $form_links = array(
         <div class="form form-login">
             <h1 class="page-title"><?php esc_html_e( 'Login', 'kanda' ); ?></h1>
 
-            <?php if( $this->request['message'] ) { ?>
-                <div class="message message-<?php echo $this->request['success'] ? 'success' : 'error'; ?>"><?php echo $this->request['message']; ?></div>
-            <?php } ?>
-
             <?php kanda_show_notification(); ?>
 
             <form id="form_login" method="post">
