@@ -279,7 +279,7 @@ class IOL_Helper {
      * @return string
      */
     public static function array_to_savable_format( array $array ){
-        return serialize( $array );
+        return maybe_serialize( $array );
         //return addslashes( serialize( $array ) );
     }
 

@@ -40,7 +40,7 @@ class IOL_Bookings {
 
             $pax_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'pax_number' ),
-                uniqid()
+                kanda_generate_random_string( 'number', 10 )
             );
 
             $room_number = $passenger->addChild(
@@ -82,7 +82,7 @@ class IOL_Bookings {
 
             $pax_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'pax_number' ),
-                uniqid()
+                kanda_generate_random_string( 'number', 10 )
             );
 
             $room_number = $passenger->addChild(

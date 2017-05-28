@@ -242,10 +242,10 @@ class Booking_Controller extends Base_Controller {
                                     'end_date'              => $request_args['end_date'],
                                     'hotel_code'            => $hotel_code,
                                     'city_code'             => $city_code,
-                                    'room_number'           => $room_number,
+                                    'room_number'           => 1, //$room_number,
                                     'room_type_code'        => $room_type_code,
                                     'contract_token_id'     => $contract_token_id,
-                                    'room_configuration_id' => $room_configuration_id,
+                                    'room_configuration_id' => 1, //$room_configuration_id,
                                     'meal_plan_code'        => $meal_plan_code,
                                     'adults'                => $adults,
                                     'children'              => $children
@@ -363,7 +363,7 @@ class Booking_Controller extends Base_Controller {
                                     $booking_id = wp_insert_post( array(
                                         'post_author' => get_current_user_id(),
                                         'post_title' => sprintf( 'PNR %1$s - %2$s', $data['bookingdetails']['bookingnumber'], $data['hoteldetails']['hotelname'] ),
-                                        'post_name' => kanda_generate_random_string( 20 ),
+                                        'post_name' => kanda_generate_random_string( 'string', 20 ),
                                         'post_status' => 'publish',
                                         'post_type' => 'booking',
                                         'meta_input' => array(

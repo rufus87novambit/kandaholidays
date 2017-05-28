@@ -492,7 +492,7 @@ class Auth_Controller extends Base_Controller {
 
                         add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); } );
 
-                        $reset_password_token = kanda_generate_random_string( 20 );
+                        $reset_password_token = kanda_generate_random_string( 'string', 20 );
                         $password_reset_url = kanda_url_to( 'reset-password', array( wp_create_nonce( 'kanda_security_reset' ), $reset_password_token ) );
 
                         update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
