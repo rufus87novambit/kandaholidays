@@ -41,9 +41,9 @@ class Auth_Controller extends Base_Controller {
                 if( ! $this->username ) {
                     $is_valid = false;
                     $errors['username'] = $validation_rules['username']['required'];
-                } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $this->username ) ) {
+                } elseif( ! preg_match( '/^[a-zA-Z0-9\_\-]+$/', $this->username ) ) {
                     $is_valid = false;
-                    $errors['username'] = $validation_rules['username']['alphanumeric'];
+                    $errors['username'] = $validation_rules['username']['loginRegex'];
                 }
 
                 $this->password = isset( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : '';
@@ -237,11 +237,11 @@ class Auth_Controller extends Base_Controller {
                         $request['fields']['personal']['username'],
                         array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                     );
-                } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $username ) ) {
+                } elseif( ! preg_match( '/^[a-zA-Z0-9\_\-]+$/', $username ) ) {
                     $has_error = true;
                     $request['fields']['personal']['username'] = array_merge(
                         $request['fields']['personal']['username'],
-                        array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
+                        array( 'valid' => false, 'msg' => $validation_rules['username']['loginRegex'] )
                     );
                 } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['username_min_length'], 'max_range' => $validation_data['username_max_length'] ) ) ) ) {
                     $has_error = true;
