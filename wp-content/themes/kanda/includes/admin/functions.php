@@ -146,7 +146,24 @@ function kanda_render_hotel_custom_column( $column, $post_id ) {
 
         case 'additional_fee' :
             $fee = get_field( 'additional_fee', $post_id );
-            printf( '$%1$s', number_format( floatval( $fee ), 2 ) );
+            if( $fee === '' ) {
+                $rating = absint( get_field( 'hotelstarrating', $post_id ) );
+                if( $rating > 5 || ! $rating ) {
+                    $rating = 0;
+                }
+                $option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
+                $fee = kanda_get_theme_option( $option_name );
+
+                $fee = sprintf(
+                    '%1$s %2$s -> $%3$s',
+                    ($rating ? $rating : 'N/A'),
+                    $rating ? _n( 'star', 'stars', $rating, 'kanda' ) : '',
+                    number_format( floatval( $fee ), 2 )
+                );
+            } else {
+                $fee = sprintf( '$%1$s', number_format( floatval( $fee ), 2 ) );
+            }
+            echo $fee;
 
             break;
         case 'city' :
