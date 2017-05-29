@@ -107,6 +107,7 @@ class Kanda_Fields {
      */
     public function make_readonly( $field ) {
         $field['readonly'] = true;
+        $field['disabled'] = true;
 
         return $field;
     }
