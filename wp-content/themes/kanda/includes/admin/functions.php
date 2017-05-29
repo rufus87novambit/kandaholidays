@@ -119,3 +119,53 @@ function kanda_prevent_agency_access_to_admin() {
         exit( wp_redirect( $redirect ) );
     }
 }
+
+/**
+ * Column managment for 'hotel' post type
+ */
+add_filter( 'manage_hotel_posts_columns', 'kanda_manage_custom_edit_hotel_columns' );
+function kanda_manage_custom_edit_hotel_columns($columns) {
+    unset( $columns['title'] );
+    unset( $columns['author'] );
+    unset( $columns['date'] );
+
+    $columns['title'] = __( 'Hotel Name', 'kanda' );
+    $columns['additional_fee'] = __( 'Additional Fee ( Per Night )', 'kanda' );
+    $columns['city'] = __( 'City', 'kanda' );
+
+    return $columns;
+}
+
+/**
+ * Column content for 'hotel' post type
+ */
+add_action( 'manage_hotel_posts_custom_column' , 'kanda_render_hotel_custom_column', 10, 2 );
+function kanda_render_hotel_custom_column( $column, $post_id ) {
+
+    switch ( $column ) {
+
+        case 'additional_fee' :
+            $fee = get_field( 'additional_fee', $post_id );
+            printf( '$%1$s', number_format( floatval( $fee ), 2 ) );
+
+            break;
+        case 'city' :
+            echo IOL_Helper::get_city_name_from_code( get_post_meta( $post_id, 'hotelcity', true ) );
+            break;
+
+    }
+}
+
+/**
+ * Post type 'hotel' row actions
+ */
+add_filter('post_row_actions','kanda_custom_row_action', 10, 2);
+function kanda_custom_row_action( $actions, $post ) {
+    if ( $post->post_type == 'hotel' ){
+        unset( $actions['inline hide-if-no-js'] );
+        unset( $actions['view'] );
+        $actions['edit'] = str_replace( 'href=', 'target="_blank" href=', $actions['edit'] );
+    }
+
+    return $actions;
+}
