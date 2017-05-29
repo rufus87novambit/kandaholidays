@@ -81,8 +81,8 @@ class Kanda_Fields {
 
             if ( $user ) {
 
-                $subject = kanda_get_theme_option( 'email_profile_activation' );
-                $message = kanda_get_theme_option( 'email_profile_activation_title' );
+                $subject = kanda_get_theme_option( 'email_profile_activation_title' );
+                $message = kanda_get_theme_option( 'email_profile_activation_body' );
                 $variables = array( '{{LOGIN_URL}}' => sprintf( '<a href="%1$s">%1$s</a>', kanda_url_to( 'login' ) ) );
 
                 $sent = kanda_mailer()->send_user_email( $user->user_email, $subject, $message, $variables );
@@ -107,6 +107,7 @@ class Kanda_Fields {
      */
     public function make_readonly( $field ) {
         $field['readonly'] = true;
+        $field['disabled'] = true;
 
         return $field;
     }
