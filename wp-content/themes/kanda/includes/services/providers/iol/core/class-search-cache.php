@@ -279,14 +279,14 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
         $order_by = in_array( $args['order_by'], array( 'name', 'rating' ) ) ? $args['order_by'] : 'name';
         $order = in_array( strtolower( $args['order'] ), array( 'asc', 'desc' ) ) ? strtoupper( $args['order'] ) : 'ASC';
 
-        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}' ORDER BY `{$order_by}` {$order}";
+        $query = "SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}' GROUP BY `code` ORDER BY `{$order_by}` {$order}";
         if( $args['page'] && ( $args['page'] > 0 ) && ( $args['limit'] > 0 ) ) {
             $offset = ( $args['page'] - 1 ) * $args['limit'];
 
             $query .= " LIMIT {$offset},{$args['limit']}";
         }
 
-        $total_query = "SELECT COUNT(*) FROM `{$table}` WHERE `request_id` = '{$request_id}' ORDER BY `{$order_by}` {$order}";
+        $total_query = "SELECT count(*) FROM ( SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}' GROUP BY `code` ORDER BY `{$order_by}` {$order} ) as `total`";
 
         return array(
             'data'  => $wpdb->get_results( $query ),
