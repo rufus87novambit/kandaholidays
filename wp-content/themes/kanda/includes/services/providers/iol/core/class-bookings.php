@@ -40,12 +40,12 @@ class IOL_Bookings {
 
             $pax_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'pax_number' ),
-                uniqid()
+                kanda_generate_random_string( 'number', 10 )
             );
 
             $room_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'room_no' ),
-                1
+                $args['room_number']
             );
 
             $title = $passenger->addChild(
@@ -82,12 +82,12 @@ class IOL_Bookings {
 
             $pax_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'pax_number' ),
-                uniqid()
+                kanda_generate_random_string( 'number', 10 )
             );
 
             $room_number = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'room_no' ),
-                1
+                $args['room_number']
             );
 
             $title = $passenger->addChild(
@@ -185,7 +185,6 @@ class IOL_Bookings {
      * @return Kanda_Service_Response
      */
     public function create( $args ) {
-
         $xml = $this->get_create_booking_xml( $args );
 
         return $this->request_instance->process( $xml, $args );

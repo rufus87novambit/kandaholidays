@@ -45,11 +45,16 @@ function kanda_start_session() {
 /**
  * Generate a random string
  *
+ * @param string $type string | number
  * @param int $length
  * @return string
  */
-function kanda_generate_random_string( $length = 10 ) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function kanda_generate_random_string( $type = 'string', $length = 10 ) {
+    if( $type == 'string' ) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    } else {
+        $characters = '0123456789';
+    }
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {

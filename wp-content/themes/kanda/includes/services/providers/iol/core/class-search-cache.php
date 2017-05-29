@@ -83,7 +83,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 $code = $hotel['hotelcode'];
                 $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();
                 $hotel[ 'hoteldescr' ] = isset( $hotel_master_data[ 'description' ] ) ? $hotel_master_data[ 'description' ] : '';
-                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
+                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? IOL_Helper::savable_format_to_array( $hotel_master_data[ 'images' ] ) : array() );
 
                 $values[] = sprintf(
                     '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\', \'%6$s\')',
@@ -92,7 +92,8 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                     $code,
                     $hotel['hotelname'],
                     $hotel['starrating'],
-                    IOL_Helper::array_to_savable_format( $hotel )
+                    base64_encode( IOL_Helper::array_to_savable_format( $hotel ) )
+                    //IOL_Helper::array_to_savable_format( $hotel )
                 );
             }
             if ( !empty( $values ) ) {
@@ -166,7 +167,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                 $code = $hotel['hotelcode'];
                 $hotel_master_data = isset( $master_data[ $code ] ) ? (array)$master_data[ $code ] : array();
                 $hotel[ 'hoteldescr' ] = isset( $hotel_master_data[ 'description' ] ) ? $hotel_master_data[ 'description' ] : '';
-                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? $hotel_master_data[ 'images' ] : array() );
+                $hotel[ 'images' ] = IOL_Helper::savable_format_to_array( isset( $hotel_master_data[ 'images' ] ) ? IOL_Helper::savable_format_to_array( $hotel_master_data[ 'images' ] ) : array() );
 
                 $values[] = sprintf(
                     '(\'%1$s\', \'%2$s\', \'%3$s\', \'%4$s\', \'%5$s\', \'%6$s\')',
@@ -175,7 +176,8 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
                     $code,
                     $hotel['hotelname'],
                     $hotel['starrating'],
-                    IOL_Helper::array_to_savable_format( $hotel )
+                    base64_encode( IOL_Helper::array_to_savable_format( $hotel ) )
+                    //IOL_Helper::array_to_savable_format( $hotel )
                 );
 
             }

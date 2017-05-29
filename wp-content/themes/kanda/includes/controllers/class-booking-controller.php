@@ -79,8 +79,8 @@ class Booking_Controller extends Base_Controller {
 
                 if ( $request ) {
                     $request_args = IOL_Helper::savable_format_to_array($request->request);
-                    $adults_count = $request_args['room_occupants'][$room_number]['adults'];
-                    $children_count = (bool)$request_args['room_occupants'][$room_number]['child'] ? count($request_args['room_occupants'][$room_number]['child']['age']) : 0;
+                    $adults_count = $request_args['room_occupants'][$requested_room_number]['adults'];
+                    $children_count = (bool)$request_args['room_occupants'][$requested_room_number]['child'] ? count($request_args['room_occupants'][$requested_room_number]['child']['age']) : 0;
 
                     $adults = array_fill(0, $adults_count, array(
                         'title' => '',
@@ -123,6 +123,7 @@ class Booking_Controller extends Base_Controller {
         $this->room_configuration_id = $room_configuration_id;
         $this->meal_plan_code = $meal_plan_code;
         $this->request_id = $request_id;
+        $this->requested_room_number = $requested_room_number;
 
         $this->title = __( 'Create Booking', 'kanda' );
         $this->view = 'create';
@@ -149,6 +150,7 @@ class Booking_Controller extends Base_Controller {
                 $contract_token_id = isset($details['contract_token_id']) ? $details['contract_token_id'] : '';
                 $room_configuration_id = isset($details['room_configuration_id']) ? $details['room_configuration_id'] : '';
                 $meal_plan_code = isset($details['meal_plan_code']) ? $details['meal_plan_code'] : '';
+                $requested_room_number = isset($details['room_n']) ? $details['room_n'] : '';
 
                 if (
                     ! $hotel_code ||
@@ -158,7 +160,8 @@ class Booking_Controller extends Base_Controller {
                     ! $contract_token_id ||
                     ! $room_configuration_id ||
                     ! $meal_plan_code ||
-                    ! $request_id
+                    ! $request_id ||
+                    ! $requested_room_number
                 ) {
                     $is_valid = false;
                 }
@@ -170,8 +173,8 @@ class Booking_Controller extends Base_Controller {
                     if ( $request ) {
 
                         $request_args = IOL_Helper::savable_format_to_array($request->request);
-                        $adults_count = $request_args['room_occupants'][$room_number]['adults'];
-                        $children_count = (bool)$request_args['room_occupants'][$room_number]['child'] ? count($request_args['room_occupants'][$room_number]['child']['age']) : 0;
+                        $adults_count = $request_args['room_occupants'][$requested_room_number]['adults'];
+                        $children_count = (bool)$request_args['room_occupants'][$requested_room_number]['child'] ? count($request_args['room_occupants'][$requested_room_number]['child']['age']) : 0;
 
                         $adults = isset($details['adults']) ? $details['adults'] : array_fill(0, $adults_count, array(
                             'title' => '',
@@ -239,9 +242,10 @@ class Booking_Controller extends Base_Controller {
                                     'end_date'              => $request_args['end_date'],
                                     'hotel_code'            => $hotel_code,
                                     'city_code'             => $city_code,
+                                    'room_number'           => 1, //$room_number,
                                     'room_type_code'        => $room_type_code,
                                     'contract_token_id'     => $contract_token_id,
-                                    'room_configuration_id' => $room_configuration_id,
+                                    'room_configuration_id' => 1, //$room_configuration_id,
                                     'meal_plan_code'        => $meal_plan_code,
                                     'adults'                => $adults,
                                     'children'              => $children
@@ -359,7 +363,7 @@ class Booking_Controller extends Base_Controller {
                                     $booking_id = wp_insert_post( array(
                                         'post_author' => get_current_user_id(),
                                         'post_title' => sprintf( 'PNR %1$s - %2$s', $data['bookingdetails']['bookingnumber'], $data['hoteldetails']['hotelname'] ),
-                                        'post_name' => kanda_generate_random_string( 20 ),
+                                        'post_name' => kanda_generate_random_string( 'string', 20 ),
                                         'post_status' => 'publish',
                                         'post_type' => 'booking',
                                         'meta_input' => array(

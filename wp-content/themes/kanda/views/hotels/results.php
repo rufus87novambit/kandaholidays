@@ -74,6 +74,7 @@ $end_date = DateTime::createFromFormat( 'd F, Y', $this->response->request['end_
     <ul class="articles-list">
         <?php
         foreach( $this->response->data as $hotel ) {
+            $hotel = IOL_Helper::savable_format_to_array( base64_decode( $hotel ) );
             $hotel_permalink = kanda_get_single_hotel_url( array( 'hotelcode' => $hotel['hotelcode'], 'start_date' => $start_date, 'end_date' => $end_date ) ); ?>
 
             <li>

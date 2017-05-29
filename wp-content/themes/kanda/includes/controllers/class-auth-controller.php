@@ -115,6 +115,95 @@ class Auth_Controller extends Base_Controller {
 
         add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->register' ); } );
 
+        $request = array(
+            'fields' => array(
+                'personal' => array(
+                    'username' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'email' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'password' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'confirm_password' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'first_name' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'last_name' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'mobile' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'position' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                ),
+                'company'  => array(
+                    'name' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'license' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'address' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'city' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'country' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'phone' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    ),
+                    'website' => array(
+                        'value' => '',
+                        'msg'   => '',
+                        'valid' => true
+                    )
+                ),
+                'captcha'  => array(
+                    'value' => '',
+                    'msg'   => '',
+                    'valid' => true
+                )
+            )
+        );
+
         if( isset( $_POST['kanda_register'] ) ) {
 
             $nonce = ( isset( $_POST['kanda_nonce'] ) && $_POST['kanda_nonce'] ) ? $_POST['kanda_nonce'] : '';
@@ -141,124 +230,164 @@ class Auth_Controller extends Base_Controller {
                 $validation_rules = Kanda_Config::get( 'validation->front->form_register' );
                 $validation_data = Kanda_Config::get( 'validation->front->data' );
 
-                $this->request['fields']['personal']['username']['value'] = $username;
+                $request['fields']['personal']['username']['value'] = $username;
                 if( ! $username ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['username'] = array_merge(
-                        $this->request['fields']['personal']['username'],
+                    $request['fields']['personal']['username'] = array_merge(
+                        $request['fields']['personal']['username'],
                         array( 'valid' => false, 'msg' => $validation_rules['username']['required'] )
                     );
                 } elseif( ! preg_match( '/^[a-z0-9\_\-]+$/', $username ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['username'] = array_merge(
-                        $this->request['fields']['personal']['username'],
+                    $request['fields']['personal']['username'] = array_merge(
+                        $request['fields']['personal']['username'],
                         array( 'valid' => false, 'msg' => $validation_rules['username']['alphanumeric'] )
                     );
                 } elseif( ! filter_var( strlen( $username ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['username_min_length'], 'max_range' => $validation_data['username_max_length'] ) ) ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['username'] = array_merge(
-                        $this->request['fields']['personal']['username'],
+                    $request['fields']['personal']['username'] = array_merge(
+                        $request['fields']['personal']['username'],
                         array( 'valid' => false, 'msg' => $validation_rules['username']['rangelength'] )
                     );
                 }
 
-                $this->request['fields']['personal']['email']['value'] = $email;
+                $request['fields']['personal']['email']['value'] = $email;
                 if( ! $email ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['email'] = array_merge(
-                        $this->request['fields']['personal']['email'],
+                    $request['fields']['personal']['email'] = array_merge(
+                        $request['fields']['personal']['email'],
                         array( 'valid' => false, 'msg' => $validation_rules['email']['required'] )
                     );
                 } elseif( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['email'] = array_merge(
-                        $this->request['fields']['personal']['email'],
+                    $request['fields']['personal']['email'] = array_merge(
+                        $request['fields']['personal']['email'],
                         array( 'valid' => false, 'msg' => $validation_rules['email']['email'] )
                     );
                 }
 
-                $this->request['fields']['personal']['password']['value'] = $password;
+                $request['fields']['personal']['password']['value'] = $password;
                 if( ! $password ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['password'] = array_merge(
-                        $this->request['fields']['personal']['password'],
+                    $request['fields']['personal']['password'] = array_merge(
+                        $request['fields']['personal']['password'],
                         array( 'valid' => false, 'msg' => $validation_rules['password']['required'] )
                     );
                 } elseif( ! filter_var( strlen( $password ), FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => $validation_data['password_min_length'], 'max_range' => $validation_data['password_max_length'] ) ) ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['password'] = array_merge(
-                        $this->request['fields']['personal']['password'],
+                    $request['fields']['personal']['password'] = array_merge(
+                        $request['fields']['personal']['password'],
                         array( 'valid' => false, 'msg' => $validation_rules['password']['rangelength'] )
                     );
                 }
 
-                $this->request['fields']['personal']['confirm_password']['value'] = $confirm_password;
+                $request['fields']['personal']['confirm_password']['value'] = $confirm_password;
                 if( ! $confirm_password ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['confirm_password'] = array_merge(
-                        $this->request['fields']['personal']['confirm_password'],
+                    $request['fields']['personal']['confirm_password'] = array_merge(
+                        $request['fields']['personal']['confirm_password'],
                         array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['required'] )
                     );
                 } elseif( $password && ( $confirm_password != $password ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['confirm_password'] = array_merge(
-                        $this->request['fields']['personal']['confirm_password'],
+                    $request['fields']['personal']['confirm_password'] = array_merge(
+                        $request['fields']['personal']['confirm_password'],
                         array( 'valid' => false, 'msg' => $validation_rules['confirm_password']['equalTo'] )
                     );
                 }
 
-                $this->request['fields']['personal']['first_name']['value'] = $first_name;
+                $request['fields']['personal']['first_name']['value'] = $first_name;
                 if( ! $first_name ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['first_name'] = array_merge(
-                        $this->request['fields']['personal']['first_name'],
+                    $request['fields']['personal']['first_name'] = array_merge(
+                        $request['fields']['personal']['first_name'],
                         array( 'valid' => false, 'msg' => $validation_rules['first_name']['required'] )
                     );
                 }
 
-                $this->request['fields']['personal']['last_name']['value'] = $last_name;
+                $request['fields']['personal']['last_name']['value'] = $last_name;
                 if( ! $last_name ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['last_name'] = array_merge(
-                        $this->request['fields']['personal']['last_name'],
+                    $request['fields']['personal']['last_name'] = array_merge(
+                        $request['fields']['personal']['last_name'],
                         array( 'valid' => false, 'msg' => $validation_rules['last_name']['required'] )
                     );
                 }
 
-                $this->request['fields']['personal']['mobile']['value'] = $mobile;
+                $request['fields']['personal']['mobile']['value'] = $mobile;
                 if( $mobile && !( preg_match( '/^[\+:]*\d{9,}$/', $mobile ) ) ) {
                     $has_error = true;
-                    $this->request['fields']['personal']['mobile'] = array_merge(
-                        $this->request['fields']['personal']['mobile'],
+                    $request['fields']['personal']['mobile'] = array_merge(
+                        $request['fields']['personal']['mobile'],
                         array( 'valid' => false, 'msg' => $validation_rules['mobile']['phone_number'] )
                     );
                 }
 
-                $this->request['fields']['company']['name']['value'] = $company_name;
+                $request['fields']['personal']['position']['value'] = $position;
+
+                $request['fields']['company']['name']['value'] = $company_name;
                 if( ! $company_name ) {
                     $has_error = true;
-                    $this->request['fields']['company']['name'] = array_merge(
-                        $this->request['fields']['company']['name'],
+                    $request['fields']['company']['name'] = array_merge(
+                        $request['fields']['company']['name'],
                         array( 'valid' => false, 'msg' => $validation_rules['company_name']['required'] )
                     );
                 }
 
-                $this->request['fields']['company']['license']['value'] = $company_license;
+                $request['fields']['company']['license']['value'] = $company_license;
                 if( ! $company_license ) {
                     $has_error = true;
-                    $this->request['fields']['company']['license'] = array_merge(
-                        $this->request['fields']['company']['license'],
+                    $request['fields']['company']['license'] = array_merge(
+                        $request['fields']['company']['license'],
                         array( 'valid' => false, 'msg' => $validation_rules['company_license']['required'] )
                     );
                 }
 
-                $this->request['fields']['company']['phone']['value'] = $company_phone;
+                $request['fields']['company']['address']['value'] = $company_address;
+                $request['fields']['company']['city']['value'] = $company_city;
+                $request['fields']['company']['country']['value'] = $company_country;
+                $request['fields']['company']['website']['value'] = $company_website;
+
+                $request['fields']['company']['phone']['value'] = $company_phone;
                 if( $company_phone && !( preg_match( '/^[^:]*\d{9,}$/', $company_phone ) ) ) {
                     $has_error = true;
-                    $this->request['fields']['company']['phone'] = array_merge(
-                        $this->request['fields']['company']['phone'],
+                    $request['fields']['company']['phone'] = array_merge(
+                        $request['fields']['company']['phone'],
                         array( 'valid' => false, 'msg' => $validation_rules['company_phone']['phone_number'] )
                     );
+                }
+
+                $google_response = isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '';
+                if( ! $google_response ) {
+                    $has_error = true;
+                    $request['fields']['captcha'] = array_merge(
+                        $request['fields']['captcha'],
+                        array( 'valid' => false, 'msg' => $validation_rules['captcha']['required'] )
+                    );
+                } else {
+                    $response = wp_remote_post( Kanda_Config::get('google_recaptcha_validation_endpoint'), array(
+                        'body' => array(
+                            'secret'    => Kanda_Config::get('google_secret_key'),
+                            'response'  => $google_response,
+                            'remoteip'  => $_SERVER['REMOTE_ADDR']
+                        )
+                    ) );
+                    if( is_wp_error( $response ) ) {
+                        $has_error = true;
+                        $request['fields']['captcha'] = array_merge(
+                            $request['fields']['captcha'],
+                            array( 'valid' => false, 'msg' => __( 'Cannot Validate Capctha', 'kanda' ) )
+                        );
+                    } else {
+                        $response = json_decode( wp_remote_retrieve_body($response) );
+                        if( ! $response->success ) {
+                            $has_error = true;
+                            $request['fields']['captcha'] = array_merge(
+                                $request['fields']['captcha'],
+                                array( 'valid' => false, 'msg' => $validation_rules['captcha']['invalid'] )
+                            );
+                        }
+                    }
                 }
 
                 if( ! $has_error ) {
@@ -273,7 +402,7 @@ class Auth_Controller extends Base_Controller {
                     ) );
 
                     if( is_wp_error( $user_id ) ) {
-                        $this->request['message'] = $user_id->get_error_message();
+                        $this->set_notification( 'danger', $user_id->get_error_message(), 'front' );
                     } else {
                         update_user_meta( $user_id, 'profile_status', 0 );
                         update_user_meta( $user_id, 'mobile', $mobile );
@@ -288,36 +417,37 @@ class Auth_Controller extends Base_Controller {
                         update_user_meta( $user_id, 'additional_fee', 0 );
                         update_user_meta( $user_id, 'specific_addition_fee', 0 );
 
-                        $this->request['fields']['personal']['username']['value'] = '';
-                        $this->request['fields']['personal']['email']['value'] = '';
-                        $this->request['fields']['personal']['password']['value'] = '';
-                        $this->request['fields']['personal']['confirm_password']['value'] = '';
-                        $this->request['fields']['personal']['first_name']['value'] = '';
-                        $this->request['fields']['personal']['last_name']['value'] = '';
-                        $this->request['fields']['personal']['mobile']['value'] = '';
-                        $this->request['fields']['personal']['position']['value'] = '';
+                        $request['fields']['personal']['username']['value'] = '';
+                        $request['fields']['personal']['email']['value'] = '';
+                        $request['fields']['personal']['password']['value'] = '';
+                        $request['fields']['personal']['confirm_password']['value'] = '';
+                        $request['fields']['personal']['first_name']['value'] = '';
+                        $request['fields']['personal']['last_name']['value'] = '';
+                        $request['fields']['personal']['mobile']['value'] = '';
+                        $request['fields']['personal']['position']['value'] = '';
 
-                        $this->request['fields']['company']['name']['value'] = '';
-                        $this->request['fields']['company']['license']['value'] = '';
-                        $this->request['fields']['company']['address']['value'] = '';
-                        $this->request['fields']['company']['city']['value'] = '';
-                        $this->request['fields']['company']['country']['value'] = '';
-                        $this->request['fields']['company']['phone']['value'] = '';
-                        $this->request['fields']['company']['website']['value'] = '';
+                        $request['fields']['company']['name']['value'] = '';
+                        $request['fields']['company']['license']['value'] = '';
+                        $request['fields']['company']['address']['value'] = '';
+                        $request['fields']['company']['city']['value'] = '';
+                        $request['fields']['company']['country']['value'] = '';
+                        $request['fields']['company']['phone']['value'] = '';
+                        $request['fields']['company']['website']['value'] = '';
 
-                        $this->request['success'] = true;
-                        $this->request['message'] = esc_html__( 'Your profile has been successfully created. You will get an email once it is activated.', 'kanda' );
+                        $request['success'] = true;
+                        $this->set_notification( 'success', esc_html__( 'Your profile has been successfully created. You will get an email once it is activated.', 'kanda' ), 'front' );
 
                         do_action( 'kanda/after_new_user_registration', $user_id );
                     }
                 }
 
             } else {
-                $this->request['message'] = esc_html__( 'Invalid request', 'kanda' );
+                $this->set_notification( 'danger', esc_html__( 'Invalid request', 'kanda' ), 'front' );
             }
 
         }
 
+        $this->request = $request;
         $this->view = 'register';
 
     }
@@ -362,7 +492,7 @@ class Auth_Controller extends Base_Controller {
 
                         add_filter( 'nonce_life', function () { return Kanda_Config::get( 'cookie_lifetime->reset_password' ); } );
 
-                        $reset_password_token = kanda_generate_random_string( 20 );
+                        $reset_password_token = kanda_generate_random_string( 'string', 20 );
                         $password_reset_url = kanda_url_to( 'reset-password', array( wp_create_nonce( 'kanda_security_reset' ), $reset_password_token ) );
 
                         update_user_meta( $user->ID, 'forgot_password_token', $reset_password_token );
