@@ -632,7 +632,7 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
     $additional_fee = 0;
     if( $hotel_metadata ) {
         $additional_fee = kanda_fields()->get_hotel_additional_fee( $hotel_metadata->post_id );
-        if( $additional_fee !== '' ) {
+        if( $additional_fee === '' ) {
             $rating = absint( $hotel_metadata->rating );
             if( $rating > 5 || ! $rating ) {
                 $rating = 0;
@@ -640,6 +640,7 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
             $option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
             $additional_fee = kanda_get_theme_option( $option_name );
         }
+
         $additional_fee += kanda_get_specific_agency_additional_fee();
     }
 
