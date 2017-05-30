@@ -195,7 +195,6 @@ class IOL_Hotels {
                 $response = $this->request_instance->process( $xml, $request_args );
 
                 if( $response->is_valid() ) {
-                    $request_id = $cache_instance->cache( $response, 'update' );
 
                     if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
                         $offset = ( $args['page'] - 1 ) * $args['limit'];
@@ -204,6 +203,14 @@ class IOL_Hotels {
                     } else {
                         $data = array();
                         $total = 0;
+                    }
+
+                    if( $total > 0 ) {
+                        $request_id = $cache_instance->cache( $response, 'update' );
+                    } else {
+                        $request_id = false;
+                        $response->code = 404;
+                        $response->message = __( 'There are no hotels with your search criteria.', 'kanda' );
                     }
 
                     $response->request_id = $request_id;
@@ -221,7 +228,6 @@ class IOL_Hotels {
             $response = $this->request_instance->process( $xml, $request_args );
 
             if( $response->is_valid() ) {
-                $request_id = $cache_instance->cache( $response, 'insert' );
 
                 if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
                     $offset = ( $args['page'] - 1 ) * $args['limit'];
@@ -230,6 +236,14 @@ class IOL_Hotels {
                 } else {
                     $data = array();
                     $total = 0;
+                }
+
+                if( $total > 0 ) {
+                    $request_id = $cache_instance->cache($response, 'insert');
+                } else {
+                    $request_id = false;
+                    $response->code = 404;
+                    $response->message = __( 'There are no hotels with your search criteria.', 'kanda' );
                 }
 
                 $response->request_id = $request_id;
