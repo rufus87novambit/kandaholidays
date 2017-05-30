@@ -8,7 +8,7 @@ $end_date = DateTime::createFromFormat( 'd F, Y', $this->response->request['end_
                 <div class="col-lg-2 col-md-12">
                     <label class="form-label hidden-md-down">&nbsp;</label>
                     <div>
-                        <a href="#popup-criteria" class="btn -secondary -no-padding open-popup col-xs-12"><?php esc_html_e( 'Edit Search', 'kanda' ); ?></a>
+                        <a href="#popup-criteria" class="btn -secondary -no-padding open-popup col-xs-12" style="float: none;"><?php esc_html_e( 'Edit Search', 'kanda' ); ?></a>
                     </div>
                 </div>
                 <div class="col-lg-10 col-md-12">

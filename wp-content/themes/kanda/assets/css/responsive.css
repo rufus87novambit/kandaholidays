@@ -34,7 +34,15 @@
 	.currency a{
 		font-size:1.5rem;
 	}
+    .static-popup .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
+        max-width: 212px;
+    }
 }
 @media screen and (max-width:320px){
-
+    .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
+        max-width: 260px;
+    }
+    .static-popup .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
+        max-width: 182px;
+    }
 }
