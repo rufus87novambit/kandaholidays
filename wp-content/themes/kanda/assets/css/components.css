@@ -268,11 +268,6 @@
 .bookings-list-th-check-in {width: 20%;}
 .bookings-list-th-check-out {width: 20%;}
 .bookings-list-th-check-more {width: 10%;}
-@media (max-width: 767px) {
-    .bookings-list-th-name {width:40%;}
-    .bookings-list-th-status {width:25%;}
-    .bookings-list-th-check-more {width:35%;}
-}
 
 .secondary-menu {
     margin-bottom: 20px;

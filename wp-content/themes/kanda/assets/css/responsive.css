@@ -18,6 +18,15 @@
 	.agency-logo img{
 		max-width: 4rem;
 	}
+    .bookings-list-th-name {
+        width:50%;
+    }
+    .bookings-list-th-status {
+        width:25%;
+    }
+    .bookings-list-th-check-more {
+        width:25%;
+    }
 }
 
 @media (max-width: 543px) {
@@ -34,7 +43,7 @@
 	.currency a{
 		font-size:1.5rem;
 	}
-    .static-popup .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
+    .static-popup .form-control, .static-popup .kanda-select-late-init.kandaSelect, .static-popup .kanda-select.kandaSelect{
         max-width: 212px;
     }
 }
@@ -42,7 +51,7 @@
     .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
         max-width: 260px;
     }
-    .static-popup .form-control, .kanda-select-late-init.kandaSelect, .kanda-select.kandaSelect{
+    .static-popup .form-control, .static-popup .kanda-select-late-init.kandaSelect, .static-popup .kanda-select.kandaSelect{
         max-width: 182px;
     }
 }

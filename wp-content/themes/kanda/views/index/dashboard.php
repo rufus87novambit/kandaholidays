@@ -22,7 +22,7 @@
                     <div class="td">
                         <a href="<?php the_permalink(); ?>" target="_blank" class="link">
                             <span class="hidden-lg-down"><?php esc_html_e( 'See details', 'kanda' ); ?></span>
-                            <span class="visible-lg-up"><?php esc_html_e( 'Details', 'kanda' ); ?></span>
+                            <span class="hidden-lg-up"><?php esc_html_e( 'Details', 'kanda' ); ?></span>
                         </a>
                     </div>
                 </div>
