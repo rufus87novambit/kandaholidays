@@ -640,10 +640,10 @@ function kanda_get_hotel_additional_fee( $hotel_code ) {
             $option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
             $additional_fee = kanda_get_theme_option( $option_name );
         }
-
+		
         $additional_fee += kanda_get_specific_agency_additional_fee();
     }
-
+	
     return floatval( $additional_fee );
 }
 

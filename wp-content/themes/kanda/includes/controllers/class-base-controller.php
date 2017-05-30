@@ -100,7 +100,7 @@ class Base_Controller {
         $_SESSION[ 'kanda_notification' ] = array(
             'type' 		=> $type,
             'message' 	=> $message,
-            'location'	=> $location
+			'location'	=> $location
         );
     }
 

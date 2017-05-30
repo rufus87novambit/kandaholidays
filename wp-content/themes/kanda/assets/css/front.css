@@ -199,7 +199,7 @@ header.page-header .logo img {
 }
 .form.form-forgot-password {
     max-width: 316px;
-    min-height: 209px;
+	min-height: 209px;
 }
 .form.form-forgot-password label {
     min-width: 145px;

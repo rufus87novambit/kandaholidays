@@ -285,7 +285,7 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
 
             $query .= " LIMIT {$offset},{$args['limit']}";
         }
-
+		
         $total_query = "SELECT COUNT(*) FROM ( SELECT * FROM `{$table}` WHERE `request_id` = '{$request_id}' GROUP BY `code` ORDER BY `{$order_by}` {$order} ) as `total`";
 
         return array(

@@ -114,12 +114,15 @@
 
         var start_date_picker = $('.datepicker-start-date');
         var end_date_picker = $('.datepicker-end-date' );
-
         var min_checkin = new Date();
+        console.log( min_checkin );
         var checkin = start_date_picker.val() ? new Date( start_date_picker.val() ) : min_checkin;
-
+        console.log( checkin );
+        //var min_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( 1 ));
         var min_checkout = addDays( checkin, 1 );
-        var max_checkout = addDays( checkin, $( '#nights_count' ).attr( 'max' ) );
+        //var max_checkout = new Date( min_checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).attr('max') ));
+        var max_checkout = addDays( min_checkin, $( '#nights_count' ).attr( 'max' ) );
+        //var checkout = end_date_picker.val() ? new Date( end_date_picker.val() ) : ( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count' ).val() ) );
         var checkout = end_date_picker.val() ? new Date( end_date_picker.val() ) : addDays( checkin, $( '#nights_count' ).val() );
 
         /**
@@ -131,10 +134,8 @@
         }
 
         function addDays( date, days ) {
-            var new_date = new Date();
-            new_date.setTime( date.getTime() + get_day_in_milliseconds( days ) );
-
-            return new_date;
+            date.setDate( date.getDate() + days );
+            return date;
         }
 
         /**
@@ -153,21 +154,14 @@
         start_date_picker.datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
-            defaultDate: new Date(),
-            minDate: min_checkin,
+            //minDate: min_checkin,
             onSelect: function(){
                 checkin = new Date( this.value );
-                checkout = addDays( checkin, $( '#nights_count').val() );
+                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').val() ) );
+                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( '#nights_count').attr('max') ) );
 
-                min_checkout = addDays( checkin, 1 );
-                max_checkout = addDays( checkin, $( '#nights_count').attr('max') );
-
-                end_date_picker
-                    .datepicker( 'option', 'minDate', min_checkout )
-                    .datepicker( 'option', 'maxDate', max_checkout );
-
+                end_date_picker.datepicker( 'option', 'minDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
                 checkout = new Date( end_date_picker.datepicker( 'getDate' ) );
-
                 $( '#nights_count' ).val( calculate_nights_count( checkin, checkout ) );
             }
         }).datepicker( 'setDate', checkin );
@@ -178,8 +172,8 @@
         end_date_picker.datepicker({
             showOn: 'focus',
             dateFormat: 'dd MM, yy',
-            minDate: min_checkout,
-            maxDate: max_checkout,
+            //minDate: min_checkout,
+            //maxDate: max_checkout,
             onSelect: function(){
                 checkin = start_date_picker.datepicker( 'getDate' );
                 checkout = new Date( this.value );
@@ -194,14 +188,10 @@
         $( '#nights_count').on( 'change keyup', function(){
             checkin = start_date_picker.datepicker( 'getDate' );
             if( checkin ) {
-                checkout = addDays( checkin, $( this ).val() );
-
-                min_checkout = addDays( checkin, 1 )
-                max_checkout = addDays( checkin, $( this ).attr('max') );
+                checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).val() ) );
+                max_checkout = new Date( checkin.getTime() + get_day_in_milliseconds( $( this ).attr('max') ) );
             }
-            end_date_picker.datepicker( 'setDate', checkout )
-                .datepicker( 'option', 'minDate', min_checkout )
-                .datepicker( 'option', 'maxDate', max_checkout );
+            end_date_picker.datepicker( 'setDate', checkout ).datepicker( 'option', 'maxDate', max_checkout );
         } );
     }
 

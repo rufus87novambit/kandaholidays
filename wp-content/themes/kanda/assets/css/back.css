@@ -194,6 +194,6 @@ body {
     display: none;
 }
 
-.main_banners {
-    margin-bottom: 1rem;
+@media (min-width: 1024px) {
+
 }
