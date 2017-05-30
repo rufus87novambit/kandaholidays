@@ -10,6 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     die( 'No direct script access allowed' );
 }
 
+if( kanda_is_reservator() ) {
+    return false;
+}
+
 $theme_name = kanda_get_theme_name();
 $kanda_customizer_defaults = kanda_get_customizer_defaults();
 $section_id = 'pricing';

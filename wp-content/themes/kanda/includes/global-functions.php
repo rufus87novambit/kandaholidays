@@ -1065,3 +1065,16 @@ function kanda_get_single_hotel_url( $args ) {
         kanda_url_to( 'hotels', array( 'view', $args['hotelcode'] ) )
     );
 }
+
+/**
+ * Conditional check if user is a reservator
+ * @param null $user_id
+ * @return bool
+ */
+function kanda_is_reservator( $user_id = null ) {
+    if( ! class_exists( 'Kanda_Config' ) ) {
+        require_once( KANDA_INCLUDES_PATH . 'config.php' );
+    }
+    $role = Kanda_Config::get( 'reservator_role' );
+    return $user_id ? user_can( $user_id, $role ) : current_user_can( $role );
+}

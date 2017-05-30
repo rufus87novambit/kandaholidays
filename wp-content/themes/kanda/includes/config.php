@@ -20,6 +20,12 @@ class Kanda_Config {
     private static $agency_role;
 
     /**
+     * Role for reservators
+     * @var
+     */
+    private static $reservator_role;
+
+    /**
      * Cookie lifetimes
      *
      * @var array
@@ -119,6 +125,7 @@ class Kanda_Config {
      */
     static function init() {
         self::$agency_role = 'agency';
+        self::$reservator_role = 'reservator';
         self::$cookie_lifetime = array(
             'authentication'    => array(
                 'administrator' => 1 * DAY_IN_SECONDS,

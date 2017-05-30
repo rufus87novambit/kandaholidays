@@ -145,25 +145,29 @@ function kanda_render_hotel_custom_column( $column, $post_id ) {
     switch ( $column ) {
 
         case 'additional_fee' :
-            $fee = get_field( 'additional_fee', $post_id );
-			if( $fee === '' ) {
-				$rating = absint( get_field( 'hotelstarrating', $post_id ) );
-				if( $rating > 5 || ! $rating ) {
-					$rating = 0;
-				}
-				$option_name = sprintf( 'pricing_additional_fee_for_%d_star_hotel', $rating );
-				$fee = kanda_get_theme_option( $option_name );
-				
-				$fee = sprintf( 
-					'%1$s %2$s -> $%3$s', 
-					($rating ? $rating : 'N/A'),
-					$rating ? _n( 'star', 'stars', $rating, 'kanda' ) : '',
-					number_format( floatval( $fee ), 2 ) 
-				);
-			} else {
-				$fee = sprintf( '$%1$s', number_format( floatval( $fee ), 2 ) );
-			}
-			echo $fee;
+            if( kanda_is_reservator() ) {
+                $fee = '--- Private ---';
+            } else {
+                $fee = get_field('additional_fee', $post_id);
+                if ($fee === '') {
+                    $rating = absint(get_field('hotelstarrating', $post_id));
+                    if ($rating > 5 || !$rating) {
+                        $rating = 0;
+                    }
+                    $option_name = sprintf('pricing_additional_fee_for_%d_star_hotel', $rating);
+                    $fee = kanda_get_theme_option($option_name);
+
+                    $fee = sprintf(
+                        '%1$s %2$s -> $%3$s',
+                        ($rating ? $rating : 'N/A'),
+                        $rating ? _n('star', 'stars', $rating, 'kanda') : '',
+                        number_format(floatval($fee), 2)
+                    );
+                } else {
+                    $fee = sprintf('$%1$s', number_format(floatval($fee), 2));
+                }
+            }
+            echo $fee;
 			
             break;
         case 'city' :
@@ -185,4 +189,39 @@ function kanda_custom_row_action( $actions, $post ) {
 	}
 	
 	return $actions;
+}
+
+/**
+ * Manage user row actions
+ */
+add_filter( 'user_row_actions', 'kanda_filter_user_row_actions', 10, 2 );
+function kanda_filter_user_row_actions( array $actions, WP_User $user ) {
+
+    if( kanda_is_reservator() && user_can( $user, 'administrator' ) ) {
+        $actions = array();
+    }
+
+    return $actions;
+}
+
+/**
+ * Remove administrator role for reservators
+ */
+add_filter( 'editable_roles', 'kanda_editable_roles', 10, 1 );
+function kanda_editable_roles( $all_roles ) {
+    if( current_user_can( 'reservator' ) ) {
+        unset( $all_roles['administrator'] );
+    }
+
+    return $all_roles;
+}
+
+/**
+ * Deny reservators to edit higher level users
+ */
+add_action( 'edit_user_profile_update', 'kanda_stop_editing_higher_users', 10, 1 );
+function kanda_stop_editing_higher_users( $user_id ) {
+    if( kanda_is_reservator() && user_can( $user_id, 'administrator' ) ) {
+        wp_die( 'You are not allowed to edit that user' );
+    }
 }

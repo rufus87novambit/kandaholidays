@@ -46,6 +46,9 @@ class Kanda_Fields {
             add_filter('acf/prepare_field/name=hotelweb', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkintime', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
+            if( kanda_is_reservator() ) {
+                add_filter('acf/prepare_field/name=additional_fee', array( $this, 'make_private' ) );
+            }
 
             add_filter('acf/prepare_field/name=hotel_city', array( $this, 'get_city_name' ) );
             add_filter('acf/prepare_field/name=hotelcity', array( $this, 'get_city_name' ) );
@@ -108,6 +111,14 @@ class Kanda_Fields {
     public function make_readonly( $field ) {
         $field['readonly'] = true;
 		$field['disabled'] = true;
+
+        return $field;
+    }
+
+    public function make_private( $field ) {
+        $field['value'] = '--- Private ---';
+        $field['readonly'] = true;
+        $field['disabled'] = true;
 
         return $field;
     }
