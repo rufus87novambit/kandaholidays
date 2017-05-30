@@ -24,8 +24,10 @@
     border-top: 4px solid var(--brand-secondary);
     border-radius: 13px;
 }
-.box.main-content {
-    padding: 40px;
+@media (min-width: 992px) {
+    .box.main-content {
+        padding: 40px;
+    }
 }
 @media (min-width: 768px) and (max-width: 991px) {
     .occupants .box {
@@ -126,6 +128,7 @@
     padding: .25rem 1.5rem;
     font-size: .875rem;
     border-radius: .2rem;
+    margin-bottom: .2rem;
 }
 .btn.-block{
     display:block;
@@ -260,6 +263,17 @@
     border-bottom:0;
 }
 
+.bookings-list-th-name {width: 40%;}
+.bookings-list-th-status {width: 10%;}
+.bookings-list-th-check-in {width: 20%;}
+.bookings-list-th-check-out {width: 20%;}
+.bookings-list-th-check-more {width: 10%;}
+@media (max-width: 767px) {
+    .bookings-list-th-name {width:40%;}
+    .bookings-list-th-status {width:25%;}
+    .bookings-list-th-check-more {width:35%;}
+}
+
 .secondary-menu {
     margin-bottom: 20px;
 }
@@ -361,4 +375,20 @@
 .custom-table .border-separator {
     border-top: 1px solid var(--brand-primary);
     border-bottom: 1px solid var(--brand-primary);
+}
+
+.main_banners {
+    margin-bottom: 1rem;
+}
+.main_banners img {
+    height: auto;
+}
+.sidebar .slider {
+    margin-left: auto;
+    margin-right: auto;
+    width: 300px;
+    max-width: 100%;
+}
+.sidebar .slider img {
+    height: auto;
 }
