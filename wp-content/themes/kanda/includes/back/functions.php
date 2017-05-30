@@ -204,14 +204,14 @@ function kanda_booking_create_send_notifications( $booking_id ) {
 
     $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
     if( ! $sent_user ) {
-        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d' ), $booking_id );
+        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d', $booking_id ) );
     }
 
     $sent_to_admin = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
     if( $sent_to_admin ) {
         $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
         if (!$sent_admin) {
-            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d'), $booking_id);
+            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
         }
     }
 }
@@ -272,7 +272,7 @@ function kanda_booking_cancel_send_notifications( $booking_id ) {
     if( $sent_to_admin ) {
         $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
         if (!$sent_admin) {
-            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d'), $booking_id);
+            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
         }
     }
 }

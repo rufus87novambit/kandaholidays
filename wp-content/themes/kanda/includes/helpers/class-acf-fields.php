@@ -48,6 +48,15 @@ class Kanda_Fields {
             add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
             if( kanda_is_reservator() ) {
                 add_filter('acf/prepare_field/name=additional_fee', array( $this, 'make_private' ) );
+                add_filter('acf/prepare_field/name=real_price', array( $this, 'make_private' ) );
+                add_filter('acf/prepare_field/name=earnings', array( $this, 'make_private' ) );
+
+                add_filter('acf/prepare_field/name=payment_status', array( $this, 'make_readonly' ) );
+                add_filter('acf/prepare_field/name=agency_price', array( $this, 'make_readonly' ) );
+                add_filter('acf/prepare_field/name=visa_rate', array( $this, 'make_readonly' ) );
+                add_filter('acf/prepare_field/name=transfer_rate', array( $this, 'make_readonly' ) );
+                add_filter('acf/prepare_field/name=other_rate', array( $this, 'make_readonly' ) );
+                add_filter('acf/prepare_field/name=paid_amount', array( $this, 'make_readonly' ) );
             }
 
             add_filter('acf/prepare_field/name=hotel_city', array( $this, 'get_city_name' ) );
@@ -115,8 +124,13 @@ class Kanda_Fields {
         return $field;
     }
 
+    /**
+     * Make field value private
+     * @param $field
+     * @return mixed
+     */
     public function make_private( $field ) {
-        $field['value'] = '--- Private ---';
+        $field['value'] = kanda_get_private_field_value();
         $field['readonly'] = true;
         $field['disabled'] = true;
 

@@ -83,7 +83,7 @@ function kanda_after_user_login( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d', $user->ID ) );
     }
 }
 
@@ -126,7 +126,7 @@ function kanda_after_new_user_registration( $user_id ) {
         $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
         if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-            kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+            kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d', $user->ID ) );
         }
 
 
@@ -138,7 +138,7 @@ function kanda_after_new_user_registration( $user_id ) {
         );
 
         if( ! kanda_mailer()->send_user_email( $user->user_email, $subject, $message, $variables ) ) {
-            kanda_logger()->log( sprintf( 'Error sending email to user for new registration. user_id=%d' ), $user->ID );
+            kanda_logger()->log( sprintf( 'Error sending email to user for new registration. user_id=%d', $user->ID ) );
         }
 
     }
@@ -180,7 +180,7 @@ function kanda_after_forgot_password( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d', $user->ID ) );
     }
 }
 
@@ -220,7 +220,7 @@ function kanda_after_password_reset( $user ) {
     $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( 'user_id', $user->ID, admin_url( 'user-edit.php' ) ) );
 
     if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d' ), $user->ID );
+        kanda_logger()->log( sprintf( 'Error sending email to admin for new registered user. user_id=%d', $user->ID ) );
     }
 }
 /************************************************ /end Action callbacks **********************************************/

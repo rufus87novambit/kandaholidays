@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once KANDA_ADMIN_PATH . 'page-booking-search.php';
+require_once KANDA_ADMIN_PATH . 'class-notification.php';
 
 /**
  * Remove additional capabilities
@@ -146,7 +147,7 @@ function kanda_render_hotel_custom_column( $column, $post_id ) {
 
         case 'additional_fee' :
             if( kanda_is_reservator() ) {
-                $fee = '--- Private ---';
+                $fee = kanda_get_private_field_value();
             } else {
                 $fee = get_field('additional_fee', $post_id);
                 if ($fee === '') {
@@ -224,4 +225,106 @@ function kanda_stop_editing_higher_users( $user_id ) {
     if( kanda_is_reservator() && user_can( $user_id, 'administrator' ) ) {
         wp_die( 'You are not allowed to edit that user' );
     }
+}
+
+/**
+ * Register 'booking' post type meta boxes
+ */
+
+/**
+* Send / Resend booking information
+*/
+add_action( 'kanda/admin/doing_email_updated_booking_details', 'kanda_admin_email_updated_booking_details', 10, 1 );
+function kanda_admin_email_updated_booking_details( $booking_id ) {
+
+    if( ! $booking_id ) {
+        return;
+    }
+    $booking = get_post( $booking_id );
+    if( ! $booking ) {
+        return;
+    }
+
+    include Kanda_Mailer::get_layout_path() . 'booking-details.php';
+    $booking_details = ob_get_clean();
+
+    $user = new WP_User( $booking->post_author );
+    $first_name = $last_name = '';
+    if( $user ) {
+        $first_name = $user->first_name;
+        $last_name = $user->last_name;
+    }
+
+    $subject = kanda_get_theme_option( 'email_booking_details_title' );
+    $message = kanda_get_theme_option( 'email_booking_details_body' );
+    $variables = array(
+        '{{BOOKING_DETAILS}}' => $booking_details,
+        '{{FIRST_NAME}}'      => $first_name,
+        '{{LAST_NAME}}'       => $last_name
+    );
+
+    $sent = kanda_mailer()->send_user_email( $user->user_email, $subject, $message, $variables );
+    if( ! $sent ) {
+        kanda_logger()->log( sprintf( 'Error sending email to user for updated details via admin panel. booking_id=%d', $booking_id ) );
+        Kanda_Admin_Notification::set( 'error', __( 'Error sending email. Please try again.', 'kanda' ) );
+    } else {
+        Kanda_Admin_Notification::set( 'success', __( 'Email successfully sent.', 'kanda' ) );
+    }
+    wp_safe_redirect( get_edit_post_link( $booking_id, '' ) ); exit;
+
+}
+
+/**
+* Handle custom requests in admin panel
+*/
+add_action( 'admin_init', 'kanda_check_knada_custom_requests' );
+function kanda_check_knada_custom_requests() {
+
+    if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+        return;
+    }
+
+    if( isset( $_REQUEST['kaction'] ) && $_REQUEST['kaction'] && ( isset( $_REQUEST['post'] ) && $_REQUEST['post'] ) ) {
+        $action = $_REQUEST['kaction'];
+        $post_id = absint( $_REQUEST['post'] );
+        switch( $action ) {
+            case 'emailit':
+                $action_name = 'email_updated_booking_details';
+                break;
+            default:
+                $action_name = false;
+        }
+        if( $action_name ) {
+            kanda_start_session();
+            do_action(sprintf('kanda/admin/doing_%s', $action_name), $post_id);
+        }
+    }
+}
+
+/**
+* Register 'booking' post type metaboxes
+*/
+add_action('add_meta_boxes', 'kanda_register_booking_meta_boxes');
+function kanda_register_booking_meta_boxes() {
+    add_meta_box(
+        'kanda-booking-meta-box-advanced',
+        __('Booking Actions', 'kanda'),
+        'kanda_render_booking_post_type_side_metabox_content',
+        'booking',
+        'side',
+        'high'
+    );
+}
+
+/**
+* Render 'booking' post type side metabox content
+*/
+function kanda_render_booking_post_type_side_metabox_content() {
+    $url = add_query_arg( array( 'security' => wp_create_nonce( 'send-updated-booking-email' ), 'kaction' => 'emailit' ), get_edit_post_link() );
+    printf(
+        '<p>%1$s</p><a href="%2$s" class="button button-primary button-large">%3$s</a>',
+        __( 'Use this button to manually send / resend email with booking details to travel agency', 'kanda' ),
+        $url,
+        __( 'Email it!', 'kanda' )
+    );
 }

@@ -117,7 +117,7 @@ class Kanda_Booking_Cancellation_Notification {
         //$booking_author_id
         $sent_user = kanda_mailer()->send_user_email( 'israelyan.rafik@gmail.com', $subject, $message, $variables );
         if( ! $sent_user ) {
-            kanda_logger()->log( sprintf( 'Error sending email to user for booking notification. booking_id=%d' ), $booking_id );
+            kanda_logger()->log( sprintf( 'Error sending email to user for booking notification. booking_id=%d', $booking_id ) );
         }
 
     }

@@ -1078,3 +1078,11 @@ function kanda_is_reservator( $user_id = null ) {
     $role = Kanda_Config::get( 'reservator_role' );
     return $user_id ? user_can( $user_id, $role ) : current_user_can( $role );
 }
+
+/**
+ * Generate a private field value
+ * @return string
+ */
+function kanda_get_private_field_value() {
+    return '*************';
+}
