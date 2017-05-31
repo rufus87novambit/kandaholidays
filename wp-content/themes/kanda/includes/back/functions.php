@@ -427,8 +427,9 @@ function kanda_render_banners( $location, $args = array() ) {
         'class'  => 'slider'
     ) );
 
-    $banners = $gallery = kanda_get_theme_option( $location . '_banners_slider_gallery', array() );
-    if( $gallery ) {
+    $banners = kanda_get_theme_option( $location . '_banners_slider_gallery', array() );
+    shuffle( $banners );
+    if( $banners ) {
         echo $args['before'];
         ?>
         <div class="<?php echo $args['class']; ?>">

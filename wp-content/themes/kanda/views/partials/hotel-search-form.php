@@ -196,7 +196,7 @@
                             <small class="form-text text-muted"><?php esc_html_e( 'Please Specify Ages Of Children', 'kanda' ); ?></small>
                             <div class="children-ages">
                                 <?php for( $j = 0; $j < $children_count; $j++ ) { ?>
-                                    <input type="number" name="room_occupants[ <?php echo $i; ?> ][ child ][ age ][ <?php echo $j; ?> ]" class="form-control" value="<?php echo $children_ages[ $j ]; ?>" min="0" max="12">
+                                    <input type="number" name="room_occupants[<?php echo $i; ?>][child][age][<?php echo $j; ?>]" class="form-control" value="<?php echo $children_ages[ $j ]; ?>" min="0" max="12">
                                 <?php } ?>
                             </div>
                         </div>
