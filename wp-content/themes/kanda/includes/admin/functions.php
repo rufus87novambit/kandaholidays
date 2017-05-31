@@ -122,74 +122,72 @@ function kanda_prevent_agency_access_to_admin() {
 }
 
 /**
-* Column managment for 'hotel' post type
-*/
+ * Column managment for 'hotel' post type
+ */
 add_filter( 'manage_hotel_posts_columns', 'kanda_manage_custom_edit_hotel_columns' );
 function kanda_manage_custom_edit_hotel_columns($columns) {
-	unset( $columns['title'] );
+    unset( $columns['title'] );
     unset( $columns['author'] );
     unset( $columns['date'] );
-	
-	$columns['title'] = __( 'Hotel Name', 'kanda' );
-	$columns['additional_fee'] = __( 'Additional Fee ( Per Night )', 'kanda' );
+
+    $columns['title'] = __( 'Hotel Name', 'kanda' );
+    if( ! kanda_is_reservator() ) {
+        $columns['additional_fee'] = __( 'Additional Fee ( Per Night )', 'kanda' );
+    }
     $columns['city'] = __( 'City', 'kanda' );
 
     return $columns;
 }
 
 /**
-* Column content for 'hotel' post type
-*/
+ * Column content for 'hotel' post type
+ */
 add_action( 'manage_hotel_posts_custom_column' , 'kanda_render_hotel_custom_column', 10, 2 );
 function kanda_render_hotel_custom_column( $column, $post_id ) {
-	
+
     switch ( $column ) {
 
         case 'additional_fee' :
-            if( kanda_is_reservator() ) {
-                $fee = kanda_get_private_field_value();
-            } else {
-                $fee = get_field('additional_fee', $post_id);
-                if ($fee === '') {
-                    $rating = absint(get_field('hotelstarrating', $post_id));
-                    if ($rating > 5 || !$rating) {
-                        $rating = 0;
-                    }
-                    $option_name = sprintf('pricing_additional_fee_for_%d_star_hotel', $rating);
-                    $fee = kanda_get_theme_option($option_name);
-
-                    $fee = sprintf(
-                        '%1$s %2$s -> $%3$s',
-                        ($rating ? $rating : 'N/A'),
-                        $rating ? _n('star', 'stars', $rating, 'kanda') : '',
-                        number_format(floatval($fee), 2)
-                    );
-                } else {
-                    $fee = sprintf('$%1$s', number_format(floatval($fee), 2));
+            $fee = get_field('additional_fee', $post_id);
+            if ($fee === '') {
+                $rating = absint(get_field('hotelstarrating', $post_id));
+                if ($rating > 5 || !$rating) {
+                    $rating = 0;
                 }
+                $option_name = sprintf('pricing_additional_fee_for_%d_star_hotel', $rating);
+                $fee = kanda_get_theme_option($option_name);
+
+                $fee = sprintf(
+                    '%1$s %2$s -> $%3$s',
+                    ($rating ? $rating : 'N/A'),
+                    $rating ? _n('star', 'stars', $rating, 'kanda') : '',
+                    number_format(floatval($fee), 2)
+                );
+            } else {
+                $fee = sprintf('$%1$s', number_format(floatval($fee), 2));
             }
             echo $fee;
-			
+
             break;
         case 'city' :
-            echo IOL_Helper::get_city_name_from_code( get_post_meta( $post_id, 'hotelcity', true ) ); 
+            echo IOL_Helper::get_city_name_from_code( get_post_meta( $post_id, 'hotelcity', true ) );
             break;
 
     }
 }
 
 /**
-* Post type 'hotel' row actions
-*/
+ * Post type 'hotel' row actions
+ */
 add_filter('post_row_actions','kanda_custom_row_action', 10, 2);
 function kanda_custom_row_action( $actions, $post ) {
-	if ( $post->post_type == 'hotel' ){
-		unset( $actions['inline hide-if-no-js'] );
-		unset( $actions['view'] );
-		$actions['edit'] = str_replace( 'href=', 'target="_blank" href=', $actions['edit'] );
-	}
-	
-	return $actions;
+    if ( $post->post_type == 'hotel' ){
+        unset( $actions['inline hide-if-no-js'] );
+        unset( $actions['view'] );
+        $actions['edit'] = str_replace( 'href=', 'target="_blank" href=', $actions['edit'] );
+    }
+
+    return $actions;
 }
 
 /**
@@ -232,8 +230,8 @@ function kanda_stop_editing_higher_users( $user_id ) {
  */
 
 /**
-* Send / Resend booking information
-*/
+ * Send / Resend booking information
+ */
 add_action( 'kanda/admin/doing_email_updated_booking_details', 'kanda_admin_email_updated_booking_details', 10, 1 );
 function kanda_admin_email_updated_booking_details( $booking_id ) {
 
@@ -275,8 +273,8 @@ function kanda_admin_email_updated_booking_details( $booking_id ) {
 }
 
 /**
-* Handle custom requests in admin panel
-*/
+ * Handle custom requests in admin panel
+ */
 add_action( 'admin_init', 'kanda_check_knada_custom_requests' );
 function kanda_check_knada_custom_requests() {
 
@@ -302,8 +300,8 @@ function kanda_check_knada_custom_requests() {
 }
 
 /**
-* Register 'booking' post type metaboxes
-*/
+ * Register 'booking' post type metaboxes
+ */
 add_action('add_meta_boxes', 'kanda_register_booking_meta_boxes');
 function kanda_register_booking_meta_boxes() {
     add_meta_box(
@@ -317,8 +315,8 @@ function kanda_register_booking_meta_boxes() {
 }
 
 /**
-* Render 'booking' post type side metabox content
-*/
+ * Render 'booking' post type side metabox content
+ */
 function kanda_render_booking_post_type_side_metabox_content() {
     $url = add_query_arg( array( 'security' => wp_create_nonce( 'send-updated-booking-email' ), 'kaction' => 'emailit' ), get_edit_post_link() );
     printf(
