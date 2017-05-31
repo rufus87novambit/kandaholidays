@@ -115,8 +115,8 @@ function kanda_prevent_agency_access_to_admin() {
         return;
     }
 
-    if ( current_user_can( Kanda_Config::get( 'agency_role' ) ) ) {
-        $redirect = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : home_url( '/' );
+    if ( ! ( current_user_can( 'administrator' ) || kanda_is_reservator() ) ) {
+        $redirect = home_url( '/' );
         exit( wp_redirect( $redirect ) );
     }
 }
