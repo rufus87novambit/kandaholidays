@@ -208,11 +208,15 @@ function kanda_filter_user_row_actions( array $actions, WP_User $user ) {
  */
 add_filter( 'editable_roles', 'kanda_editable_roles', 10, 1 );
 function kanda_editable_roles( $all_roles ) {
-    if( current_user_can( 'reservator' ) ) {
-        unset( $all_roles['administrator'] );
+    $allowed_roles = array(
+        Kanda_Config::get( 'agency_role' )
+    );
+    if( ! kanda_is_reservator() ) {
+        $allowed_roles[] = Kanda_Config::get( 'reservator_role' );
+        $allowed_roles[] = 'administrator';
     }
 
-    return $all_roles;
+    return array_intersect_key( $all_roles, array_flip( $allowed_roles ) );
 }
 
 /**
