@@ -47,16 +47,21 @@ class Kanda_Fields {
             add_filter('acf/prepare_field/name=checkintime', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
             if( kanda_is_reservator() ) {
-                add_filter('acf/prepare_field/name=additional_fee', array( $this, 'make_private' ) );
-                add_filter('acf/prepare_field/name=real_price', array( $this, 'make_private' ) );
-                add_filter('acf/prepare_field/name=earnings', array( $this, 'make_private' ) );
+                /** Booking fields */
+                add_filter('acf/prepare_field/key=field_58e7ef5ec870e', array( $this, 'make_hidden' ) );	// pricing tab
+                add_filter('acf/prepare_field/key=field_58e7e589c870a', array( $this, 'make_hidden' ) ); 	// Payment Status
+                add_filter('acf/prepare_field/key=field_58e53d430570a', array( $this, 'make_hidden' ) );	// Real Price
+                add_filter('acf/prepare_field/key=field_58e53d530570b', array( $this, 'make_hidden' ) );	// Agency Price
+                add_filter('acf/prepare_field/key=field_58e53d640570c', array( $this, 'make_hidden' ) );	// Earnings
+                add_filter('acf/prepare_field/key=field_58e7e6c5c870b', array( $this, 'make_hidden' ) );	// Visa Rate
+                add_filter('acf/prepare_field/key=field_58e7e6d7c870c', array( $this, 'make_hidden' ) );	// Transfr Rate
+                add_filter('acf/prepare_field/key=field_58e7e6f0c870d', array( $this, 'make_hidden' ) );	// Other Rate
+                add_filter('acf/prepare_field/key=field_58e7f15068426', array( $this, 'make_hidden' ) );	// Paid Amount
 
-                add_filter('acf/prepare_field/name=payment_status', array( $this, 'make_readonly' ) );
-                add_filter('acf/prepare_field/name=agency_price', array( $this, 'make_readonly' ) );
-                add_filter('acf/prepare_field/name=visa_rate', array( $this, 'make_readonly' ) );
-                add_filter('acf/prepare_field/name=transfer_rate', array( $this, 'make_readonly' ) );
-                add_filter('acf/prepare_field/name=other_rate', array( $this, 'make_readonly' ) );
-                add_filter('acf/prepare_field/name=paid_amount', array( $this, 'make_readonly' ) );
+                /** User fields */
+                add_filter('acf/prepare_field/key=field_5920c267c2adb', array( $this, 'make_hidden' ) );	// Additional Fee
+                add_filter('acf/prepare_field/key=field_5925da9890612', array( $this, 'make_hidden' ) );	// Specific Additional Fee
+
             }
 
             add_filter('acf/prepare_field/name=hotel_city', array( $this, 'get_city_name' ) );
@@ -119,7 +124,7 @@ class Kanda_Fields {
      */
     public function make_readonly( $field ) {
         $field['readonly'] = true;
-		$field['disabled'] = true;
+        $field['disabled'] = true;
 
         return $field;
     }
@@ -135,6 +140,14 @@ class Kanda_Fields {
         $field['disabled'] = true;
 
         return $field;
+    }
+
+    /**
+     * Do not render a field
+     * This is a conditional function so it must called after checking some condition
+     */
+    public function make_hidden( $field ) {
+        return false;
     }
 
     /**
