@@ -488,7 +488,6 @@ add_action( 'admin_menu', 'kanda_add_menu_items');
 
 
 
-
 /** *************************** RENDER TEST PAGE ********************************
  *******************************************************************************
  * This function renders the admin page and the example list table. Although it's
@@ -518,7 +517,7 @@ function search_bookings_render_list_page(){
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Status', 'kanda' ); ?>:</label>
                     <?php $selected = isset( $_REQUEST['booking_status'] ) ? $_REQUEST['booking_status'] : ''; ?>
-                    <select name="booking_status">
+                    <select name="booking_status" class="regular-text">
                         <option value="" <?php selected( $selected, '' ); ?>>---</option>
                         <option value="requested" <?php selected( $selected, 'requested' ); ?>><?php _e( 'On Request', 'kanda' ); ?></option>
                         <option value="option" <?php selected( $selected, 'option' ); ?>><?php _e( 'Option', 'kanda' ); ?></option>
@@ -529,36 +528,43 @@ function search_bookings_render_list_page(){
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Passenger First Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="pfn" value="<?php echo isset( $_REQUEST['pfn'] ) ? $_REQUEST['pfn'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="pfn" value="<?php echo isset( $_REQUEST['pfn'] ) ? $_REQUEST['pfn'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Passenger Last Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="pln" value="<?php echo isset( $_REQUEST['pln'] ) ? $_REQUEST['pln'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="pln" value="<?php echo isset( $_REQUEST['pln'] ) ? $_REQUEST['pln'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booked City', 'kanda' ); ?>:</label>
-                    <input type="text" name="city" value="<?php echo isset( $_REQUEST['city'] ) ? $_REQUEST['city'] : ''; ?>" />
+                    <?php $selected = isset( $_REQUEST['city'] ) ? $_REQUEST['city'] : ''; ?>
+                    <select name="city" class="regular-text">
+                        <option value="" <?php selected( $selected, '' ); ?>>---</option>
+                        <?php foreach( IOL_Config::get('cities') as $code => $name ) { ?>
+                            <option value="<?php echo $code; ?>" <?php selected( $selected, $code ); ?>><?php echo $name; ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Hotel Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="hotel_name" value="<?php echo isset( $_REQUEST['hotel_name'] ) ? $_REQUEST['hotel_name'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="hotel_name" value="<?php echo isset( $_REQUEST['hotel_name'] ) ? $_REQUEST['hotel_name'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Reference Number', 'kanda' ); ?>:</label>
-                    <input type="text" name="brn" value="<?php echo isset( $_REQUEST['brn'] ) ? $_REQUEST['brn'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="brn" value="<?php echo isset( $_REQUEST['brn'] ) ? $_REQUEST['brn'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="bdate" class="datepicker" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
+                    <input type="text" class="regular-text datepicker" name="bdate" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Check In Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="chidate" class="datepicker" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
+                    <input type="text" class="regular-text datepicker" name="chidate" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
-                    <?php
-                        submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking' );
-                    ?>
+                    <p class="submit">
+                        <?php submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking', false ); ?>
+                        <a href="<?php echo admin_url( 'edit.php?post_type=booking&page=search_bookings' ); ?>" class="button button-secondary"><?php _e( 'Clear', 'kanda' ); ?></a>
+                    </p>
                 </div>
             </div>
         </form>
