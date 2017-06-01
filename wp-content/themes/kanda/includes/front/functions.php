@@ -234,6 +234,8 @@ add_filter( 'auth_cookie_expiration', 'kanda_auth_cookie_expiration', 10, 3 );
 function kanda_auth_cookie_expiration( $length, $user_id, $remember ) {
     if( user_can( (int)$user_id, 'administrator' ) ) {
         $length = Kanda_Config::get( 'cookie_lifetime->authentication->administrator' );
+    } elseif( kanda_is_reservator( (int)$user_id ) ) {
+        $length = Kanda_Config::get( 'cookie_lifetime->authentication->reservator' );
     } else {
         $length = Kanda_Config::get( 'cookie_lifetime->authentication->agency' );
     }
