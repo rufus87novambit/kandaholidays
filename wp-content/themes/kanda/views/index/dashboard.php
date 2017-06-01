@@ -21,7 +21,7 @@
                     <div class="td hidden-md-down"><?php echo date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', false, false ) ) ); ?></div>
                     <div class="td">
                         <a href="<?php the_permalink(); ?>" target="_blank" class="link">
-                            <span class="hidden-lg-down"><?php esc_html_e( 'See details', 'kanda' ); ?></span>
+                            <span class="hidden-md-down"><?php esc_html_e( 'See details', 'kanda' ); ?></span>
                             <span class="hidden-lg-up"><?php esc_html_e( 'Details', 'kanda' ); ?></span>
                         </a>
                     </div>

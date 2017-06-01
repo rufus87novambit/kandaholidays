@@ -113,9 +113,8 @@ class Kanda_Booking_Cancellation_Notification {
             '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
             '{{CANCELLATION_CHARGES}}'  => $charges
         );
-
-        //$booking_author_id
-        $sent_user = kanda_mailer()->send_user_email( 'israelyan.rafik@gmail.com', $subject, $message, $variables );
+		
+        $sent_user = kanda_mailer()->send_user_email( $booking_author_id, $subject, $message, $variables );
         if( ! $sent_user ) {
             kanda_logger()->log( sprintf( 'Error sending email to user for booking notification. booking_id=%d', $booking_id ) );
         }

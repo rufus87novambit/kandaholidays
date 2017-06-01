@@ -516,7 +516,7 @@ function search_bookings_render_list_page(){
             <input type="hidden" name="page" value="search_bookings">
             <div class="clearfix">
                 <div class="list-table-form-row">
-                    <label><?php _e( 'Passenger First Name', 'kanda' ); ?>:</label>
+                    <label><?php _e( 'Booking Status', 'kanda' ); ?>:</label>
                     <?php $selected = isset( $_REQUEST['booking_status'] ) ? $_REQUEST['booking_status'] : ''; ?>
                     <select name="booking_status">
                         <option value="" <?php selected( $selected, '' ); ?>>---</option>
