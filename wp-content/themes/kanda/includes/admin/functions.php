@@ -330,3 +330,12 @@ function kanda_render_booking_post_type_side_metabox_content() {
         __( 'Email it!', 'kanda' )
     );
 }
+
+/**
+ * Remove add new for 'hotel' and 'booking' post type
+ */
+add_action( 'admin_menu', 'kanda_remove_things_from_admin_menu', 9999 );
+function kanda_remove_things_from_admin_menu() {
+    remove_submenu_page( 'edit.php?post_type=booking', 'post-new.php?post_type=booking' );
+    remove_submenu_page( 'edit.php?post_type=hotel', 'post-new.php?post_type=hotel' );
+}

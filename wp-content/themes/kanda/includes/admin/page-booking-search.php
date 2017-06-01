@@ -143,8 +143,8 @@ class Booking_Search_List_Table extends WP_List_Table {
 
         //Build row actions
         $actions = array(
-            'edit'      => sprintf( '<a href="%s">Edit</a>', get_edit_post_link( $item->ID ) ),
-            'delete'    => sprintf('<a href="%s">Delete</a>',get_delete_post_link( $item->ID ) ),
+            'edit'      => sprintf( '<a href="%1$s" target="_blank">%2$s</a>', get_edit_post_link( $item->ID ), __( 'Edit', 'kanda' ) ),
+            'delete'    => sprintf('<a href="%2$s">%2$s</a>', get_delete_post_link( $item->ID ), __( 'Delete', 'kanda' ) )
         );
 
         //Return the title contents
@@ -488,7 +488,6 @@ add_action( 'admin_menu', 'kanda_add_menu_items');
 
 
 
-
 /** *************************** RENDER TEST PAGE ********************************
  *******************************************************************************
  * This function renders the admin page and the example list table. Although it's
@@ -511,14 +510,14 @@ function search_bookings_render_list_page(){
         <h2><?php _e( 'Booking Search', 'kanda' ); ?></h2>
 
         <!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
-        <form id="movies-filter" method="get" action="<?php echo add_query_arg( array( 'post_type' => 'booking', 'page' => 'search_bookings' ), admin_url( 'edit.php' ) ); ?>">
+        <form id="bookings-filter" method="get" action="<?php echo add_query_arg( array( 'post_type' => 'booking', 'page' => 'search_bookings' ), admin_url( 'edit.php' ) ); ?>">
             <input type="hidden" name="post_type" value="booking">
             <input type="hidden" name="page" value="search_bookings">
             <div class="clearfix">
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Status', 'kanda' ); ?>:</label>
                     <?php $selected = isset( $_REQUEST['booking_status'] ) ? $_REQUEST['booking_status'] : ''; ?>
-                    <select name="booking_status">
+                    <select name="booking_status" class="regular-text">
                         <option value="" <?php selected( $selected, '' ); ?>>---</option>
                         <option value="requested" <?php selected( $selected, 'requested' ); ?>><?php _e( 'On Request', 'kanda' ); ?></option>
                         <option value="option" <?php selected( $selected, 'option' ); ?>><?php _e( 'Option', 'kanda' ); ?></option>
@@ -529,42 +528,49 @@ function search_bookings_render_list_page(){
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Passenger First Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="pfn" value="<?php echo isset( $_REQUEST['pfn'] ) ? $_REQUEST['pfn'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="pfn" value="<?php echo isset( $_REQUEST['pfn'] ) ? $_REQUEST['pfn'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Passenger Last Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="pln" value="<?php echo isset( $_REQUEST['pln'] ) ? $_REQUEST['pln'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="pln" value="<?php echo isset( $_REQUEST['pln'] ) ? $_REQUEST['pln'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booked City', 'kanda' ); ?>:</label>
-                    <input type="text" name="city" value="<?php echo isset( $_REQUEST['city'] ) ? $_REQUEST['city'] : ''; ?>" />
+                    <?php $selected = isset( $_REQUEST['city'] ) ? $_REQUEST['city'] : ''; ?>
+                    <select name="city" class="regular-text">
+                        <option value="" <?php selected( $selected, '' ); ?>>---</option>
+                        <?php foreach( IOL_Config::get('cities') as $code => $name ) { ?>
+                            <option value="<?php echo $code; ?>" <?php selected( $selected, $code ); ?>><?php echo $name; ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Hotel Name', 'kanda' ); ?>:</label>
-                    <input type="text" name="hotel_name" value="<?php echo isset( $_REQUEST['hotel_name'] ) ? $_REQUEST['hotel_name'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="hotel_name" value="<?php echo isset( $_REQUEST['hotel_name'] ) ? $_REQUEST['hotel_name'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Reference Number', 'kanda' ); ?>:</label>
-                    <input type="text" name="brn" value="<?php echo isset( $_REQUEST['brn'] ) ? $_REQUEST['brn'] : ''; ?>" />
+                    <input type="text" class="regular-text" name="brn" value="<?php echo isset( $_REQUEST['brn'] ) ? $_REQUEST['brn'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Booking Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="bdate" class="datepicker" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
+                    <input type="text" class="regular-text datepicker" name="bdate" value="<?php echo isset( $_REQUEST['bdate'] ) ? $_REQUEST['bdate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
                     <label><?php _e( 'Check In Date', 'kanda' ); ?>:</label>
-                    <input type="text" name="chidate" class="datepicker" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
+                    <input type="text" class="regular-text datepicker" name="chidate" value="<?php echo isset( $_REQUEST['chidate'] ) ? $_REQUEST['chidate'] : ''; ?>" />
                 </div>
                 <div class="list-table-form-row">
-                    <?php
-                        submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking' );
-                    ?>
+                    <p class="submit">
+                        <?php submit_button( __( 'Search', 'kanda' ), 'primary', 'kanda_search_booking', false ); ?>
+                        <a href="<?php echo add_query_arg( array( 'post_type' => 'booking', 'page' => 'search_bookings' ), admin_url( 'edit.php' ) ); ?>" class="button button-secondary"><?php _e( 'Clear', 'kanda' ); ?></a>
+                    </p>
                 </div>
             </div>
         </form>
 
         <!-- Now we can render the completed list table -->
-        <?php $booking_search_list_table->display() ?>
+        <?php $booking_search_list_table->display(); ?>
 
     </div>
     <?php
