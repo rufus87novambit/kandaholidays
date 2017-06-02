@@ -192,8 +192,8 @@ class Booking_Controller extends Base_Controller {
                         ));
 
                         /** get cancellation policy */
-                        $c_start_date = date( IOL_Config::get( 'date_format' ), strtotime( $request_args['start_date'] ) );
-                        $c_end_date = date( IOL_Config::get( 'date_format' ), strtotime( $request_args['end_date'] ) );
+                        $c_start_date = Datetime::createFromFormat( Kanda_Config::get( 'display_date_format' ), $request_args['start_date'] )->format( IOL_Config::get( 'date_format' ) );
+                        $c_end_date = Datetime::createFromFormat( Kanda_Config::get( 'display_date_format' ), $request_args['end_date'] )->format( IOL_Config::get( 'date_format' ) );
                         $cancellation_response = provider_iol()->hotels()->hotel_cancellation_policy( $hotel_code, $room_type_code, $contract_token_id, $c_start_date, $c_end_date );
 
                         if( $cancellation_response->is_valid() ) {
