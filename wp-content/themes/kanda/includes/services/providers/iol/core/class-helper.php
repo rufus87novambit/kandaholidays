@@ -335,7 +335,7 @@ class IOL_Helper {
 								'message'	=> sprintf( 
 									__( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), 
 									$room_restrictions['muststaydays'], 
-									_n( 'day', 'days', $room_restrictions['muststaydays'], 'kanda' ) 
+									_n( 'night', 'nights', $room_restrictions['muststaydays'], 'kanda' )
 								)
 							);
 						}
@@ -347,7 +347,7 @@ class IOL_Helper {
                                 'message'	=> sprintf(
                                     __( 'Room requires maximum stay of %1$d %2$s.', 'kanda' ),
                                     $room_restrictions['muststaydays'],
-                                    _n( 'day', 'days', $room_restrictions['muststaydays'], 'kanda' )
+                                    _n( 'night', 'nights', $room_restrictions['muststaydays'], 'kanda' )
                                 )
                             );
                         }
