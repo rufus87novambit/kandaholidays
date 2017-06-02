@@ -93,6 +93,7 @@ class IOL_Config {
 	*/
 	private static $possible_restrictions = array(
 		'minnights',
+        'maxnights',
 		'nocheckin',
 		'nocheckout'
 	);

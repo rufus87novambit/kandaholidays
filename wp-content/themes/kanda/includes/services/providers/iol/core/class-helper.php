@@ -340,7 +340,19 @@ class IOL_Helper {
 							);
 						}
 						break;
-						
+                    case 'maxnights':
+                        if( $room_restrictions['muststaydays'] && ( $room_restrictions['muststaydays'] < $args['request']['nights_count'] ) ) {
+                            $restriction = array(
+                                'type' 		=> $type,
+                                'message'	=> sprintf(
+                                    __( 'Room requires maximum stay of %1$d %2$s.', 'kanda' ),
+                                    $room_restrictions['muststaydays'],
+                                    _n( 'day', 'days', $room_restrictions['muststaydays'], 'kanda' )
+                                )
+                            );
+                        }
+                        break;
+
 					case 'nocheckin':
 						$restriction = array(
 							'type' 		=> $type,
