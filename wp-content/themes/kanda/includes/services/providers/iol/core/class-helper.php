@@ -313,6 +313,53 @@ class IOL_Helper {
 
         return isset( $cities[ $code ] ) ? $cities[ $code ] : $code;
     }
+	
+	/**
+	* Check room possible restrictions
+	*/
+	private static function check_room_restrictions( $room, $args ) {
+		$restriction = false;
+		
+		if( isset( $room['restriction'] ) ) {
+			$room_restrictions = $room['restriction'];
+		
+			$type = preg_replace( '/\s+/', '', strtolower( $room_restrictions['restrictiontype'] ) );
+			$possible_restrictions = IOL_Config::get( 'possible_restrictions' );
+			
+			if( in_array( $type, $possible_restrictions ) ) {
+				switch( $type ) {
+					case 'minnights':
+						if( $room_restrictions['muststaydays'] && ( $room_restrictions['muststaydays'] > $args['request']['nights_count'] ) ) {
+							$restriction = array(
+								'type' 		=> $type,
+								'message'	=> sprintf( 
+									__( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), 
+									$room_restrictions['muststaydays'], 
+									_n( 'day', 'days', $room_restrictions['muststaydays'], 'kanda' ) 
+								)
+							);
+						}
+						break;
+						
+					case 'nocheckin':
+						$restriction = array(
+							'type' 		=> $type,
+							'message'	=> __( 'No Check In.', 'kanda' )
+						);
+						break;
+						
+					case 'nocheckout':
+						$restriction = array(
+							'type' 		=> $type,
+							'message'	=> __( 'No Check Out.', 'kanda' )
+						);
+						break;
+				}
+			}
+		}
+		
+		return $restriction;
+	}
 
     /**
      * Helper method to render room details for search result
@@ -343,7 +390,7 @@ class IOL_Helper {
         ) );
 
         $unique_id = uniqid();
-        $must_stay_days = ( isset( $room['restriction']['muststaydays'] ) && $room['restriction']['muststaydays'] ) ? $room['restriction']['muststaydays'] : 0;
+		$restriction = static::check_room_restrictions( $room, $args );
         ?>
         <div class="users-table table">
             <header class="thead">
@@ -404,12 +451,10 @@ class IOL_Helper {
                     <?php } ?>
                 <?php } ?>
 
-                <?php if( $must_stay_days ) { ?>
+                <?php if( $restriction ) { ?>
                     <div class="tr">
                         <div class="td"><?php esc_html_e('Restrictions', 'kanda'); ?></div>
-                        <div class="td">
-                            <?php printf( __( 'Room requires minimum stay of %d days', 'kanda' ), $must_stay_days ); ?>
-                        </div>
+                        <div class="td"><?php echo $restriction['message']; ?></div>
                     </div>
                 <?php } ?>
 
@@ -449,7 +494,7 @@ class IOL_Helper {
         </div>
         <?php
 
-        static::render_room_booking_confirmation_popup( $unique_id, $room, $args, $must_stay_days );
+        static::render_room_booking_confirmation_popup( $unique_id, $room, $args, $restriction );
         static::render_daily_rate_popup( array(
             'popup_id'        => sprintf( 'daily_rate_%s', $unique_id ),
             'room'            => $room,
@@ -468,7 +513,7 @@ class IOL_Helper {
      * @param $room
      * @param $args
      */
-    public static function render_room_booking_confirmation_popup( $popup_id, $room, $args, $must_stay_days ) {
+    public static function render_room_booking_confirmation_popup( $popup_id, $room, $args, $restriction ) {
         $booking_create_url = static::get_booking_create_url( array(
             'hotel_code'            => $args['hotelcode'],
             'city_code'             => $args['request']['city'],
@@ -482,7 +527,10 @@ class IOL_Helper {
         ) );
         ?>
         <div id="<?php echo $popup_id; ?>" class="static-popup -sm mfp-hide">
-            <?php if( $args['request']['nights_count'] >= $must_stay_days ) { ?>
+			<?php if( $restriction ) { ?>
+				<h2 class="text-center"><?php _e( 'Restriction', 'kanda' ); ?></h2>
+                <p class="text-center"><?php echo $restriction['message']; ?></p>
+			<?php } else { ?>
                 <h2 class="text-center"><?php _e( 'Booking Confirmation', 'kanda' ); ?></h2>
                 <p class="text-center"><?php _e( 'Are you sure you want to proccess with following details?', 'kanda' ); ?></p>
 
@@ -553,9 +601,6 @@ class IOL_Helper {
                 <div class="actions text-center">
                     <a href="<?php echo $booking_create_url; ?>" class="btn -sm -secondary" target="_blank"><?php _e( 'Process', 'kanda' ); ?></a>
                 </div>
-            <?php } else { ?>
-                <h2 class="text-center"><?php _e( 'Minimum stay restriction', 'kanda' ); ?></h2>
-                <p class="text-center"><?php printf( __( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), $must_stay_days, _n( 'day', 'days', $must_stay_days, 'kanda' ) ); ?></p>
             <?php } ?>
         </div>
         <?php

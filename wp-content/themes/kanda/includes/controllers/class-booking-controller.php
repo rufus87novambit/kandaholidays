@@ -760,7 +760,7 @@ class Booking_Controller extends Base_Controller {
                             $interval = $end_date->diff( $start_date );
                             $nights_count = $interval->d;
 
-                            $real_price = $data['bookingdetails']['bookingtotalrate'];
+                            $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
                             $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
                             $real_price = $real_price['amount'];
 

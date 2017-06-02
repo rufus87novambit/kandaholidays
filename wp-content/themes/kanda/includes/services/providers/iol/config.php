@@ -86,6 +86,16 @@ class IOL_Config {
         'RASK'  => 'Ras al Khaimah',
         'SHAR'  => 'Sharjah'
     );
+	
+	/**
+	* Room booking restrictions possible types
+	* @var array
+	*/
+	private static $possible_restrictions = array(
+		'minnights',
+		'nocheckin',
+		'nocheckout'
+	);
 
     /**
      * Request args
