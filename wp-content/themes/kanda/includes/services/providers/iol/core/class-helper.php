@@ -335,12 +335,13 @@ class IOL_Helper {
 								'message'	=> sprintf( 
 									__( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), 
 									$room_restrictions['muststaydays'], 
-									_n( 'night', 'nights', $room_restrictions['muststaydays'], 'kanda' )
+									_n( 'night', 'nights', $room_restrictions['muststaydays'], 'kanda' ) 
 								)
 							);
 						}
 						break;
-                    case 'maxnights':
+					
+					case 'maxnights':
                         if( $room_restrictions['muststaydays'] && ( $room_restrictions['muststaydays'] < $args['request']['nights_count'] ) ) {
                             $restriction = array(
                                 'type' 		=> $type,
@@ -352,7 +353,7 @@ class IOL_Helper {
                             );
                         }
                         break;
-
+					
 					case 'nocheckin':
 						$restriction = array(
 							'type' 		=> $type,
@@ -380,6 +381,11 @@ class IOL_Helper {
      * @param $args
      */
     public static function render_room_details( $room, $args ) {
+		
+		if( strtolower( $room['roomstatus'] ) == 'xx' ) {
+            return;
+        }
+		
         $room_occupants = $args['request']['room_occupants'][ $args['roomnumber'] ];
         $availability_request_url = static::get_availability_request_url( array(
             'roomtypecode' => $room['roomtypecode'],

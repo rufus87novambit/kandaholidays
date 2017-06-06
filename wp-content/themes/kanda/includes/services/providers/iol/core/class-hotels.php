@@ -49,10 +49,13 @@ class IOL_Hotels {
         );
 
         if( isset( $args['hotel_name'] ) && $args['hotel_name'] ) {
-            $search_criteria->addChild(
-                IOL_Helper::parse_xml_key('hotel_name'),
-                trim( $args['hotel_name'] )
-            );
+			$hotel_code = kanda_get_hotel_code_by_name( trim( $args['hotel_name'] ) );
+			if( $hotel_code ) {
+				$search_criteria->addChild(
+					IOL_Helper::parse_xml_key('hotel_code'),
+					$hotel_code
+				);
+			}
         }
 
         if( isset( $args['star_rating'] ) && $args['star_rating'] ) {

@@ -63,7 +63,7 @@ class IOL_Config {
      * @var array
      */
     private static $cache_timeout = array(
-        'search'        => 3 * HOUR_IN_SECONDS
+        'search'        => 1 * HOUR_IN_SECONDS
     );
 
     /**
@@ -93,7 +93,7 @@ class IOL_Config {
 	*/
 	private static $possible_restrictions = array(
 		'minnights',
-        'maxnights',
+		'maxnights',
 		'nocheckin',
 		'nocheckout'
 	);
