@@ -388,3 +388,10 @@
 .sidebar .slider img {
     height: auto;
 }
+
+.cost-price-warning {
+    padding: .5rem 0;
+}
+.cost-price-warning h4 {
+    margin: 0;
+}
