@@ -604,6 +604,11 @@ function kanda_generate_price( $price, $hotel_code, $exit_currency, $input_curre
 
 }
 
+/**
+ * Get user additional fee
+ * @param bool|false $user_id
+ * @return int|mixed|null|void
+ */
 function kanda_get_user_additional_fee( $user_id = false ) {
     $user_id = $user_id ? $user_id : get_current_user_id();
 
@@ -613,10 +618,6 @@ function kanda_get_user_additional_fee( $user_id = false ) {
     }
 
     return $additional_fee;
-}
-
-function kanda_exchange_rate( $amount, $hotel_code, $input_currency, $exit_currency ) {
-    $additional_fee = kanda_get_hotel_additional_fee( $hotel_code );
 }
 
 /**
