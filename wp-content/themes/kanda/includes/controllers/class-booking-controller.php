@@ -192,8 +192,8 @@ class Booking_Controller extends Base_Controller {
                         ));
 
                         /** get cancellation policy */
-                        $c_start_date = date( IOL_Config::get( 'date_format' ), strtotime( $request_args['start_date'] ) );
-                        $c_end_date = date( IOL_Config::get( 'date_format' ), strtotime( $request_args['end_date'] ) );
+                        $c_start_date = Datetime::createFromFormat( Kanda_Config::get( 'display_date_format' ), $request_args['start_date'] )->format( IOL_Config::get( 'date_format' ) );
+                        $c_end_date = Datetime::createFromFormat( Kanda_Config::get( 'display_date_format' ), $request_args['end_date'] )->format( IOL_Config::get( 'date_format' ) );
                         $cancellation_response = provider_iol()->hotels()->hotel_cancellation_policy( $hotel_code, $room_type_code, $contract_token_id, $c_start_date, $c_end_date );
 
                         if( $cancellation_response->is_valid() ) {
@@ -760,7 +760,16 @@ class Booking_Controller extends Base_Controller {
                             $interval = $end_date->diff( $start_date );
                             $nights_count = $interval->d;
 
-                            $real_price = $data['bookingdetails']['bookingtotalrate'];
+                            $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
+							
+							// apply discounts to room real price
+							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
+								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
+								foreach( $discounts as $discount ) {
+									$real_price -= abs( $discount['totaldiscountrate'] );
+								}
+							}
+							
                             $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
                             $real_price = $real_price['amount'];
 

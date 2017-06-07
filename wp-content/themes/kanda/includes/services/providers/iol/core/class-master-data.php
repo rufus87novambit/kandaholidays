@@ -126,6 +126,11 @@ class IOL_Master_Data {
 
                 $code = $hotel['hotelcode'];
 
+                // do not save blacklisted hotel @see IOL_Config for city blacklisted hotels
+                if( static::is_hotel_blacklisted( $city, $code ) ) {
+                    continue;
+                }
+
                 /** Hotel description */
                 $description = '';
                 if( array_key_exists( 'descriptionlist', $hotel ) && array_key_exists( 'description', $hotel['descriptionlist'] ) ) {
@@ -206,6 +211,21 @@ class IOL_Master_Data {
 
         $query = "SELECT `code`, `city`, `description`, `images` FROM `{$table}` WHERE `city` = '{$city_code}'";
         return $wpdb->get_results( $query, OBJECT_K );
+    }
+
+    /**
+     * Check city code for blacklisting
+     *
+     * @param $city_code
+     * @param $hotel_code
+     * @return bool
+     */
+    private static function is_hotel_blacklisted( $city_code, $hotel_code ) {
+		
+        $option_name = sprintf( 'hotels_blacklist->%1$s', $city_code );
+        $city_blacklist = IOL_Config::get( $option_name );
+
+        return in_array( $hotel_code, $city_blacklist );
     }
 
 }

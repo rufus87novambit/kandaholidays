@@ -271,7 +271,7 @@
             arrows      : false,
             fade        : true,
             autoplay    : true,
-            dots        :true,
+            dots        : false,
             dotsClass   : 'slick-dots container'
         });
     }
