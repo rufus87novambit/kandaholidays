@@ -7,11 +7,9 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
-    notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
-    del = require('del'),
-    notify = require('gulp-notify');
+    del = require('del');
 
 
 /********************************** Front **********************************/
@@ -27,8 +25,7 @@ gulp.task('css-front', function() {
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('front.min.css'))
-        .pipe(gulp.dest('../css/'))
-        .pipe(notify("Done! CSS Front"));
+        .pipe(gulp.dest('../css/'));
 });
 
 /**
@@ -51,8 +48,7 @@ gulp.task('js-front', function() {
     ])
         .pipe(concat('front.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'))
-        .pipe(notify("Done! JS Front"));
+        .pipe(gulp.dest('../js/'));
 });
 
 /**
@@ -101,8 +97,7 @@ gulp.task('css-back', function () {
     ])
         .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
-        .pipe(gulp.dest('../css/'))
-        .pipe(notify("Done! CSS Back"));
+        .pipe(gulp.dest('../css/'));
 });
 
 /**
@@ -129,8 +124,7 @@ gulp.task('js-back', function () {
     ])
         .pipe(concat('back.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'))
-        .pipe(notify("Done! JS Back"));
+        .pipe(gulp.dest('../js/'));
 });
 
 /**
@@ -163,8 +157,7 @@ gulp.task('css-admin', function () {
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('admin.min.css'))
-        .pipe(gulp.dest('../css/'))
-        .pipe(notify("Done! CSS Admin"));
+        .pipe(gulp.dest('../css/'));
 });
 
 /**
@@ -183,8 +176,7 @@ gulp.task('js-admin', function () {
     ])
         .pipe(concat('admin.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'))
-        .pipe(notify( "Done! JS Admin" ));
+        .pipe(gulp.dest('../js/'));
 });
 
 /**

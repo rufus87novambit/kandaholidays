@@ -9,6 +9,7 @@
     "gulp-clean-css": "*",
     "gulp-concat": "^2.5.0",
     "gulp-imagemin": "^2.2.0",
+    "gulp-install": "^1.1.0",
     "gulp-jshint": "^1.9.2",
     "gulp-livereload": "^3.7.0",
     "gulp-modernizr": "^1.0.0-alpha",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "cropperjs": "*",
+    "gulp-install": "^1.1.0",
     "gulp-notify": "^2.2.0",
     "magnific-popup": "^1.1.0",
     "modernizr": "^3.3.1",
