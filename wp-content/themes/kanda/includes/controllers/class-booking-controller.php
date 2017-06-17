@@ -248,7 +248,8 @@ class Booking_Controller extends Base_Controller {
                                     'room_configuration_id' => 1, //$room_configuration_id,
                                     'meal_plan_code'        => $meal_plan_code,
                                     'adults'                => $adults,
-                                    'children'              => $children
+                                    'children'              => $children,
+									'agency_ref'			=> get_user_meta( get_current_user_id(), 'company_name', true )
                                 ));
 
                                 if ( $booking_response->is_valid() ) {

@@ -146,6 +146,11 @@ class IOL_Bookings {
             IOL_Helper::parse_xml_key( 'city_code' ),
             $args['city_code']
         );
+		
+		$agency_ref = $hotel_details->addChild(
+            IOL_Helper::parse_xml_key( 'agency_ref' ),
+            substr( $args['agency_ref'], 0, 20 )
+        );
 
         $room_details = $hotel_details->addChild(
             IOL_Helper::parse_xml_key( 'room_details' )

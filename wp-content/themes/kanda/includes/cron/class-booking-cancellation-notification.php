@@ -63,6 +63,11 @@ class Kanda_Booking_Cancellation_Notification {
                     'key'   => 'payment_status',
                     'value' => 'unpaid',
                 ),
+				array(
+                    'key'   	=> 'booking_status',
+                    'value' 	=> 'cancelled',
+					'compare'	=> '!='
+                ),
                 array(
                     'key' => 'cancellation_policy_0_from',
                     'value' => array( date( 'Ymd', time() ), date( 'Ymd', time() + $this->days_to_hours( $this->days_left ) ) ),

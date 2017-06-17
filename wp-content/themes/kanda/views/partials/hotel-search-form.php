@@ -151,7 +151,7 @@
     <fieldset class="fieldset row">
         <?php
             for( $i = 1; $i <= $rooms_count; $i++ ) {
-                $room_occupants = isset( $room_occupants ) ? $room_occupants : array( 1 => array( 'adults' => 1, 'child' => 0 ) );
+                $room_occupants = isset( $room_occupants ) ? $room_occupants : array( 1 => array( 'adults' => 2, 'child' => 0 ) );
                 $adults = $room_occupants[ $i ][ 'adults' ];
                 $children = $room_occupants[ $i ][ 'child' ];
                 $has_children = is_array( $children );

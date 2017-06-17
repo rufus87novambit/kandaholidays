@@ -228,7 +228,9 @@ class IOL_Hotels {
         else {
             $xml = $this->generate_search_xml( $request_args );
 			
-			//echo $xml; die;
+			//if( $_SERVER['REMOTE_ADDR'] == '109.75.46.141' ) {
+				//echo $xml; die;
+			//}
 
             $response = $this->request_instance->process( $xml, $request_args );
 

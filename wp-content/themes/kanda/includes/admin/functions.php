@@ -184,7 +184,10 @@ function kanda_custom_row_action( $actions, $post ) {
 	if ( $post->post_type == 'hotel' ){
 		unset( $actions['inline hide-if-no-js'] );
 		unset( $actions['view'] );
-		$actions['edit'] = str_replace( 'href=', 'target="_blank" href=', $actions['edit'] );
+		
+		if( isset( $actions['edit'] ) ) {
+			$actions['edit'] = str_replace( 'href=', 'target="_blank" href=', $actions['edit'] );
+		}
 	}
 	
 	return $actions;
