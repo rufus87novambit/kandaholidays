@@ -104,7 +104,7 @@ gulp.task('css-back', function () {
  * Watch for back css changes
  */
 gulp.task('css-back-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/rating/*', '../icons/style.css'], ['css-back']);
+    gulp.watch(['../assets/css/*', '../assets/css/rating/*'], ['css-back']);
 });
 
 /**
@@ -152,7 +152,6 @@ gulp.task('back-build', ['css-back','js-back']);
  */
 gulp.task('css-admin', function () {
     gulp.src([
-        '../icons/style.css',
         '../assets/css/admin/admin.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
@@ -164,7 +163,7 @@ gulp.task('css-admin', function () {
  * Watch for admin css changes
  */
 gulp.task('css-admin-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/admin/*', '../icons/style.css'], ['css-admin']);
+    gulp.watch(['../assets/css/*', '../assets/css/admin/*'], ['css-admin']);
 });
 
 /**

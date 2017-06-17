@@ -29,6 +29,7 @@ function kanda_admin_enqueue_styles() {
     if( get_current_screen()->id == 'booking_page_search_bookings' ) {
         wp_enqueue_style( 'jquery-ui', 'http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css' );
     }
+	wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
     wp_enqueue_style( 'kanda-admin', KANDA_THEME_URL . 'css/admin.min.css', array(), null);
 }
 
