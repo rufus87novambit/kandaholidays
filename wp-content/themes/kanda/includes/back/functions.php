@@ -199,6 +199,7 @@ function kanda_booking_create_send_notifications( $booking_id ) {
         '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
         '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
         '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
+        '{{BOOKING_STATUS}}'        => ucwords( get_field( 'booking_status', $booking_id ) ),
         '{{CANCELLATION_DETAILS}}'  => $cancellation_html
     );
 
@@ -215,31 +216,6 @@ function kanda_booking_create_send_notifications( $booking_id ) {
         }
     }
 }
-
-/**
- * Send admin notification on booking cancellation
- */
-//add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_admin_notification' );
-//function kanda_booking_cancel_send_admin_notification( $booking_id ) {
-//
-//    $sent = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
-//    if( ! $sent ) {
-//        return;
-//    }
-//
-//    $subject = esc_html__( 'Booking Cancellation', 'kanda' );
-//
-//    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
-//    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'Booking has been cancelled at {{SITE_NAME}}.', 'kanda' ) );
-//
-//    $message .= '<p></p>';
-//    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
-//    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
-//
-//    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-//        kanda_logger()->log( sprintf( 'Error sending email to admin for booking cancellation. booking_id=%d' ), $booking_id );
-//    }
-//}
 
 add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_notifications', 10, 1 );
 function kanda_booking_cancel_send_notifications( $booking_id ) {
