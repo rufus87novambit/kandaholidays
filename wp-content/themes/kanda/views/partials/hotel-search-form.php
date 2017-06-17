@@ -1,6 +1,6 @@
 <form class="form-block" id="form_hotel_search" method="post">
 
-    <?php $city = isset( $city ) ? $city : 'AUH'; ?>
+    <?php $city = isset( $city ) ? $city : 'DXB'; ?>
     <fieldset class="fieldset sep-btm">
         <legend><?php esc_html_e( 'SELECT DESTINATION', 'kanda' ); ?></legend>
         <ul class="block-sm-3 clearfix">
