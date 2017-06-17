@@ -49,14 +49,15 @@ function kanda_admin_enqueue_scripts() {
 /**
  * Add additional columns to users table
  */
-add_filter( 'manage_users_columns', 'kanda_manage_users_columns' );
+add_filter( 'manage_users_columns', 'kanda_manage_users_columns', 10, 1 );
 function kanda_manage_users_columns( $columns ) {
 
     unset( $columns['posts'] );
 
     return array_merge( $columns, array(
-        'company-name' => esc_html__( 'Company', 'kanda' ),
-        'status' => esc_html__( 'Status', 'kanda' )
+        'company-name'      => esc_html__( 'Company', 'kanda' ),
+        'status'            => esc_html__( 'Status', 'kanda' ),
+	    'total_bookings'    => esc_html__( 'Total Bookings', 'kanda' ),
     ) );
 }
 
@@ -87,6 +88,15 @@ function kanda_manage_users_custom_column( $value, $column_name, $user_id ) {
             $company_name = get_the_author_meta( 'company_name', $user_id );
             $value = $company_name ? $company_name : $empty_value;
             break;
+	    case 'total_bookings':
+	    	global $wpdb;
+	    	$sql = "SELECT COUNT(*)
+						FROM `{$wpdb->posts}` AS `p`
+						LEFT JOIN `{$wpdb->postmeta}` AS `pm` ON `pm`.`post_id` = `p`.`ID` AND `pm`.`meta_key` = 'booking_status'
+						WHERE `p`.`post_type` = 'booking' AND `p`.`post_author` = {$user_id} AND `pm`.`meta_value` = 'confirmed'";
+
+		    $value = (int)$wpdb->get_var( $sql );
+	    	break;
         default:
     }
 
