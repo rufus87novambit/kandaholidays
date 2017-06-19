@@ -331,6 +331,7 @@ class IOL_Helper {
 					case 'minnights':
 						if( $room_restrictions['muststaydays'] && ( $room_restrictions['muststaydays'] > $args['request']['nights_count'] ) ) {
 							$restriction = array(
+                                'render'    => ( $room_restrictions['muststaydays'] < 30 ),
 								'type' 		=> $type,
 								'message'	=> sprintf( 
 									__( 'Room requires minimum stay of %1$d %2$s.', 'kanda' ), 
@@ -344,6 +345,7 @@ class IOL_Helper {
 					case 'maxnights':
                         if( $room_restrictions['muststaydays'] && ( $room_restrictions['muststaydays'] < $args['request']['nights_count'] ) ) {
                             $restriction = array(
+	                            'render'    => true,
                                 'type' 		=> $type,
                                 'message'	=> sprintf(
                                     __( 'Room requires maximum stay of %1$d %2$s.', 'kanda' ),
@@ -356,6 +358,7 @@ class IOL_Helper {
 					
 					case 'nocheckin':
 						$restriction = array(
+							'render'    => true,
 							'type' 		=> $type,
 							'message'	=> __( 'No Check In.', 'kanda' )
 						);
@@ -363,6 +366,7 @@ class IOL_Helper {
 						
 					case 'nocheckout':
 						$restriction = array(
+							'render'    => true,
 							'type' 		=> $type,
 							'message'	=> __( 'No Check Out.', 'kanda' )
 						);
@@ -409,6 +413,9 @@ class IOL_Helper {
 
         $unique_id = uniqid();
 		$restriction = static::check_room_restrictions( $room, $args );
+		if( $restriction && ! $restriction['render'] ) {
+		    return;
+        }
         ?>
         <div class="users-table table">
             <header class="thead">
