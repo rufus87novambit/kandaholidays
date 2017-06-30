@@ -172,10 +172,10 @@ class IOL_Hotels {
 
         if( $cached ) {
             // get it from cache
+
             if( $cache_instance->is_alive( $cached->created_at ) ) {
 
                 $cached_data = $cache_instance->get_data( $cached->id, $args );
-
                 $response_data = array();
                 foreach( $cached_data['data'] as $d ) {
                     $response_data[] = IOL_Helper::savable_format_to_array ( $d->data );

@@ -257,11 +257,17 @@ class IOL_Search_Cache extends Kanda_Service_Cache {
     public function get( $request ) {
         global $wpdb;
         $table = $this->get_search_table();
+        $results_table = $this->get_search_results_table();
         $id = is_string( $request ) ? $request : $this->get_request_id( $request );
         $user_id = get_current_user_id();
 
-        $query = "SELECT * FROM `{$table}` WHERE `id` = '{$id}' AND `user_id` = {$user_id}";
-        return $wpdb->get_row( $query );
+	    $query = "SELECT `s`.*, COUNT(`sr`.`request_id`) AS `total_results`
+					FROM `{$table}` AS `s` 
+					LEFT JOIN `{$results_table}` AS `sr` ON `sr`.`request_id` = `s`.`id`
+					WHERE `s`.`id` = '{$id}' AND `s`.`user_id` = {$user_id}";
+	    $results = $wpdb->get_row( $query );
+
+	    return ( (int)$results->total_results > 0 ) ? $results : null;
     }
 
     /**
