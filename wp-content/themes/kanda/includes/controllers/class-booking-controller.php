@@ -763,6 +763,20 @@ class Booking_Controller extends Base_Controller {
 
                             $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
 							
+                            // apply suppliments
+	                        /*
+	                        if( isset( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ) {
+		                        $supplements = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ? array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) : $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'];
+		                        foreach( $supplements as $supplement ) {
+			                        $supplement_start = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['fromdate'] );
+			                        $supplement_end = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['todate'] );
+			                        $supplement_interval = $supplement_end->diff( $supplement_start );
+			                        $supplement_nights_count = $supplement_interval->d;
+			
+			                        $real_price += $supplement_nights_count * $supplement['rate'];
+		                        }
+	                        }*/
+                         
 							// apply discounts to room real price
 							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
 								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
