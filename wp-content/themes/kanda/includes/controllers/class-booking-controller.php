@@ -761,29 +761,30 @@ class Booking_Controller extends Base_Controller {
                             $interval = $end_date->diff( $start_date );
                             $nights_count = $interval->d;
 
-                            $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
-							
+//                            $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
+                            $real_price = $data['hoteldetails']['totalrate'];
+
                             // apply suppliments
-	                        /*
-	                        if( isset( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ) {
+	                        /*if( isset( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ) {
 		                        $supplements = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ? array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) : $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'];
+	                            echo '<pre>'; var_dump( $data ); echo '</pre>'; die;
 		                        foreach( $supplements as $supplement ) {
 			                        $supplement_start = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['fromdate'] );
 			                        $supplement_end = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['todate'] );
 			                        $supplement_interval = $supplement_end->diff( $supplement_start );
 			                        $supplement_nights_count = $supplement_interval->d;
-			
+
 			                        $real_price += $supplement_nights_count * $supplement['rate'];
 		                        }
 	                        }*/
                          
 							// apply discounts to room real price
-							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
-								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
-								foreach( $discounts as $discount ) {
-									$real_price -= abs( $discount['totaldiscountrate'] );
-								}
-							}
+//							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
+//								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
+//								foreach( $discounts as $discount ) {
+//									$real_price -= abs( $discount['totaldiscountrate'] );
+//								}
+//							}
 							
                             $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
                             $real_price = $real_price['amount'];
