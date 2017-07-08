@@ -46,6 +46,7 @@ class Kanda_Fields {
             add_filter('acf/prepare_field/name=hotelweb', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkintime', array( $this, 'make_readonly' ) );
             add_filter('acf/prepare_field/name=checkouttime', array( $this, 'make_readonly' ) );
+	        add_filter('acf/prepare_field/name=total_rate', array( $this, 'make_readonly' ) );
             if( kanda_is_reservator() ) {
 				/** Booking fields */
 				add_filter('acf/prepare_field/key=field_58e7ef5ec870e', array( $this, 'make_hidden' ) );	// pricing tab
@@ -66,6 +67,7 @@ class Kanda_Fields {
 
             add_filter('acf/prepare_field/name=hotel_city', array( $this, 'get_city_name' ) );
             add_filter('acf/prepare_field/name=hotelcity', array( $this, 'get_city_name' ) );
+            add_filter('acf/load_value/name=total_rate', array($this, 'prepare_total_rate_field_value'), 10, 3 );
         }
 
     }
@@ -175,6 +177,18 @@ class Kanda_Fields {
      */
     public function get_hotel_additional_fee( $hotel_post_id ) {
         return get_field( 'additional_fee', $hotel_post_id );
+    }
+
+    public function prepare_total_rate_field_value( $value, $post_id, $field ) {
+	    $total_rate = 0;
+	    $total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'agency_price', $post_id )) );
+	    $total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'visa_rate', $post_id )) );
+	    $total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'transfer_rate', $post_id )) );
+	    $total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'other_rate', $post_id )) );
+
+	    $value = number_format( $total_rate, 2 );
+
+    	return $value;
     }
 
 }

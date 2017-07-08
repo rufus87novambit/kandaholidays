@@ -696,7 +696,7 @@ class Booking_Controller extends Base_Controller {
                 require_once( KANDA_INCLUDES_PATH . 'vendor/mpdf/mpdf.php' );
                 $mpdf = new mPDF();
                 $mpdf->WriteHTML( $content );
-	            
+
                 $mpdf->Output( 'voucher.pdf', 'D');
                 die;
             }

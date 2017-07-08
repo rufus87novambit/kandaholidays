@@ -94,7 +94,7 @@
                         <div class="form-group row clearfix">
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Age', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
-                                <input type="number" name="children[<?php echo $i; ?>][age]" class="form-control" min="0" max="12" value="<?php echo $child['age']; ?>">
+                                <input type="number" name="children[<?php echo $i; ?>][age]" class="form-control" min="0" max="15" value="<?php echo $child['age']; ?>">
                                 <div class="form-control-feedback"><small></small></div>
                             </div>
                         </div>

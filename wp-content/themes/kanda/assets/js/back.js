@@ -252,7 +252,7 @@
 
             append_box.empty();
             for( var i = 0; i < value; i++ ) {
-                append_box.append('<input type="number" name="room_occupants[' + block_index + '][child][age][' + i + ']" class="form-control" value="0" min="0" max="12">');
+                append_box.append('<input type="number" name="room_occupants[' + block_index + '][child][age][' + i + ']" class="form-control" value="0" min="0" max="15">');
             }
             if( value > 0 ) {
                 children_box.removeClass('hidden');

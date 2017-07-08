@@ -353,3 +353,29 @@ function kanda_remove_things_from_admin_menu() {
     remove_submenu_page( 'edit.php?post_type=booking', 'post-new.php?post_type=booking' );
     remove_submenu_page( 'edit.php?post_type=hotel', 'post-new.php?post_type=hotel' );
 }
+
+/**
+ * Column managment for 'hotel' post type
+ */
+add_filter( 'manage_booking_posts_columns', 'kanda_manage_custom_edit_booking_columns' );
+function kanda_manage_custom_edit_booking_columns($columns) {
+	unset( $columns['date'] );
+	$columns['status'] = __( 'Booking Status', 'kanda' );
+
+	return $columns;
+}
+
+/**
+ * Column content for 'hotel' post type
+ */
+add_action( 'manage_booking_posts_custom_column' , 'kanda_render_booking_custom_column', 10, 2 );
+function kanda_render_booking_custom_column( $column, $post_id ) {
+
+	switch ( $column ) {
+
+		case 'status' :
+			echo ucwords( get_field( 'booking_status', $post_id ) );
+			break;
+
+	}
+}
