@@ -696,8 +696,7 @@ class Booking_Controller extends Base_Controller {
                 require_once( KANDA_INCLUDES_PATH . 'vendor/mpdf/mpdf.php' );
                 $mpdf = new mPDF();
                 $mpdf->WriteHTML( $content );
-
-//                $mpdf->Output( KANDA_THEME_PATH . 'mpdf.pdf', 'F');
+	            
                 $mpdf->Output( 'voucher.pdf', 'D');
                 die;
             }
@@ -710,167 +709,165 @@ class Booking_Controller extends Base_Controller {
     /**
      * Get booking details
      */
-    function get_booking_details() {
-        if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-            $security = isset( $_REQUEST['security'] ) ? $_REQUEST['security'] : '';
+	function get_booking_details() {
+		if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			$security = isset( $_REQUEST['security'] ) ? $_REQUEST['security'] : '';
 
-            $is_valid = true;
-            if( wp_verify_nonce( $security, 'kanda-get-booking-details' ) ) {
+			$is_valid = true;
+			if( wp_verify_nonce( $security, 'kanda-get-booking-details' ) ) {
 
-                $booking_number = isset( $_REQUEST['booking_number'] ) ? $_REQUEST['booking_number'] : false;
-                if( ! $booking_number ) {
-                    $is_valid = false;
-                    $message = __( 'Booking number is required', 'kanda' );
-                }
+				$booking_number = isset( $_REQUEST['booking_number'] ) ? $_REQUEST['booking_number'] : false;
+				if( ! $booking_number ) {
+					$is_valid = false;
+					$message = __( 'Booking number is required', 'kanda' );
+				}
 
-                $booking_source = isset( $_REQUEST['booking_source'] ) ? $_REQUEST['booking_source'] : false;
-                if( ! $booking_source ) {
-                    $is_valid = false;
-                    $message = __( 'Booking source is required', 'kanda' );
-                }
+				$booking_source = isset( $_REQUEST['booking_source'] ) ? $_REQUEST['booking_source'] : false;
+				if( ! $booking_source ) {
+					$is_valid = false;
+					$message = __( 'Booking source is required', 'kanda' );
+				}
 
-                $booking_id = isset( $_REQUEST['booking_id'] ) ? $_REQUEST['booking_id'] : false;
-                if( ! $booking_id ) {
-                    $is_valid = false;
-                    $message = __( 'Booking id is required', 'kanda' );
-                }
+				$booking_id = isset( $_REQUEST['booking_id'] ) ? $_REQUEST['booking_id'] : false;
+				if( ! $booking_id ) {
+					$is_valid = false;
+					$message = __( 'Booking id is required', 'kanda' );
+				}
 
-                if( $is_valid ) {
+				if( $is_valid ) {
 
-                    $response = provider_iol()->bookings()->booking_details( array(
-                        'booking_number' => $booking_number,
-                        'booking_source' => $booking_source
-                    ) );
+					$response = provider_iol()->bookings()->booking_details( array(
+						'booking_number' => $booking_number,
+						'booking_source' => $booking_source
+					) );
 
-                    if( ! $response->is_valid() ) {
-                        $is_valid = false;
-                        $message = $response->message;
-                    } else {
+					if( ! $response->is_valid() ) {
+						$is_valid = false;
+						$message = $response->message;
+					} else {
 
-                        $template = KANDA_THEME_PATH . 'views/partials/booking-details.php';
-                        if( file_exists( $template ) ) {
-                            $data = $response->data;
+						$template = KANDA_THEME_PATH . 'views/partials/booking-details.php';
+						if( file_exists( $template ) ) {
+							$data = $response->data;
 
-                            $room = $data['hoteldetails']['roomdetails']['room'];
-                            $booking_details = $data['bookingdetails'];
-                            $passenger_details = $data['bookingdetails']['passengerdetails']['passenger'];
+							$room = $data['hoteldetails']['roomdetails']['room'];
+							$booking_details = $data['bookingdetails'];
+							$passenger_details = $data['bookingdetails']['passengerdetails']['passenger'];
 
-                            /** Pricing calculation **/
-                            $start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['startdate'] );
-                            $end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['enddate'] );
-                            $interval = $end_date->diff( $start_date );
-                            $nights_count = $interval->d;
+							/** Pricing calculation **/
+							$start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['startdate'] );
+							$end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $data['hoteldetails']['roomdetails']['room']['enddate'] );
+							$interval = $end_date->diff( $start_date );
+							$nights_count = $interval->d;
 
-//                            $real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
-                            $real_price = $data['hoteldetails']['totalrate'];
+							$real_price = $data['hoteldetails']['roomdetails']['room']['rate'];
 
-                            // apply suppliments
-	                        /*if( isset( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ) {
-		                        $supplements = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ? array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) : $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'];
-	                            echo '<pre>'; var_dump( $data ); echo '</pre>'; die;
-		                        foreach( $supplements as $supplement ) {
-			                        $supplement_start = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['fromdate'] );
-			                        $supplement_end = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['todate'] );
-			                        $supplement_interval = $supplement_end->diff( $supplement_start );
-			                        $supplement_nights_count = $supplement_interval->d;
+							// apply suppliments
+							if( isset( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ) {
+								$supplements = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) ? array( $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'] ) : $data['hoteldetails']['roomdetails']['room']['supplementdetails']['supplement'];
+								foreach( $supplements as $supplement ) {
+									$supplement_start = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['fromdate'] );
+									$supplement_end = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $supplement['todate'] );
+									$supplement_interval = $supplement_end->diff( $supplement_start );
+									$supplement_nights_count = max( 1, $supplement_interval->d );
 
-			                        $real_price += $supplement_nights_count * $supplement['rate'];
-		                        }
-	                        }*/
-                         
+									$real_price += $supplement_nights_count * $supplement['rate'];
+								}
+							}
+
 							// apply discounts to room real price
-//							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
-//								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
-//								foreach( $discounts as $discount ) {
-//									$real_price -= abs( $discount['totaldiscountrate'] );
-//								}
-//							}
-							
-                            $real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
-                            $real_price = $real_price['amount'];
+							if( isset( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ) {
+								$discounts = IOL_Helper::is_associative_array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) ? array( $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'] ) : $data['hoteldetails']['roomdetails']['room']['discountdetails']['discount'];
+								foreach( $discounts as $discount ) {
+									$real_price -= abs( $discount['totaldiscountrate'] );
+								}
+							}
 
-                            $additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
-                            $earnings = $additional_fee * $nights_count;
-                            $agency_fee = kanda_get_user_additional_fee() * $nights_count;
-                            $agency_price = $real_price + $earnings + $agency_fee;
+							$real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
+							$real_price = $real_price['amount'];
 
-                            $earnings = number_format( $earnings, 2 );
-                            $real_price = number_format( $real_price, 2 );
-                            $agency_price = number_format( $agency_price, 2 );
+							$additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+							$earnings = $additional_fee * $nights_count;
+							$agency_fee = kanda_get_user_additional_fee() * $nights_count;
+							$agency_price = $real_price + $earnings + $agency_fee;
 
-                            /** Passenger details **/
-                            $passenger_details = IOL_Helper::is_associative_array( $passenger_details ) ? array( $passenger_details ) : $passenger_details;
-                            $passengers = array(
-                                'adults'    => array(),
-                                'children'  => array()
-                            );
+							$earnings = number_format( $earnings, 2 );
+							$real_price = number_format( $real_price, 2 );
+							$agency_price = number_format( $agency_price, 2 );
 
-                            $adults = wp_list_filter( $passenger_details, array(
-                                'passengertype' => 'ADT'
-                            ) );
-                            foreach( $adults as $adult ) {
-                                $passengers['adults'][] = array(
-                                    'title'         => $adult['title'],
-                                    'first_name'    => $adult['firstname'],
-                                    'last_name'     => $adult['lastname'],
-                                    'gender'        => $adult['gender'],
-                                );
-                            }
+							/** Passenger details **/
+							$passenger_details = IOL_Helper::is_associative_array( $passenger_details ) ? array( $passenger_details ) : $passenger_details;
+							$passengers = array(
+								'adults'    => array(),
+								'children'  => array()
+							);
 
-                            $children = wp_list_filter( $passenger_details, array(
-                                'passengertype' => 'CHD'
-                            ) );
+							$adults = wp_list_filter( $passenger_details, array(
+								'passengertype' => 'ADT'
+							) );
+							foreach( $adults as $adult ) {
+								$passengers['adults'][] = array(
+									'title'         => $adult['title'],
+									'first_name'    => $adult['firstname'],
+									'last_name'     => $adult['lastname'],
+									'gender'        => $adult['gender'],
+								);
+							}
 
-                            foreach( $children as $child ) {
-                                $passengers['children'][] = array(
-                                    'title'         => $child['title'],
-                                    'first_name'    => $child['firstname'],
-                                    'last_name'     => $child['lastname'],
-                                    'age'           => $child['age'],
-                                    'gender'        => $child['gender'],
-                                );
-                            }
+							$children = wp_list_filter( $passenger_details, array(
+								'passengertype' => 'CHD'
+							) );
 
-                            update_field( 'start_date', $room['startdate'], $booking_id );
-                            update_field( 'end_date', $room['enddate'], $booking_id );
-                            update_field( 'meal_plan', $room['mealplan'], $booking_id );
-                            update_field( 'room_type', $room['roomtype'], $booking_id );
+							foreach( $children as $child ) {
+								$passengers['children'][] = array(
+									'title'         => $child['title'],
+									'first_name'    => $child['firstname'],
+									'last_name'     => $child['lastname'],
+									'age'           => $child['age'],
+									'gender'        => $child['gender'],
+								);
+							}
 
-                            update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
-                            update_field( 'adults', $passengers['adults'], $booking_id );
-                            update_field( 'children', $passengers['children'], $booking_id );
+							update_field( 'start_date', $room['startdate'], $booking_id );
+							update_field( 'end_date', $room['enddate'], $booking_id );
+							update_field( 'meal_plan', $room['mealplan'], $booking_id );
+							update_field( 'room_type', $room['roomtype'], $booking_id );
 
-                            update_field( 'real_price', $real_price, $booking_id );
-                            update_field( 'agency_price', $agency_price, $booking_id );
-                            update_field( 'earnings', $earnings, $booking_id );
+							update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
+							update_field( 'adults', $passengers['adults'], $booking_id );
+							update_field( 'children', $passengers['children'], $booking_id );
 
-                            // set variables
-                            $content = $this->render_template($template, array(
-                                'booking_id' => $booking_id
-                            ));
+							update_field( 'real_price', $real_price, $booking_id );
+							update_field( 'agency_price', $agency_price, $booking_id );
+							update_field( 'earnings', $earnings, $booking_id );
 
-                        } else {
-                            $is_valid = false;
-                            $message = __( 'Internal server error', 'kanda' );
-                        }
+							// set variables
+							$content = $this->render_template($template, array(
+								'booking_id' => $booking_id
+							));
 
-                    }
+						} else {
+							$is_valid = false;
+							$message = __( 'Internal server error', 'kanda' );
+						}
 
-                }
+					}
 
-            } else {
-                $is_valid = false;
-                $message = __( 'Invalid request', 'kanda' );
-            }
+				}
 
-            if( $is_valid ) {
-                wp_send_json_success( array( 'content' => $content ) );
-            } else {
-                wp_send_json_error( array( 'message' => $message ) );
-            }
+			} else {
+				$is_valid = false;
+				$message = __( 'Invalid request', 'kanda' );
+			}
 
-        }
-        $this->show_404();
-    }
+			if( $is_valid ) {
+				wp_send_json_success( array( 'content' => $content ) );
+			} else {
+				wp_send_json_error( array( 'message' => $message ) );
+			}
+
+		}
+		$this->show_404();
+	}
 
 }
