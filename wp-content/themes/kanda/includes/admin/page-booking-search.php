@@ -406,11 +406,11 @@ class Booking_Search_List_Table extends WP_List_Table {
         }
 
         if( isset( $_REQUEST['city'] ) && $_REQUEST['city'] ) {
-            $meta_query[] = array(
-                'key'       => 'hotel_city',
-                'value'     => $_REQUEST['city'],
-                'compare'   => 'LIKE'
-            );
+	        $meta_query[] = array(
+		        'key'       => 'hotel_city',
+		        'value'     => array( $_REQUEST['city'], IOL_Helper::get_city_name_from_code( $_REQUEST['city'] ) ),
+		        'compare'   => 'IN'
+	        );
         }
 
         if( isset( $_REQUEST['hotel_name'] ) && $_REQUEST['hotel_name'] ) {
