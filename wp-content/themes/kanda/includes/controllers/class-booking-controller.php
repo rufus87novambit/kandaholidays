@@ -754,17 +754,20 @@ class Booking_Controller extends Base_Controller {
 							// check for the room with OK status
 							$room = $data['hoteldetails']['roomdetails']['room'];
 							$room = IOL_Helper::is_associative_array( $room ) ? array( $room ) : $room;
-							$room = wp_list_filter( $room, array( 'roomstatus' => 'OK' ) );
-							$room = $room[0];
-
+							$filtered = wp_list_filter( $room, array( 'roomstatus' => 'OK' ) );
+							if( empty( $filtered ) ) {
+								$filtered = wp_list_filter( $room, array( 'roomstatus' => 'RQ' ) );
+							}
+							
 							$booking_details = $data['bookingdetails'];
-
-							if( ! empty( $room ) ) {
-
+							
+							if( ! empty( $filtered ) ) {
+								$room = $filtered[0];
+								$data['bookingdetails']['passengerdetails']['passenger'] = IOL_Helper::is_associative_array( $data['bookingdetails']['passengerdetails']['passenger'] ) ? array( $data['bookingdetails']['passengerdetails']['passenger'] ) : $data['bookingdetails']['passengerdetails']['passenger'];
 								$passenger_details = wp_list_filter( $data['bookingdetails']['passengerdetails']['passenger'], array( 'roomno' => $room['roomno'] ) );
 
 								/** Pricing calculation **/
-
+								
 								$start_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $room['startdate'] );
 								$end_date = DateTime::createFromFormat( IOL_Config::get( 'date_format' ), $room['enddate'] );
 								$interval = $end_date->diff( $start_date );
@@ -842,7 +845,7 @@ class Booking_Controller extends Base_Controller {
 								update_field( 'end_date', $room['enddate'], $booking_id );
 								update_field( 'meal_plan', $room['mealplan'], $booking_id );
 								update_field( 'room_type', $room['roomtype'], $booking_id );
-
+								
 								update_field( 'adults', $passengers['adults'], $booking_id );
 								update_field( 'children', $passengers['children'], $booking_id );
 
@@ -852,7 +855,7 @@ class Booking_Controller extends Base_Controller {
 
 							}
 							update_field( 'booking_status', strtolower( $booking_details['bookingstatus'] ), $booking_id );
-
+								
 							// set variables
 							$content = $this->render_template($template, array(
 								'booking_id' => $booking_id

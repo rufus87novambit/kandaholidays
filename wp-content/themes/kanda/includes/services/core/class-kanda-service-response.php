@@ -62,10 +62,6 @@ class Kanda_Service_Response {
             $this->code = wp_remote_retrieve_response_code( $http );
 
             $xml = wp_remote_retrieve_body( $http );
-			
-			//if( $_SERVER['REMOTE_ADDR'] == '109.75.46.141' ) {
-				//echo $xml; die;
-			//}
 
             $data = IOL_Helper::convert_xml_to_readable( $xml );
 

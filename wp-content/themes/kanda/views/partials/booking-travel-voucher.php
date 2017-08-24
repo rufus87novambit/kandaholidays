@@ -75,7 +75,7 @@
 
         <tr>
             <td colspan="1"><?php _e( 'Supplier reference', 'kanda' ); ?></td>
-            <td colspan="4" class="text-center"><?php echo ( $reference = get_field( 'supplier_reference' ) ) ? $reference : 'N/A'; ?></td>
+            <td colspan="4" class="text-center"><?php echo ( $reference = get_field( 'supplier_reference', $booking_id ) ) ? $reference : 'N/A'; ?></td>
         </tr>
 
         <tr>

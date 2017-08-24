@@ -79,7 +79,16 @@ $end_date = DateTime::createFromFormat( 'd F, Y', $this->response->request['end_
 
             <li>
                 <h4 class="article-title">
-                    <span><?php echo $hotel['hotelname'] ?> - <?php echo $hotel['propertytype'] ?></span>
+					<?php 
+						$hotel_title = array(
+							$hotel['hotelname']
+						);
+						if( isset( $hotel['propertytype'] ) && is_string( $hotel['propertytype'] ) ) {
+							$hotel_title[] = $hotel['propertytype'];
+						}
+						
+					?>
+                    <span><?php echo implode( ' - ', $hotel_title ); ?></span>
                     <span class="pull-right"><?php echo $hotel['starrating'] ? str_repeat( '<i class="icon icon-star-o"></i>', $hotel['starrating'] ) : 'N/A'; ?></span>
                 </h4>
 

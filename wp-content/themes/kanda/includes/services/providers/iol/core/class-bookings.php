@@ -222,7 +222,7 @@ class IOL_Bookings {
             IOL_Helper::parse_xml_key( 'sub_res_no' ),
             $args['sub_res_no']
         );
-
+		
         return $xml->asXML();
 
     }
@@ -263,7 +263,7 @@ class IOL_Bookings {
             IOL_Helper::parse_xml_key( 'booking_number' ),
             $args['booking_number']
         );
-
+        
         return $xml->asXML();
     }
 
@@ -276,7 +276,7 @@ class IOL_Bookings {
     public function booking_details( $args ) {
 
         $xml = $this->get_booking_details_xml( $args );
-
+		
         return $this->request_instance->process( $xml, $args );
 
     }

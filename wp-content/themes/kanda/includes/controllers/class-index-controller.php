@@ -51,7 +51,7 @@ class Index_Controller extends Base_Controller {
         $this->dashboard_add_hooks();
 
         $user_id = get_current_user_id();
-        $limit = 5;
+        $limit = 10;
         $this->bookings = new WP_Query( array(
             'post_type'         => 'booking',
             'post_status'       => 'publish',
