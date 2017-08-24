@@ -43,16 +43,6 @@
                             <div class="form-control-feedback"><small></small></div>
                         </div>
                     </div>
-                    <div class="form-group row clearfix">
-                        <label class="form-label col-lg-5"><?php esc_html_e( 'Gender', 'kanda' ); ?>:</label>
-                        <div class="select-wrap col-lg-7">
-                            <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="adults[<?php echo $i; ?>][gender]">
-                                <option value="m" <?php selected( $adult['gender'], 'm' ); ?>><?php _e( 'Male', 'kanda' ); ?></option>
-                                <option value="f" <?php selected( $adult['gender'], 'f' ); ?>><?php _e( 'Female', 'kanda' ); ?></option>
-                            </select>
-                            <div class="form-control-feedback"><small></small></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <?php } ?>
@@ -95,16 +85,6 @@
                             <label class="form-label col-lg-5"><?php esc_html_e( 'Age', 'kanda' ); ?>:</label>
                             <div class="select-wrap col-lg-7">
                                 <input type="number" name="children[<?php echo $i; ?>][age]" class="form-control" min="0" max="15" value="<?php echo $child['age']; ?>">
-                                <div class="form-control-feedback"><small></small></div>
-                            </div>
-                        </div>
-                        <div class="form-group row clearfix">
-                            <label class="form-label col-lg-5"><?php esc_html_e( 'Gender', 'kanda' ); ?>:</label>
-                            <div class="select-wrap col-lg-7">
-                                <select class="<?php echo apply_filters( 'custom-select-classname', 'kanda-select' ); ?>" name="children[<?php echo $i; ?>][gender]">
-                                    <option value="m" <?php selected( $child['gender'], 'm' ); ?>><?php _e( 'Male', 'kanda' ); ?></option>
-                                    <option value="f" <?php selected( $child['gender'], 'f' ); ?>><?php _e( 'Female', 'kanda' ); ?></option>
-                                </select>
                                 <div class="form-control-feedback"><small></small></div>
                             </div>
                         </div>

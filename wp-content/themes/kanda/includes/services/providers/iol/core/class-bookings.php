@@ -70,7 +70,7 @@ class IOL_Bookings {
 
             $gender = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'gender' ),
-                strtoupper( $adult['gender'] )
+                IOL_Helper::get_gender_from_title( $adult['title'] )
             );
 
         }
@@ -117,7 +117,7 @@ class IOL_Bookings {
 
             $gender = $passenger->addChild(
                 IOL_Helper::parse_xml_key( 'gender' ),
-                strtoupper( $child['gender'] )
+	            IOL_Helper::get_gender_from_title( $child['title'] )
             );
 
         }

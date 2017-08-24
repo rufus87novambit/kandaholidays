@@ -157,6 +157,18 @@ class IOL_Helper {
 
     }
 
+	/**
+	 * Get gender from title
+	 * @param $title
+	 *
+	 * @return string
+	 */
+    public static function get_gender_from_title( $title ) {
+	    $title = strtolower( $title );
+
+	    return ( $title == 'mr' ) ? 'M' : 'F';
+    }
+
     /**
      * Get occupant type ( adult | child )
      * @param $type

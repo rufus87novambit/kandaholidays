@@ -86,7 +86,6 @@ class Booking_Controller extends Base_Controller {
 						'title' => '',
 						'first_name' => '',
 						'last_name' => '',
-						'gender' => ''
 					));
 
 					$children = array();
@@ -95,7 +94,6 @@ class Booking_Controller extends Base_Controller {
 							'title' => '',
 							'first_name' => '',
 							'last_name' => '',
-							'gender' => '',
 							'age' => $request_args[ 'room_occupants' ][ $requested_room_number ][ 'child' ][ 'age' ][ $i ]
 						);
 					}
@@ -180,7 +178,6 @@ class Booking_Controller extends Base_Controller {
 							'title' => '',
 							'first_name' => '',
 							'last_name' => '',
-							'gender' => ''
 						));
 
 						$children = isset( $details['children'] ) ? $details['children'] : array_fill(0, $children_count, array(
@@ -188,7 +185,6 @@ class Booking_Controller extends Base_Controller {
 							'first_name' => '',
 							'last_name' => '',
 							'age' => '',
-							'gender' => ''
 						));
 
 						/** get cancellation policy */
