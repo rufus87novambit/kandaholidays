@@ -261,8 +261,10 @@ class Booking_Controller extends Base_Controller {
 									$real_price = $real_price['amount'];
 
 									$additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+									$user_additional_fee = kanda_get_user_additional_fee();
+
 									$earnings = $additional_fee * $nights_count;
-									$agency_fee = kanda_get_user_additional_fee() * $nights_count;
+									$agency_fee = $user_additional_fee * $nights_count;
 									$agency_price = $real_price + $earnings + $agency_fee;
 
 									$earnings = number_format( $earnings, 2 );
@@ -367,7 +369,9 @@ class Booking_Controller extends Base_Controller {
 											'subresno' => $data['hoteldetails']['roomdetails']['room']['subresno'],
 											'source' => $data['bookingdetails']['source'],
 											'passenger_names' => implode( '##', $passengers_meta ),
-											'nights_count' => $nights_count
+											'nights_count' => $nights_count,
+											'additional_fee_const'      => $additional_fee,
+											'user_additional_fee_const' => $user_additional_fee
 										)
 									), true );
 
@@ -804,9 +808,18 @@ class Booking_Controller extends Base_Controller {
 								$real_price = kanda_covert_currency_to( $real_price, 'USD', $data['bookingdetails']['currency'] );
 								$real_price = $real_price['amount'];
 
-								$additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+								$additional_fee = get_post_meta( $booking_id, 'additional_fee_const', true );
+								if( $additional_fee === "" ) {
+									$additional_fee = kanda_get_hotel_additional_fee( $data['hoteldetails']['hotelcode'] );
+								}
+
+								$user_additional_fee = get_post_meta( $booking_id, 'user_additional_fee_const', true );
+								if( $user_additional_fee === "" ) {
+									$user_additional_fee = kanda_get_user_additional_fee();
+								}
+
 								$earnings = $additional_fee * $nights_count;
-								$agency_fee = kanda_get_user_additional_fee() * $nights_count;
+								$agency_fee = $user_additional_fee * $nights_count;
 								$agency_price = $real_price + $earnings + $agency_fee;
 
 								$earnings = number_format( $earnings, 2 );
