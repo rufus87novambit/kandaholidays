@@ -49,7 +49,8 @@ $booking = get_post( $booking_id );
 		$total_rate = 0;
 		$hotel_rate = get_field( 'agency_price', $booking_id );
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', $hotel_rate) );
-		$total_rate += floatval( $hotel_rate );
+		$total_rate += kanda_parse_float( $hotel_rate );
+
 		?>
 		<tr>
 			<td><?php esc_html_e( 'Hotel Rate', 'kanda' ); ?></td>
@@ -58,7 +59,7 @@ $booking = get_post( $booking_id );
 		<?php
 		$visa_rate = get_field( 'visa_rate', $booking_id );
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', $visa_rate) );
-		$total_rate += floatval( $visa_rate );
+		$total_rate += kanda_parse_float( $visa_rate );
 		?>
 		<tr>
 			<td><?php esc_html_e( 'Visa Rate', 'kanda' ); ?></td>
@@ -67,7 +68,8 @@ $booking = get_post( $booking_id );
 		<?php
 		$transfer_rate = get_field( 'transfer_rate', $booking_id );
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', $transfer_rate) );
-		$total_rate += floatval( $transfer_rate );
+		$total_rate += kanda_parse_float( $transfer_rate );
+
 		?>
 		<tr>
 			<td><?php esc_html_e( 'Transfer Rate', 'kanda' ); ?></td>
@@ -76,7 +78,8 @@ $booking = get_post( $booking_id );
 		<?php
 		$other_rate = get_field( 'other_rate', $booking_id );
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', $other_rate) );
-		$total_rate += floatval($other_rate );
+		$total_rate += kanda_parse_float( $other_rate );
+
 		?>
 		<tr>
 			<td><?php esc_html_e( 'Other Rate', 'kanda' ); ?></td>

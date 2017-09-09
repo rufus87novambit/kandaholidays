@@ -7,7 +7,7 @@
 
 // Prevent direct script access.
 if ( ! defined( 'ABSPATH' ) ) {
-    die( 'No direct script access allowed' );
+	die( 'No direct script access allowed' );
 }
 
 /**
@@ -20,32 +20,32 @@ require_once( KANDA_BACK_PATH . 'ajax.php' );
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_scripts', 10 );
 function kanda_enqueue_scripts() {
-    $deps = array( 'jquery' );
-    $localize = array();
-    $localize_key = false;
-    if( is_singular( 'booking' ) ) {
-        $localize = array(
-            'validation' => Kanda_Config::get( 'validation->back->form_booking_email_details' )
-        );
-        $localize_key = 'booking';
-    } elseif( is_page_template( 'booking-list.php' ) ) {
-        wp_enqueue_script( 'jquery-ui-datepicker' );
-        wp_enqueue_script( 'jquery-ui-autocomplete' );
+	$deps = array( 'jquery' );
+	$localize = array();
+	$localize_key = false;
+	if( is_singular( 'booking' ) ) {
+		$localize = array(
+			'validation' => Kanda_Config::get( 'validation->back->form_booking_email_details' )
+		);
+		$localize_key = 'booking';
+	} elseif( is_page_template( 'booking-list.php' ) ) {
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-autocomplete' );
 
-        $localize = array(
-            'hotel_names' => kanda_get_hotels_for_autocomplete()
-        );
-        $localize_key = 'bookings_data';
-        $deps = array_merge( $deps, array( 'jquery-ui-datepicker', 'jquery-ui-autocomplete' ) );
-    }
+		$localize = array(
+			'hotel_names' => kanda_get_hotels_for_autocomplete()
+		);
+		$localize_key = 'bookings_data';
+		$deps = array_merge( $deps, array( 'jquery-ui-datepicker', 'jquery-ui-autocomplete' ) );
+	}
 
 
-    wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', $deps, null, true );
-    wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
+	wp_enqueue_script( 'back', KANDA_THEME_URL . 'js/back.min.js', $deps, null, true );
+	wp_localize_script( 'back', 'kanda', kanda_get_back_localize() );
 
-    if( $localize_key && ! empty( $localize ) ) {
-        wp_localize_script( 'back', $localize_key, $localize );
-    }
+	if( $localize_key && ! empty( $localize ) ) {
+		wp_localize_script( 'back', $localize_key, $localize );
+	}
 }
 
 /**
@@ -53,9 +53,9 @@ function kanda_enqueue_scripts() {
  */
 add_action( 'wp_enqueue_scripts', 'kanda_enqueue_styles', 10 );
 function kanda_enqueue_styles(){
-    wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
-    wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
-    wp_add_inline_style('back', kanda_get_color_scheme() );
+	wp_enqueue_style('icon-fonts', KANDA_THEME_URL .  'icon-fonts/style.css', array(), null);
+	wp_enqueue_style('back', KANDA_THEME_URL . 'css/back.min.css', array(), null);
+	wp_add_inline_style('back', kanda_get_color_scheme() );
 }
 
 /**
@@ -63,21 +63,21 @@ function kanda_enqueue_styles(){
  * @return string
  */
 function kanda_get_color_scheme() {
-    $general_body_bg = kanda_get_theme_option( 'general_body_bg' );
-    $general_info_box_bg = kanda_get_theme_option( 'general_info_box_bg' );
-    $general_text_color = kanda_get_theme_option( 'general_text_color' );
-    $general_border_color = kanda_get_theme_option( 'general_border_color' );
-    $general_primary_color = kanda_get_theme_option( 'general_primary_color' );
-    $general_primary_border_color = kanda_get_theme_option( 'general_primary_border_color' );
-    $general_secondary_color = kanda_get_theme_option( 'general_secondary_color' );
-    $general_secondary_border_color = kanda_get_theme_option( 'general_secondary_border_color' );
-    $general_success_color = kanda_get_theme_option( 'general_success_color' );
-    $general_success_border_color = kanda_get_theme_option( 'general_success_border_color' );
-    $general_danger_color = kanda_get_theme_option( 'general_danger_color' );
-    $general_danger_border_color = kanda_get_theme_option( 'general_danger_border_color' );
+	$general_body_bg = kanda_get_theme_option( 'general_body_bg' );
+	$general_info_box_bg = kanda_get_theme_option( 'general_info_box_bg' );
+	$general_text_color = kanda_get_theme_option( 'general_text_color' );
+	$general_border_color = kanda_get_theme_option( 'general_border_color' );
+	$general_primary_color = kanda_get_theme_option( 'general_primary_color' );
+	$general_primary_border_color = kanda_get_theme_option( 'general_primary_border_color' );
+	$general_secondary_color = kanda_get_theme_option( 'general_secondary_color' );
+	$general_secondary_border_color = kanda_get_theme_option( 'general_secondary_border_color' );
+	$general_success_color = kanda_get_theme_option( 'general_success_color' );
+	$general_success_border_color = kanda_get_theme_option( 'general_success_border_color' );
+	$general_danger_color = kanda_get_theme_option( 'general_danger_color' );
+	$general_danger_border_color = kanda_get_theme_option( 'general_danger_border_color' );
 
-    return sprintf(
-        ':root {
+	return sprintf(
+		':root {
             --body-bg: %1$s;
             --bg-color: %2$s;
             --text-color: %3$s;
@@ -96,20 +96,20 @@ function kanda_get_color_scheme() {
             --brand-danger: %12$s;
             --brand-danger-border: %13$s;
         }',
-        $general_body_bg,
-        $general_info_box_bg,
-        $general_text_color,
-        $general_border_color,
-        '#636c72',
-        $general_primary_color,
-        $general_primary_border_color,
-        $general_secondary_color,
-        $general_secondary_border_color,
-        $general_success_color,
-        $general_success_border_color,
-        $general_danger_color,
-        $general_danger_border_color
-    );
+		$general_body_bg,
+		$general_info_box_bg,
+		$general_text_color,
+		$general_border_color,
+		'#636c72',
+		$general_primary_color,
+		$general_primary_border_color,
+		$general_secondary_color,
+		$general_secondary_border_color,
+		$general_success_color,
+		$general_success_border_color,
+		$general_danger_color,
+		$general_danger_border_color
+	);
 }
 
 /**
@@ -119,15 +119,15 @@ function kanda_get_color_scheme() {
  */
 function kanda_get_back_localize() {
 
-    $localize = array(
-        'ajaxurl'   => admin_url( 'admin-ajax.php' ),
-        'themeurl'  => KANDA_THEME_URL,
-        'translatable' => array(
-            'invalid_request' => esc_html__( 'Invalid request', 'kanda' )
-        )
-    );
+	$localize = array(
+		'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+		'themeurl'  => KANDA_THEME_URL,
+		'translatable' => array(
+			'invalid_request' => esc_html__( 'Invalid request', 'kanda' )
+		)
+	);
 
-    return $localize;
+	return $localize;
 }
 
 /**
@@ -176,81 +176,81 @@ function kanda_get_back_localize() {
 add_action( 'kanda/booking/create', 'kanda_booking_create_send_notifications', 10, 1 );
 function kanda_booking_create_send_notifications( $booking_id ) {
 
-    $booking = get_post( $booking_id );
+	$booking = get_post( $booking_id );
 
-    $subject = kanda_get_theme_option( 'email_booking_confirmation_title' );
-    $message = kanda_get_theme_option( 'email_booking_confirmation_body' );
+	$subject = kanda_get_theme_option( 'email_booking_confirmation_title' );
+	$message = kanda_get_theme_option( 'email_booking_confirmation_body' );
 
-    $cancellation_html = '';
-    while( have_rows( 'cancellation_policy', $booking_id ) ) {
-        the_row();
-        $cancellation_html .= sprintf(
-            '<p>%1$s - %2$s: %3$s</p>',
-            date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'from', false ) ) ),
-            date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'to', false ) ) ),
-            get_sub_field( 'charge' )
-        );
-    }
-    $variables = array(
-        '{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
-        '{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
-        '{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
-        '{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
-        '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
-        '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
-        '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
-        '{{BOOKING_STATUS}}'        => ucwords( get_field( 'booking_status', $booking_id ) ),
-        '{{CANCELLATION_DETAILS}}'  => $cancellation_html
-    );
+	$cancellation_html = '';
+	while( have_rows( 'cancellation_policy', $booking_id ) ) {
+		the_row();
+		$cancellation_html .= sprintf(
+			'<p>%1$s - %2$s: %3$s</p>',
+			date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'from', false ) ) ),
+			date( Kanda_Config::get( 'display_date_format' ), strtotime( get_sub_field( 'to', false ) ) ),
+			get_sub_field( 'charge' )
+		);
+	}
+	$variables = array(
+		'{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
+		'{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
+		'{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
+		'{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
+		'{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
+		'{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
+		'{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
+		'{{BOOKING_STATUS}}'        => ucwords( get_field( 'booking_status', $booking_id ) ),
+		'{{CANCELLATION_DETAILS}}'  => $cancellation_html
+	);
 
-    $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
-    if( ! $sent_user ) {
-        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d', $booking_id ) );
-    }
+	$sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
+	if( ! $sent_user ) {
+		kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d', $booking_id ) );
+	}
 
-    $sent_to_admin = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
-    if( $sent_to_admin ) {
-        $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
-        if (!$sent_admin) {
-            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
-        }
-    }
+	$sent_to_admin = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
+	if( $sent_to_admin ) {
+		$sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
+		if (!$sent_admin) {
+			kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
+		}
+	}
 }
 
 add_action( 'kanda/booking/cancel', 'kanda_booking_cancel_send_notifications', 10, 1 );
 function kanda_booking_cancel_send_notifications( $booking_id ) {
 
-    $booking = get_post( $booking_id );
+	$booking = get_post( $booking_id );
 
-    $subject = kanda_get_theme_option( 'email_booking_cancellation_title' );
-    $message = kanda_get_theme_option( 'email_booking_cancellation_body' );
+	$subject = kanda_get_theme_option( 'email_booking_cancellation_title' );
+	$message = kanda_get_theme_option( 'email_booking_cancellation_body' );
 
-    $charges = get_field( 'cancellation_total_amount', $booking_id );
-    $charges = $charges ? $charges : 0;
+	$charges = get_field( 'cancellation_total_amount', $booking_id );
+	$charges = $charges ? $charges : 0;
 
-    $variables = array(
-        '{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
-        '{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
-        '{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
-        '{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
-        '{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
-        '{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
-        '{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
-        '{{CANCELLATION_CHARGES}}'  => sprintf( '%s USD', $charges )
-    );
+	$variables = array(
+		'{{BOOKING_NUMBER}}'        => get_field( 'booking_number', $booking_id ),
+		'{{PASSENGERS}}'            => strtr( kanda_get_post_meta( $booking_id, 'passenger_names' ), array( '##' => ', ' ) ),
+		'{{AGENCY_NAME}}'           => kanda_get_user_meta( $booking->post_author, 'company_name' ),
+		'{{HOTEL_NAME}}'            => get_field( 'hotel_name', $booking_id ),
+		'{{ROOM_TYPE}}'             => get_field( 'room_type', $booking_id ),
+		'{{CHECK_IN}}'              => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ),
+		'{{CHECK_OUT}}'             => date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ),
+		'{{CANCELLATION_CHARGES}}'  => sprintf( '%s USD', $charges )
+	);
 
-    $sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
-    if( ! $sent_user ) {
-        kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d' ), $booking_id );
-    }
+	$sent_user = kanda_mailer()->send_user_email( $booking->post_author, $subject, $message, $variables );
+	if( ! $sent_user ) {
+		kanda_logger()->log( sprintf( 'Error sending email to user for new booking. booking_id=%d' ), $booking_id );
+	}
 
-    $sent_to_admin = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
-    if( $sent_to_admin ) {
-        $sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
-        if (!$sent_admin) {
-            kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
-        }
-    }
+	$sent_to_admin = kanda_multicheck_checked( 'on_booking_cancel', 'admin_notifications_events' );
+	if( $sent_to_admin ) {
+		$sent_admin = kanda_mailer()->send_admin_email($subject, $message, $variables);
+		if (!$sent_admin) {
+			kanda_logger()->log(sprintf('Error sending email to admin for new booking. booking_id=%d', $booking_id ) );
+		}
+	}
 }
 
 /**
@@ -261,10 +261,10 @@ function kanda_booking_cancel_send_notifications( $booking_id ) {
  * @return int
  */
 function kanda_price_order( $a, $b ) {
-    if ( $a['rate'] == $b['rate'] ) {
-        return 0;
-    }
-    return ( $a['rate'] < $b['rate'] ) ? -1 : 1;
+	if ( $a['rate'] == $b['rate'] ) {
+		return 0;
+	}
+	return ( $a['rate'] < $b['rate'] ) ? -1 : 1;
 }
 
 /**
@@ -273,91 +273,91 @@ function kanda_price_order( $a, $b ) {
  */
 function kanda_get_booking_query_args() {
 
-    $meta_query = array();
+	$meta_query = array();
 
-    if( isset( $_GET['search'] ) && $_GET['search'] ) {
-        $names = array();
-        if( isset( $_GET['pfn'] ) && $_GET['pfn'] ) {
-            $names[] = sanitize_text_field( $_GET['pfn'] );
-        }
-        if( isset( $_GET['pln'] ) && $_GET['pln'] ) {
-            $names[] = sanitize_text_field( $_GET['pln'] );
-        }
+	if( isset( $_GET['search'] ) && $_GET['search'] ) {
+		$names = array();
+		if( isset( $_GET['pfn'] ) && $_GET['pfn'] ) {
+			$names[] = sanitize_text_field( $_GET['pfn'] );
+		}
+		if( isset( $_GET['pln'] ) && $_GET['pln'] ) {
+			$names[] = sanitize_text_field( $_GET['pln'] );
+		}
 
-        if( ! empty( $names ) ) {
-            $meta_query[] = array(
-                'key'       => 'passenger_names',
-                'value'     => implode( ' ', $names ),
-                'compare'   => 'LIKE'
-            );
-        }
+		if( ! empty( $names ) ) {
+			$meta_query[] = array(
+				'key'       => 'passenger_names',
+				'value'     => implode( ' ', $names ),
+				'compare'   => 'LIKE'
+			);
+		}
 
-        if( isset( $_GET['city'] ) && $_GET['city'] ) {
-            $meta_query[] = array(
-                'key'       => 'hotel_city',
-                'value'     => sanitize_text_field( $_GET['city'] ),
-                'compare'   => '='
-            );
-        }
+		if( isset( $_GET['city'] ) && $_GET['city'] ) {
+			$meta_query[] = array(
+				'key'       => 'hotel_city',
+				'value'     => sanitize_text_field( $_GET['city'] ),
+				'compare'   => '='
+			);
+		}
 
 
-        if( isset( $_GET['hotel_name'] ) && $_GET['hotel_name'] && ( $hotel_code = kanda_get_hotel_code_by_name( $_GET['hotel_name'] ) ) ) {
-            $meta_query[] = array(
-                'key'       => 'hotel_code',
-                'value'     => $hotel_code,
-                'compare'   => '='
-            );
-        }
+		if( isset( $_GET['hotel_name'] ) && $_GET['hotel_name'] && ( $hotel_code = kanda_get_hotel_code_by_name( $_GET['hotel_name'] ) ) ) {
+			$meta_query[] = array(
+				'key'       => 'hotel_code',
+				'value'     => $hotel_code,
+				'compare'   => '='
+			);
+		}
 
-        if( isset( $_GET['brn'] ) && $_GET['brn'] ) {
-            $meta_query[] = array(
-                'key'       => 'booking_number',
-                'value'     => sanitize_text_field( $_GET['brn'] ),
-                'compare'   => '='
-            );
-        }
+		if( isset( $_GET['brn'] ) && $_GET['brn'] ) {
+			$meta_query[] = array(
+				'key'       => 'booking_number',
+				'value'     => sanitize_text_field( $_GET['brn'] ),
+				'compare'   => '='
+			);
+		}
 
-        if( isset( $_GET['check_in'] ) && $_GET['check_in'] ) {
-            $meta_query[] = array(
-                'key'       => 'start_date',
-                'value'     => sanitize_text_field( $_GET['check_in'] ),
-                'compare'   => '='
-            );
-        }
+		if( isset( $_GET['check_in'] ) && $_GET['check_in'] ) {
+			$meta_query[] = array(
+				'key'       => 'start_date',
+				'value'     => sanitize_text_field( $_GET['check_in'] ),
+				'compare'   => '='
+			);
+		}
 
-        if( isset( $_GET['status'] ) && $_GET['status'] ) {
-            $meta_query[] = array(
-                'key'       => 'booking_status',
-                'value'     => sanitize_text_field( $_GET['status'] ),
-                'compare'   => '='
-            );
-        }
+		if( isset( $_GET['status'] ) && $_GET['status'] ) {
+			$meta_query[] = array(
+				'key'       => 'booking_status',
+				'value'     => sanitize_text_field( $_GET['status'] ),
+				'compare'   => '='
+			);
+		}
 
-        if( count( $meta_query ) > 1 ) {
-            $meta_query['realtion'] = 'AND';
-        }
+		if( count( $meta_query ) > 1 ) {
+			$meta_query['realtion'] = 'AND';
+		}
 
-    } else {
-        $meta_query[] = array(
-            'key'       => 'end_date',
-            'value'     => date('Ymd'),
-            'compare'   => '>=',
-            'type' => 'DATE'
-        );
-    }
+	} else {
+		$meta_query[] = array(
+			'key'       => 'end_date',
+			'value'     => date('Ymd'),
+			'compare'   => '>=',
+			'type' => 'DATE'
+		);
+	}
 
-    $args = array(
-        'post_type' => 'booking',
-        'post_status' => 'publish',
-        'author' => get_current_user_id(),
-        'paged'  => kanda_get_paged(),
-        'order' => 'DESC',
-        'orderby' => 'date',
-        'posts_per_page' => 10,
-        'meta_query' => $meta_query
-    );
+	$args = array(
+		'post_type' => 'booking',
+		'post_status' => 'publish',
+		'author' => get_current_user_id(),
+		'paged'  => kanda_get_paged(),
+		'order' => 'DESC',
+		'orderby' => 'date',
+		'posts_per_page' => 10,
+		'meta_query' => $meta_query
+	);
 
-    return $args;
+	return $args;
 }
 
 /**
@@ -365,13 +365,13 @@ function kanda_get_booking_query_args() {
  * @return array
  */
 function kanda_get_hotels_for_autocomplete() {
-    global $wpdb;
-    $query = "SELECT `post_title` FROM `wp_posts` WHERE `post_type` = 'hotel'";
+	global $wpdb;
+	$query = "SELECT `post_title` FROM `wp_posts` WHERE `post_type` = 'hotel'";
 
-    $hotels = array();
-    $results = $wpdb->get_results( $query, OBJECT_K );
+	$hotels = array();
+	$results = $wpdb->get_results( $query, OBJECT_K );
 
-    return array_keys( $results );
+	return array_keys( $results );
 }
 
 /**
@@ -380,15 +380,15 @@ function kanda_get_hotels_for_autocomplete() {
  * @return null|string
  */
 function kanda_get_hotel_code_by_name( $name ) {
-    global $wpdb;
+	global $wpdb;
 
-    $query = "SELECT meta_value
+	$query = "SELECT meta_value
                 FROM {$wpdb->postmeta}
                 WHERE
                 `post_id` = ( SELECT ID FROM `{$wpdb->posts}` WHERE `post_title` = '{$name}' AND `post_type` = 'hotel' ) AND
                 `meta_key` = 'hotelcode'";
 
-    return $wpdb->get_var( $query );
+	return $wpdb->get_var( $query );
 }
 
 /**
@@ -397,40 +397,53 @@ function kanda_get_hotel_code_by_name( $name ) {
  * @param array $args
  */
 function kanda_render_banners( $location, $args = array() ) {
-    $args = wp_parse_args( $args, array(
-        'before' => '',
-        'after'  => '',
-        'class'  => 'slider'
-    ) );
+	$args = wp_parse_args( $args, array(
+		'before' => '',
+		'after'  => '',
+		'class'  => 'slider'
+	) );
 
-    $banners = kanda_get_theme_option( $location . '_banners_slider_gallery', array() );
-    shuffle( $banners );
-    if( $banners ) {
-        echo $args['before'];
-        ?>
-        <div class="<?php echo $args['class']; ?>">
-            <?php foreach ($banners as $banner) { ?>
-                <div><?php echo wp_get_attachment_image( $banner['image'], 'full' ); ?></div>
-            <?php } ?>
-        </div>
-        <?php
-        echo $args['after'];
-    }
+	$banners = kanda_get_theme_option( $location . '_banners_slider_gallery', array() );
+	shuffle( $banners );
+	if( $banners ) {
+		echo $args['before'];
+		?>
+		<div class="<?php echo $args['class']; ?>">
+			<?php foreach ($banners as $banner) { ?>
+				<div><?php echo wp_get_attachment_image( $banner['image'], 'full' ); ?></div>
+			<?php } ?>
+		</div>
+		<?php
+		echo $args['after'];
+	}
+}
+
+/**
+ * Parse float number
+ * @param $float
+ *
+ * @return float|int
+ */
+function kanda_parse_float( $float ) {
+	$parsed = floatval( preg_replace( '/[^\d.]/', '', $float ) );
+	$parsed = $float >= 0 ? $parsed : ( 0 - $parsed );
+
+	return $parsed;
 }
 
 add_shortcode( 'banners_slider', 'kanda_banners_slider' );
 function kanda_banners_slider( $atts ) {
-    $atts = shortcode_atts( array(
-        'location' => ''
-    ), $atts, 'banners_slider' );
+	$atts = shortcode_atts( array(
+		'location' => ''
+	), $atts, 'banners_slider' );
 
-    $html = '';
-    if( $atts['location'] ) {
-        $class = ( $atts['location'] == 'main' ) ? 'main_banners' : 'slider';
-        ob_start();
-        kanda_render_banners( $atts['location'], array( 'class' => $class ) );
-        $html = ob_get_clean();
-    }
+	$html = '';
+	if( $atts['location'] ) {
+		$class = ( $atts['location'] == 'main' ) ? 'main_banners' : 'slider';
+		ob_start();
+		kanda_render_banners( $atts['location'], array( 'class' => $class ) );
+		$html = ob_get_clean();
+	}
 
-    return $html;
+	return $html;
 }

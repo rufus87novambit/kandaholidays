@@ -192,13 +192,16 @@ class Kanda_Fields {
 	public function prepare_total_rate_field_value( $value, $post_id, $field ) {
 		$total_rate = 0;
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'agency_price', $post_id )) );
-		$total_rate += floatval( get_field( 'agency_price', $post_id ) );
+		$total_rate += kanda_parse_float( get_field( 'agency_price', $post_id ) );
+
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'visa_rate', $post_id )) );
-		$total_rate += floatval( get_field( 'visa_rate', $post_id ) );
+		$total_rate += kanda_parse_float( get_field( 'visa_rate', $post_id ) );
+
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'transfer_rate', $post_id )) );
-		$total_rate += floatval( get_field( 'transfer_rate', $post_id ) );
+		$total_rate += kanda_parse_float( get_field( 'transfer_rate', $post_id ) );
+
 		//$total_rate += floatval( preg_replace('/[^\d.]/', '', get_field( 'other_rate', $post_id )) );
-		$total_rate += floatval( get_field( 'other_rate', $post_id ) );
+		$total_rate += kanda_parse_float( get_field( 'other_rate', $post_id ) );
 
 		$value = number_format( $total_rate, 2 );
 
