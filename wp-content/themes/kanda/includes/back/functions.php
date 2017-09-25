@@ -131,46 +131,6 @@ function kanda_get_back_localize() {
 }
 
 /**
- * Send admin notification on new booking
- */
-//add_action( 'kanda/booking/create', 'kanda_booking_create_send_admin_notification', 10, 1 );
-//function kanda_booking_create_send_admin_notification( $booking_id ) {
-//    $sent = kanda_multicheck_checked( 'on_booking_create', 'admin_notifications_events' );
-//    if( ! $sent ) {
-//        return;
-//    }
-//
-//    $subject = sprintf( '%1$s - %2$s', esc_html__( 'Booking confirmation', 'kanda' ), get_field( 'booking_number', $booking_id ) );
-//
-//    $message = sprintf( '<p>%1$s</p>', esc_html__( 'Hi.', 'kanda' ) );
-//    $message .= sprintf( '<p>%1$s</p>', esc_html__( 'New booking is made at {{SITE_NAME}} with following details.', 'kanda' ) );
-//
-//    $booking = get_post( $booking_id );
-//    $user_metas = kanda_get_user_meta( $booking->post_author );
-//
-//    $message .= '<p></p>';
-//    $message .= '<table style="width:100%;">';
-//    $message .= '<tr><td style="width:17%;"></td><td style="width:83%;"></td></tr>';
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency', 'kanda' ), $user_metas['company_name'] );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check In', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'start_date', $booking_id, false ) ) ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Check Out', 'kanda' ), date( Kanda_Config::get( 'display_date_format' ), strtotime( get_field( 'end_date', $booking_id, false ) ) ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Booking Status', 'kanda' ), ucwords( get_field( 'booking_status', $booking_id ) ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Hotel Name', 'kanda' ), get_field( 'hotel_name', $booking_id ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Room Type', 'kanda' ), get_field( 'room_type', $booking_id ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Meal Plan', 'kanda' ), get_field( 'meal_plan', $booking_id ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'City', 'kanda' ), IOL_Helper::get_city_name_from_code( get_field( 'hotel_city', $booking_id ) ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Real Price', 'kanda' ), sprintf( '%s USD', get_field( 'real_price', $booking_id ) ) );
-//    $message .= sprintf( '<tr><td>%1$s:</td><td>%2$s</td></tr>', esc_html__( 'Agency Price', 'kanda' ), sprintf( '%s USD', get_field( 'agency_price', $booking_id ) ) );
-//    $message .= '</table>';
-//    $message .= sprintf( '<p>%s</p>', esc_html__( 'You can see detailed information about booking by visiting following link', 'kanda' ) );
-//    $message .= sprintf( '<p><a href="%1$s">%1$s</a></p>', add_query_arg( array( 'post' => $booking_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) );
-//
-//    if( ! kanda_mailer()->send_admin_email( $subject, $message ) ) {
-//        kanda_logger()->log( sprintf( 'Error sending email to admin for new booking. booking_id=%d' ), $booking_id );
-//    }
-//}
-
-/**
  * Send a notification to travel agency
  */
 add_action( 'kanda/booking/create', 'kanda_booking_create_send_notifications', 10, 1 );
@@ -425,6 +385,10 @@ function kanda_render_banners( $location, $args = array() ) {
  * @return float|int
  */
 function kanda_parse_float( $float ) {
+	if( ! $float ) {
+		return 0;
+	}
+
 	$parsed = floatval( preg_replace( '/[^\d.]/', '', $float ) );
 	$parsed = $float >= 0 ? $parsed : ( 0 - $parsed );
 	

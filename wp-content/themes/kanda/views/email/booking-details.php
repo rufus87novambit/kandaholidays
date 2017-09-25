@@ -39,7 +39,8 @@
         </tr>
         <?php
         $total_rate = 0;
-        $hotel_rate = get_field( 'agency_price', $booking_id );
+        $hotel_rate = kanda_parse_float( get_field( 'agency_price', $booking_id ) ) + kanda_parse_float( get_field( 'correction_rate', $booking_id ) );
+        $total_rate += $hotel_rate;
         ?>
         <tr>
             <td><?php esc_html_e( 'Hotel Rate', 'kanda' ); ?></td>

@@ -90,19 +90,16 @@ get_header();
                     </tr>
                     <?php
                     $total_rate = 0;
-                    $hotel_rate = get_field( 'agency_price' );
-                    //$total_rate += floatval( preg_replace('/[^\d.]/', '', $hotel_rate) );
-                    $total_rate += kanda_parse_float( $hotel_rate );
-					
+                    $hotel_rate = kanda_parse_float( get_field( 'agency_price' ) ) + kanda_parse_float( get_field( 'correction_rate' ) );
+                    $total_rate += $hotel_rate;
                     ?>
                     <tr>
                         <td><?php esc_html_e( 'Hotel Rate', 'kanda' ); ?></td>
                         <td><?php printf( '%s USD', $hotel_rate ); ?></td>
                     </tr>
                     <?php
-                    $visa_rate = get_field( 'visa_rate' );
-                    //$total_rate += floatval( preg_replace('/[^\d.]/', '', $visa_rate) );
-                    $total_rate += kanda_parse_float( $visa_rate );
+                    $visa_rate = kanda_parse_float( get_field( 'visa_rate' ) );
+                    $total_rate += $visa_rate;
                     
                     ?>
                     <tr>
@@ -110,19 +107,16 @@ get_header();
                         <td><?php printf( '%s USD', $visa_rate ); ?></td>
                     </tr>
                     <?php
-                    $transfer_rate = get_field( 'transfer_rate' );
-                    //$total_rate += floatval( preg_replace('/[^\d.]/', '', $transfer_rate) );
-                    $total_rate += kanda_parse_float( $transfer_rate );
-                    
+                    $transfer_rate = kanda_parse_float( get_field( 'transfer_rate' ) );
+                    $total_rate += $transfer_rate;
                     ?>
                     <tr>
                         <td><?php esc_html_e( 'Transfer Rate', 'kanda' ); ?></td>
                         <td><?php printf( '%s USD', $transfer_rate ); ?></td>
                     </tr>
                     <?php
-                    $other_rate = get_field( 'other_rate' );
-                    //$total_rate += floatval( preg_replace('/[^\d.]/', '', $other_rate) );
-                    $total_rate += kanda_parse_float( $other_rate );
+                    $other_rate = kanda_parse_float( get_field( 'other_rate' ) );
+                    $total_rate += $other_rate;
                     
                     ?>
                     <tr>
