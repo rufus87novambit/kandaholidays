@@ -185,7 +185,7 @@ function kanda_booking_cancel_send_notifications( $booking_id ) {
     $subject = kanda_get_theme_option( 'email_booking_cancellation_title' );
     $message = kanda_get_theme_option( 'email_booking_cancellation_body' );
 
-    $charges = get_field( 'cancellation_total_amount', $booking_id );
+    $charges = get_post_meta( $booking_id, 'cancellation_total_amount', true );
     $charges = $charges ? $charges : 0;
 
     $variables = array(

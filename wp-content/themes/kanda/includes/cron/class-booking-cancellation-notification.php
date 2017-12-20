@@ -120,8 +120,10 @@ class Kanda_Booking_Cancellation_Notification {
         );
 		
         $sent_user = kanda_mailer()->send_user_email( $booking_author_id, $subject, $message, $variables );
-        if( ! $sent_user ) {
-            kanda_logger()->log( sprintf( 'Error sending email to user for booking notification. booking_id=%d', $booking_id ) );
+        if( $sent_user ) {
+	        kanda_mailer()->send_admin_email( $subject, $message, $variables );
+        } else {
+	        kanda_logger()->log( sprintf( 'Error sending email to user for booking notification. booking_id=%d', $booking_id ) );
         }
 
     }

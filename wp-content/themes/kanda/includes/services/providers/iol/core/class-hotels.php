@@ -169,7 +169,11 @@ class IOL_Hotels {
         } else {
             $args['limit'] = absint($args['limit']);
         }
-
+		
+		//if( $_SERVER['REMOTE_ADDR'] == '109.75.46.141' ) {
+			//$cached = null;
+		//}
+		
         if( $cached ) {
             // get it from cache
 
@@ -235,7 +239,7 @@ class IOL_Hotels {
             $response = $this->request_instance->process( $xml, $request_args );
 
             if( $response->is_valid() ) {
-
+			
                 if( isset( $response->data[ 'hotels' ][ 'hotel' ] ) ) {
                     $offset = ( $args['page'] - 1 ) * $args['limit'];
                     $data = array_slice( $response->data[ 'hotels' ][ 'hotel' ], $offset, $args['limit'] );
