@@ -590,8 +590,9 @@ class Booking_Controller extends Base_Controller {
 								}
 							}
 
+
 							update_post_meta( $booking_id, 'booking_status', 'cancelled' );
-							update_post_meta( $booking_id, 'cancellation_total_amount', $cancellation_total_amount );
+							update_post_meta( $booking_id, 'cancellation_total_amount', $cancellation_total_amount + kanda_parse_float( get_field( 'correction_rate' ) ) );
 							update_field( 'agency_price', $cancellation_total_amount, $booking_id );
 
 							do_action( 'kanda/booking/cancel', $booking_id );
