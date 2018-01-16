@@ -81,7 +81,14 @@ require_once( KANDA_INCLUDES_PATH . 'functions.php' );
 /**
  * Cron functionality
  */
-if( defined( 'KANDA_DOING_CRON' ) && KANDA_DOING_CRON && defined( 'KANDA_DOING_CRON_SECURITY' ) && KANDA_DOING_CRON_SECURITY == 'SktDcjIh7YMyhlWa' ) {
-    require_once( KANDA_INCLUDES_PATH . 'cron/functions.php' );
+if( defined( 'KANDA_DOING_CRON' ) && KANDA_DOING_CRON && defined( 'KANDA_DOING_CRON_SECURITY' ) ) {
+	switch ( KANDA_DOING_CRON_SECURITY ) {
+		case 'SktDcjIh7YMyhlWa':
+			require_once( KANDA_INCLUDES_PATH . 'cron/notifications.php' );
+			break;
+		case 'wtLQt8IKEhgj98fv':
+			require_once( KANDA_INCLUDES_PATH . 'cron/exchange.php' );
+			break;
+	}
     die;
 }

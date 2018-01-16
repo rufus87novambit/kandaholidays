@@ -156,47 +156,11 @@ function kanda_get_active_currencies() {
  */
 function kanda_get_exchange_rates ( $force = false ) {
 
-    $transient_name = 'kanda_exchange_rates';
-    $rates = get_transient( $transient_name );
+    $rates = get_option( 'kanda_exchange_rates', false );
 
-    if( $force || !$rates ) {
-
-        $endpoint = 'http://api.cba.am/exchangerates.asmx?wsdl';
-        $success = false;
-        try {
-            $client = new SoapClient($endpoint, array(
-                'version' => SOAP_1_1
-            ));
-            $result = $client->__soapCall("ExchangeRatesLatest", array());
-            if (is_soap_fault($result)) {
-                $error = $result->faultstring;
-            } else {
-                $success = true;
-                $data = $result->ExchangeRatesLatestResult;
-            }
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-        }
-        if ($success) {
-            $rates = array();
-            foreach( $data->Rates->ExchangeRate as $rate ) {
-                $rates[ $rate->ISO ] = $rate;
-            }
-            $rates = json_decode( json_encode( $rates ), true );
-            set_transient( 'kanda_exchange_rates', $rates, kanda_get_theme_option( 'exchange_update_interval' ) * HOUR_IN_SECONDS );
-
-            update_option( 'kanda_exchange_last_update', current_time( 'mysql' ) );
-
-        } else {
-
-            $message = "Hi developer.\n";
-            $message .= sprintf("There was an error getting rates from %s.\n with following details.", $endpoint);
-            $message .= sprintf("Error: %s", $error);
-
-            kanda_mailer()->send_developer_email( 'CBA problem', $message );
-            kanda_logger()->log( $message );
-        }
-
+    if( $force || ! $rates ) {
+	    require_once( KANDA_INCLUDES_PATH . 'cron/exchange.php' );
+	    $rates = get_option( 'kanda_exchange_rates', false );
     }
 
     return $rates;
@@ -843,7 +807,7 @@ function kanda_get_nationality_choices() {
         'CR' => 'Costa Rica',
         'HR' => 'Croatia',
         'CU' => 'Cuba',
-        'CW' => 'Curaçao',
+        'CW' => 'Curaï¿½ao',
         'CY' => 'Cyprus',
         'CZ' => 'Czech Republic',
         'DK' => 'Denmark',
@@ -966,11 +930,11 @@ function kanda_get_nationality_choices() {
         'PT' => 'Portugal',
         'PR' => 'Puerto Rico',
         'QA' => 'Qatar',
-        'RE' => 'Réunion',
+        'RE' => 'Rï¿½union',
         'RO' => 'Romania',
         'RU' => 'Russian Federation',
         'RW' => 'Rwanda',
-        'BL' => 'Saint Barthélemy',
+        'BL' => 'Saint Barthï¿½lemy',
         'SH' => 'Saint Helena, Ascension and Tristan da Cunha',
         'KN' => 'Saint Kitts and Nevis',
         'LC' => 'Saint Lucia',
