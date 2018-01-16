@@ -581,7 +581,7 @@ class Booking_Controller extends Base_Controller {
 								if( $cancellation_type == 'a' ) {
 									$nights_count = get_post_meta($booking_id, 'nights_count', true);
 									$agency_price = floatval( str_replace(',', '', get_field( 'agency_price', $booking_id ) ) );
-									$cancellation_total_amount = ( $agency_price / $nights_count ) * $charge;
+									$cancellation_total_amount = $agency_price / $nights_count * $charge;
 									$cancellation_total_amount = number_format($cancellation_total_amount, 2);
 								} elseif( $cancellation_type == 'p' ) {
 									$agency_price = floatval( str_replace(',', '', get_field( 'agency_price', $booking_id ) ) );
@@ -589,7 +589,6 @@ class Booking_Controller extends Base_Controller {
 									$cancellation_total_amount = number_format($cancellation_total_amount, 2);
 								}
 							}
-
 
 							update_post_meta( $booking_id, 'booking_status', 'cancelled' );
 							update_post_meta( $booking_id, 'cancellation_total_amount', $cancellation_total_amount + kanda_parse_float( get_field( 'correction_rate' ) ) );

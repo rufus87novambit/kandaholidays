@@ -7,9 +7,11 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
+    notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
-    del = require('del');
+    del = require('del'),
+    notify = require('gulp-notify');
 
 
 /********************************** Front **********************************/
@@ -25,7 +27,8 @@ gulp.task('css-front', function() {
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('front.min.css'))
-        .pipe(gulp.dest('../css/'));
+        .pipe(gulp.dest('../css/'))
+        .pipe(notify("Done! CSS Front"));
 });
 
 /**
@@ -48,7 +51,8 @@ gulp.task('js-front', function() {
     ])
         .pipe(concat('front.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'));
+        .pipe(gulp.dest('../js/'))
+        .pipe(notify("Done! JS Front"));
 });
 
 /**
@@ -97,14 +101,15 @@ gulp.task('css-back', function () {
     ])
         .pipe(cleancss({ keepSpecialComments : 0 } ))
         .pipe(concat('back.min.css'))
-        .pipe(gulp.dest('../css/'));
+        .pipe(gulp.dest('../css/'))
+        .pipe(notify("Done! CSS Back"));
 });
 
 /**
  * Watch for back css changes
  */
 gulp.task('css-back-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/rating/*'], ['css-back']);
+    gulp.watch(['../assets/css/*', '../assets/css/rating/*', '../icons/style.css'], ['css-back']);
 });
 
 /**
@@ -124,7 +129,8 @@ gulp.task('js-back', function () {
     ])
         .pipe(concat('back.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'));
+        .pipe(gulp.dest('../js/'))
+        .pipe(notify("Done! JS Back"));
 });
 
 /**
@@ -152,18 +158,20 @@ gulp.task('back-build', ['css-back','js-back']);
  */
 gulp.task('css-admin', function () {
     gulp.src([
+        '../icons/style.css',
         '../assets/css/admin/admin.css'
     ])
         .pipe(cleancss({ specialComments : 0 } ))
         .pipe(concat('admin.min.css'))
-        .pipe(gulp.dest('../css/'));
+        .pipe(gulp.dest('../css/'))
+        .pipe(notify("Done! CSS Admin"));
 });
 
 /**
  * Watch for admin css changes
  */
 gulp.task('css-admin-watch', function() {
-    gulp.watch(['../assets/css/*', '../assets/css/admin/*'], ['css-admin']);
+    gulp.watch(['../assets/css/*', '../assets/css/admin/*', '../icons/style.css'], ['css-admin']);
 });
 
 /**
@@ -175,7 +183,8 @@ gulp.task('js-admin', function () {
     ])
         .pipe(concat('admin.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('../js/'));
+        .pipe(gulp.dest('../js/'))
+        .pipe(notify( "Done! JS Admin" ));
 });
 
 /**

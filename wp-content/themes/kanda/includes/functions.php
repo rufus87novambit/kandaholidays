@@ -11,6 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Include configuration
+ */
+require_once( KANDA_INCLUDES_PATH . 'config.php' );
+
+/**
  * Include logger
  */
 require_once( KANDA_INCLUDES_PATH . 'helpers/class-logger.php' );
@@ -34,11 +39,6 @@ require_once( KANDA_INCLUDES_PATH . 'global-functions.php' );
  * Include customizer
  */
 require_once( KANDA_CUSTOMIZER_PATH . 'customizer.php' );
-
-/**
- * Include configuration
- */
-require_once( KANDA_INCLUDES_PATH . 'config.php' );
 
 /**
  * Include router
